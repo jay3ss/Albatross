@@ -49,10 +49,3 @@ def create_database(engine: Engine):
 
 
 create_database(engine)
-
-if __name__ == "__main__":
-    import sql_models as sm
-
-    with get_session() as session:
-        author = sm.Author("jayess")
-        session.add(author)
