@@ -1,0 +1,10 @@
+FastAPI
+Jinja2
+Markdown
+Pelican
+pydantic
+python-dateutil
+python-dotenv
+python-slugify
+SQLAlchemy
+uvicorn
