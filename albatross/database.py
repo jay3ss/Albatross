@@ -5,20 +5,23 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 
 from config import config
-import sql_models as sm
+from sql_models import Base
 
 
 engine = create_engine(config.database_uri)
 
 
 @contextmanager
-def get_session() -> Session:
+def get_session(engine: Engine = None) -> Session:
     """
     Yields a database session and handles any issues with committing or rolling back changes.
 
     Yields:
         The database session.
     """
+    if not engine:
+        engine = get_engine()
+
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
@@ -32,20 +35,22 @@ def get_session() -> Session:
 
 
 def create_database(engine: Engine):
-    """Creates the database if it does not exist.
+    """Creates the database tables for the given engine if they don't already
+    exist.
 
-    Args:
-        engine: The SQLAlchemy engine to use to create the database.
+    Parameters:
+        engine (sqlalchemy.engine.Engine): The database engine to use.
     """
-
-    inspector = inspect(engine)
-
-    if not inspector.has_table("posts"):
-        # Create the posts table
-        sm.Post.metadata.create_all(bind=engine)
-    if not inspector.has_table("authors"):
-        # Create the authors table
-        sm.Author.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
 
-create_database(engine)
+def get_engine() -> Engine:
+    """Returns a SQLAlchemy engine instance.
+
+    Returns:
+        Engine: The SQLAlchemy engine instance.
+    """
+    return create_engine(config.database_uri)
+
+
+create_database(get_engine())
