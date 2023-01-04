@@ -15,6 +15,7 @@ class Author(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    posts = relationship("Post", back_populates="author")
 
     def __repr__(self) -> str:
         return f"<Author(name={self.name})>"
