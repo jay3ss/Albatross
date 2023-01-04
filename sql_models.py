@@ -35,4 +35,3 @@ class Post(Base):
 
     def __repr__(self) -> str:
         return f"<Post(title='{self.title}', author='{self.author.name}')>"
-
