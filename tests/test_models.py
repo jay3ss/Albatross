@@ -53,9 +53,10 @@ def in_memory_db():
 
 def test_post_model(in_memory_db):
     # First, let's create a new Post and add it to the session
+    author = in_memory_db.query(Author).first()
     new_post = Post(
         title="My First Post",
-        author="John Doe",
+        author=author,
         markdown_path="/path/to/markdown.md",
         summary="This is a summary of my first post",
     )
@@ -64,7 +65,7 @@ def test_post_model(in_memory_db):
 
     # Now let's retrieve the post from the database and verify that it's the
     # same one we just created
-    retrieved_post = in_memory_db.query(Post).first()
+    retrieved_post = in_memory_db.query(Post).all()[-1]
     assert retrieved_post == new_post
 
     # Let's update the post and commit the changes to the database
@@ -72,7 +73,7 @@ def test_post_model(in_memory_db):
     in_memory_db.commit()
 
     # Now let's retrieve the post again and verify that the changes were saved
-    updated_post = in_memory_db.query(Post).first()
+    updated_post = in_memory_db.query(Post).all()[-1]
     assert updated_post.title == "Updated Title"
 
     # Finally, let's delete the post from the database
@@ -81,5 +82,4 @@ def test_post_model(in_memory_db):
 
     # Verify that the post was deleted by querying for it and ensuring that it
     # doesn't exist
-    deleted_post = in_memory_db.query(Post).first()
-    assert deleted_post is None
+    assert len(in_memory_db.query(Post).all()) == 3
