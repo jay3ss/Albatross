@@ -12,7 +12,7 @@ def generate_introduction(post_contents: str, max_length: int = 150) -> str:
         A brief introduction to the post.
     """
     # Split the post contents into a list of sentences
-    sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s", post_contents)
+    sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\n)\s", post_contents)
 
     # Find the first sentence that is less than or equal to the maximum length
     introduction = ""
@@ -27,7 +27,7 @@ def generate_introduction(post_contents: str, max_length: int = 150) -> str:
 
     # Trim the introduction to the maximum length if necessary
     if len(introduction) > max_length:
-        introduction = introduction[:max_length] + "..."
+        introduction = introduction[:max_length].strip() + "..."
 
     return introduction
 
