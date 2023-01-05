@@ -14,7 +14,8 @@ def create_post(metadata: dict, content: str, base_dir: Path) -> Path:
         The path to the created post file.
     """
     # Create the filename for the post, using the metadata
-    filename = f"{metadata['created_at']}-{metadata['slug']}.md"
+    date = metadata["created_at"]
+    filename = f"{metadata['slug']}-{date.strftime('%Y%m%d')}.md"
 
     # Create the full path for the post file
     file_path = base_dir / "content" / "posts" / filename
