@@ -5,7 +5,7 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
-from albatross.sql_models import Author, Base, Post
+from albatross.database.models import Author, Base, Post
 
 
 @pytest.fixture
