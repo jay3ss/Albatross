@@ -14,7 +14,8 @@ def test_create_post(base_dir):
     post_path = pm.create_post(metadata, content, base_dir)
     # Use the assert function to check that the returned path exists and is a file
     assert post_path.exists() and post_path.is_file()
-    # Use the assert function to check that the metadata and content of the created post file are correct
+    # Use the assert function to check that the metadata and content of the
+    # created post file are correct
     assert post_path.read_text() == content
     assert post_path.metadata == metadata
 
