@@ -30,32 +30,3 @@ def generate_introduction(post_contents: str, max_length: int = 150) -> str:
         introduction = introduction[:max_length].strip() + "..."
 
     return introduction
-
-
-def generate_summary(post_contents: str, max_length: int = 300) -> str:
-    """Generate a brief summary of a post based on its contents.
-
-    Args:
-        post_contents: The contents of the post.
-        max_length: The maximum length of the summary.
-
-    Returns:
-        A brief summary of the post.
-    """
-    # Split the post contents into a list of sentences
-    sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s", post_contents)
-
-    # Initialize the summary
-    summary = ""
-
-    # Add sentences to the summary until the summary is at least 90% of the maximum length
-    for sentence in sentences:
-        summary += sentence + " "
-        if len(summary) >= max_length * 0.9:
-            break
-
-    # Trim the summary to the maximum length if necessary
-    if len(summary) > max_length:
-        summary = summary[:max_length] + "..."
-
-    return summary

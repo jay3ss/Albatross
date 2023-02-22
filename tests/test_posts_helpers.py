@@ -1,4 +1,4 @@
-from albatross.helpers.posts import generate_introduction, generate_summary
+from albatross.helpers.posts import generate_introduction
 
 
 def test_generate_introduction():
