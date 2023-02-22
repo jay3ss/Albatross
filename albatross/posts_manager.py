@@ -1,9 +1,10 @@
 from pathlib import Path
+from tempfile import NamedTemporaryFile, TemporaryFile
 
 
 def create_post(metadata: dict, content: str, base_dir: Path) -> Path:
     """
-    Create a new post file with the given metadata and content.
+    Create a new (temporary) post file with the given metadata and content.
 
     Parameters:
         metadata: A dictionary containing the metadata for the post.
@@ -11,23 +12,15 @@ def create_post(metadata: dict, content: str, base_dir: Path) -> Path:
         base_dir: The base directory where the post file should be created.
 
     Returns:
-        The path to the created post file.
+        The path to the temporary post file
     """
-    # Create the filename for the post, using the metadata
-    date = metadata["created_at"]
-    filename = f"{metadata['slug']}-{date.strftime('%Y%m%d')}.md"
+    tf = NamedTemporaryFile(dir=base_dir, suffix=".md", mode="w", delete=False)
+    tf.write("---\n")
+    for key, value in metadata.items():
+        tf.write(f"{key}: {value}\n")
+    tf.write("---\n")
+    tf.write("\n" + content)
+    file_path = Path(tf.name)
+    tf.close()
 
-    # Create the full path for the post file
-    file_path = base_dir / "content" / "posts" / filename
-
-    # Open the post file in write mode
-    with file_path.open("w") as f:
-        # Write the metadata to the file
-        for key, value in metadata.items():
-            f.write(f"{key}: {value}\n")
-
-        # Write the content to the file
-        f.write("\n" + content)
-
-    # Return the path to the created post file
     return file_path
