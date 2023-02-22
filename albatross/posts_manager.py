@@ -1,9 +1,3 @@
-    """
-    _summary_
-
-    Returns:
-        _type_: _description_
-    """
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryFile
 
