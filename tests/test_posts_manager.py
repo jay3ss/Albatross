@@ -24,7 +24,6 @@ def test_create_post_metadata(tmpdir):
     metadata = {
         "title": "My first post",
         "author": "John Smith",
-        "created_at": "2022-01-01",
         "created_at": datetime.datetime.now(),
         "updated_at": datetime.datetime.now() + datetime.timedelta(days=2),
         "slug": "test-slug",
