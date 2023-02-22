@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 
