@@ -1,5 +1,5 @@
 from pathlib import Path
-from tempfile import NamedTemporaryFile, TemporaryFile
+from tempfile import NamedTemporaryFile
 
 
 def create_post(metadata: dict, content: str, base_dir: Path) -> Path:
