@@ -4,8 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from .config import config
-from .sql_models import Base
+from albatross.config import config
+from albatross.database.models import Base
 
 
 engine = create_engine(config.database_uri)
