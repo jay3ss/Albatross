@@ -1,4 +1,5 @@
 FastAPI
+fastapi-users[sqlalchemy]
 Jinja2
 Markdown
 Pelican
