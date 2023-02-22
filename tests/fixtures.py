@@ -1,17 +1,8 @@
-import pathlib
-import tempfile
-
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
 from albatross.database.models import Author, Base, Post
-
-
-@pytest.fixture
-def base_dir():
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield pathlib.Path(temp_dir)
 
 
 @pytest.fixture
