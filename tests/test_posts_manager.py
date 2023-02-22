@@ -3,12 +3,11 @@ import datetime
 import albatross.posts_manager as pm
 
 
-
 def test_create_post(tmpdir):
     # Create a dictionary with the metadata for the post
-    metadata = {'title': 'Test post', 'author': 'Test Author'}
+    metadata = {"title": "Test post", "author": "Test Author"}
     # Create a string with the content for the post
-    content = 'This is a test post'
+    content = "This is a test post"
     # Call the create_post function and store the result in a variable
     post_file = pm.create_post(metadata, content, tmpdir)
     # Use the assert function to check that the returned path exists and is a file
@@ -21,7 +20,6 @@ def test_create_post(tmpdir):
     assert post_file.read_text() == post_content
 
 
-
 def test_create_post_metadata(tmpdir):
     metadata = {
         "title": "My first post",
@@ -31,7 +29,7 @@ def test_create_post_metadata(tmpdir):
         "updated_at": datetime.datetime.now() + datetime.timedelta(days=2),
         "slug": "test-slug",
         "summary": "A summary of my first post",
-        "image_url": "https://example.com/image.jpg"
+        "image_url": "https://example.com/image.jpg",
     }
     content = "This is the content of my first post"
 
