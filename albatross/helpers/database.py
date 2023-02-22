@@ -14,7 +14,11 @@ engine = create_engine(config.database_uri)
 @contextmanager
 def get_session(engine: Engine = None) -> Session:
     """
-    Yields a database session and handles any issues with committing or rolling back changes.
+    Yields a database session and handles any issues with committing or rolling
+    back changes.
+
+    Parameters:
+    engine (Engine): the database engine
 
     Yields:
         The database session.
