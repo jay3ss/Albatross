@@ -1,11 +1,18 @@
 from datetime import datetime
 
+from fastapi_users.db import SQLAlchemyUserDatabase, SQLAlchemyBaseUserTable
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
+from albatross.helpers.database import get_session
+
 
 Base = declarative_base()
+
+
+class User(Base, SQLAlchemyBaseUserTable):
+    pass
 
 
 class Author(Base):
@@ -36,3 +43,6 @@ class Post(Base):
 
     def __repr__(self) -> str:
         return f"<Post(title='{self.title}', author='{self.author.name}')>"
+
+
+user_db = SQLAlchemyUserDatabase(get_session, User)

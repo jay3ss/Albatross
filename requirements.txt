@@ -1,3 +1,4 @@
+aiosqlite
 FastAPI
 fastapi-users[sqlalchemy]
 Jinja2
