@@ -1,6 +1,6 @@
 import datetime
 
-import albatross.posts_manager as pm
+import albatross.managers.posts as pm
 
 
 def test_create_post(tmpdir):
