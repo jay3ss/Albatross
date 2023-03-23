@@ -5,7 +5,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 
 from albatross.settings import config
-from albatross.core.models.models import Base
+from albatross.core.models import Base
 
 
 engine = create_engine(config.database_uri)
@@ -45,7 +45,7 @@ def create_database(engine: Engine):
     Parameters:
         engine (sqlalchemy.engine.Engine): The database engine to use.
     """
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
 
 
 def get_engine() -> Engine:
