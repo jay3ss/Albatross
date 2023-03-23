@@ -1,4 +1,4 @@
-from .schemas import Author, Base, Post
+from .schemas import Author, Base, Article
 
 
-__all__ = ["Author", "Base", "Post"]
+__all__ = ["Author", "Base", "Article"]

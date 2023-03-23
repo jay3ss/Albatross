@@ -7,7 +7,7 @@ import yaml
 
 settings = read_settings()
 content = """
-Hello and welcome to my blog! This is my first post, and I'm excited to share my
+Hello and welcome to my blog! This is my first article, and I'm excited to share my
 thoughts and experiences with all of you. I hope you enjoy reading my blog as
 much as I enjoy writing it.
 
@@ -18,7 +18,7 @@ Thank you for stopping by!
 with tempfile.TemporaryDirectory(prefix="content", dir=".") as td:
     for i in range(1, 11):
         metadata = {
-            "title": f"My Post #{i}",
+            "title": f"My Article #{i}",
             "author": "John Doe",
             "date": "2022-01-01",
             "tags": [f"tag{i}", f"tag{i+1}"],

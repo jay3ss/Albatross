@@ -5,9 +5,9 @@ from fastapi.responses import RedirectResponse
 app = FastAPI()
 
 
-@app.post("/posts/")
+@app.post("/articles/")
 async def create_post(request: Request, response: Response):
-    # create the post here
+    # create the article here
 
-    response = RedirectResponse(url="/posts/")
+    response = RedirectResponse(url="/articles/")
     return response

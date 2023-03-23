@@ -2,7 +2,7 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
-from albatross.core.models import Author, Base, Post
+from albatross.core.models import Author, Base, Article
 
 
 @pytest.fixture
@@ -21,23 +21,23 @@ def in_memory_prepopulated_db():
     session.add(author2)
     session.commit()
 
-    post1 = Post(
-        title="Post 1",
+    post1 = Article(
+        title="Article 1",
         author=author1,
         markdown_path="path/to/post1.md",
-        summary="This is a summary of post 1",
+        summary="This is a summary of article 1",
     )
-    post2 = Post(
-        title="Post 2",
+    post2 = Article(
+        title="Article 2",
         author=author1,
         markdown_path="path/to/post2.md",
-        summary="This is a summary of post 2",
+        summary="This is a summary of article 2",
     )
-    post3 = Post(
-        title="Post 3",
+    post3 = Article(
+        title="Article 3",
         author=author2,
         markdown_path="path/to/post3.md",
-        summary="This is a summary of post 3",
+        summary="This is a summary of article 3",
     )
     session.add(post1)
     session.add(post2)

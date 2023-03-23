@@ -6,9 +6,9 @@ This is a CMS for the [Pelican](https://blog.getpelican.com/) static site genera
 
 ## Features
 
-- Create, read, update, and delete (CRUD) posts
-- Automatic summary generation for posts
-- Optional image for posts
+- Create, read, update, and delete (CRUD) articles
+- Automatic summary generation for articles
+- Optional image for articles
 - Author CRUD
 
 ## Requirements

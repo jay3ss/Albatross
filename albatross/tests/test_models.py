@@ -2,7 +2,7 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
-from albatross.core.models import Author, Base, Post
+from albatross.core.models import Author, Base, Article
 
 
 @pytest.fixture
@@ -21,23 +21,23 @@ def in_memory_prepopulated_db():
     session.add(author2)
     session.commit()
 
-    post1 = Post(
-        title="Post 1",
+    post1 = Article(
+        title="Article 1",
         author=author1,
         markdown_path="path/to/post1.md",
-        summary="This is a summary of post 1",
+        summary="This is a summary of article 1",
     )
-    post2 = Post(
-        title="Post 2",
+    post2 = Article(
+        title="Article 2",
         author=author1,
         markdown_path="path/to/post2.md",
-        summary="This is a summary of post 2",
+        summary="This is a summary of article 2",
     )
-    post3 = Post(
-        title="Post 3",
+    post3 = Article(
+        title="Article 3",
         author=author2,
         markdown_path="path/to/post3.md",
-        summary="This is a summary of post 3",
+        summary="This is a summary of article 3",
     )
     session.add(post1)
     session.add(post2)
@@ -85,37 +85,37 @@ def test_author_model(in_memory_db):
 
 
 def test_post_model(in_memory_db):
-    # First, let's create a new Post and add it to the session
+    # First, let's create a new Article and add it to the session
     author = Author(name="Author 1")
-    new_post = Post(
-        title="My First Post",
+    new_post = Article(
+        title="My First Article",
         author=author,
         markdown_path="/path/to/markdown.md",
-        summary="This is a summary of my first post",
+        summary="This is a summary of my first article",
     )
     in_memory_db.add(new_post)
     in_memory_db.commit()
 
-    # Now let's retrieve the post from the database and verify that it's the
+    # Now let's retrieve the article from the database and verify that it's the
     # same one we just created
-    retrieved_post = in_memory_db.query(Post).first()
+    retrieved_post = in_memory_db.query(Article).first()
     assert retrieved_post == new_post
 
-    # Let's update the post and commit the changes to the database
+    # Let's update the article and commit the changes to the database
     retrieved_post.title = "Updated Title"
     in_memory_db.commit()
 
-    # Now let's retrieve the post again and verify that the changes were saved
-    updated_post = in_memory_db.query(Post).first()
+    # Now let's retrieve the article again and verify that the changes were saved
+    updated_post = in_memory_db.query(Article).first()
     assert updated_post.title == "Updated Title"
 
-    # Finally, let's delete the post from the database
+    # Finally, let's delete the article from the database
     in_memory_db.delete(updated_post)
     in_memory_db.commit()
 
-    # Verify that the post was deleted by querying for it and ensuring that it
+    # Verify that the article was deleted by querying for it and ensuring that it
     # doesn't exist
-    deleted_post = in_memory_db.query(Post).first()
+    deleted_post = in_memory_db.query(Article).first()
     assert deleted_post is None
 
 
@@ -131,12 +131,12 @@ def test_author_model_with_prepopulated_data(in_memory_prepopulated_db):
     first_author = authors[0]
     assert first_author.name == "Author 1"
 
-    # Verify that the first author has 2 posts
-    assert len(first_author.posts) == 2
+    # Verify that the first author has 2 articles
+    assert len(first_author.articles) == 2
 
     # Verify that the second author's name is correct
     second_author = authors[1]
     assert second_author.name == "Author 2"
 
-    # Verify that the second author has 1 posts
-    assert len(second_author.posts) == 1
+    # Verify that the second author has 1 articles
+    assert len(second_author.articles) == 1

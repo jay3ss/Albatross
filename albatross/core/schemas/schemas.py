@@ -17,7 +17,7 @@ class Author(BaseModel):
     )
 
 
-class Post(BaseModel):
+class Article(BaseModel):
     id: int
     title: str
     author: str

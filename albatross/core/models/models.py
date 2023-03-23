@@ -14,14 +14,14 @@ class Author(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    posts = relationship("Post", back_populates="author")
+    articles = relationship("Article", back_populates="author")
 
     def __repr__(self) -> str:
         return f"<Author(name={self.name})>"
 
 
-class Post(Base):
-    __tablename__ = "posts"
+class Article(Base):
+    __tablename__ = "articles"
 
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
@@ -34,4 +34,4 @@ class Post(Base):
     author = relationship("Author")
 
     def __repr__(self) -> str:
-        return f"<Post(title='{self.title}', author='{self.author.name}')>"
+        return f"<Article(title='{self.title}', author='{self.author.name}')>"

@@ -2,16 +2,16 @@ import re
 
 
 def generate_introduction(post_contents: str, max_length: int = 150) -> str:
-    """Generate a brief introduction to a post based on its contents.
+    """Generate a brief introduction to a article based on its contents.
 
     Args:
-        post_contents: The contents of the post.
+        post_contents: The contents of the article.
         max_length: The maximum length of the introduction.
 
     Returns:
-        A brief introduction to the post.
+        A brief introduction to the article.
     """
-    # Split the post contents into a list of sentences
+    # Split the article contents into a list of sentences
     pattern = r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\n)\s"
     sentences = re.split(pattern, post_contents)
 
