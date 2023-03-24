@@ -23,7 +23,7 @@ with tempfile.TemporaryDirectory(prefix="content", dir=".") as td:
             "date": "2022-01-01",
             "tags": [f"tag{i}", f"tag{i+1}"],
         }
-        text = yaml.dump(metadata, sort_keys=False) + content
+        text = yaml.safe_dump(metadata, sort_keys=False) + content
         temp_fd, temp_path = tempfile.mkstemp(
             suffix=".md",
             prefix="albatross",
