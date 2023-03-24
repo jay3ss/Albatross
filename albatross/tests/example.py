@@ -2,6 +2,7 @@ import os
 import tempfile
 
 from pelican import Pelican, read_settings
+import yaml
 
 
 settings = read_settings()
