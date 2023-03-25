@@ -3,12 +3,13 @@ from albatross.helpers.articles import generate_introduction
 
 def test_generate_introduction():
     # Test with minimum number of characters
-    content = "This is the content of the post and it is 50 chars"
+    content = "This is the content of the article and it is 50 chars"
     intro = generate_introduction(content, 50)
+    content = content[:50] + "..."
     assert intro == content
 
     # Test with more than minimum number of characters
-    intro = generate_introduction("This is the content of the post", 5)
+    intro = generate_introduction("This is the content of the article", 5)
     assert intro == "This..."
 
     # Test with content that is shorter than the minimum number of characters
