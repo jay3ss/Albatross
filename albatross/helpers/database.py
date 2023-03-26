@@ -62,11 +62,11 @@ def get_article_by_id(article_id: int, db: Session = get_session()) -> Article:
     Get an article from the database by its ID
 
     Args:
-        article_id (int): _description_
-        db (Session, optional): _description_. Defaults to get_session().
+        article_id (int): article's ID
+        db (Session, optional): database session. Defaults to get_session().
 
     Returns:
-        Article: _description_
+        Article: the article with the given ID
     """
     article = db.query(Article).filter(Article.id == article_id).first()
     return article
