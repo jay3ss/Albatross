@@ -16,3 +16,11 @@ def test_get_articles(in_memory_prepopulated_db):
     assert len(articles) == 3
     for i, article in enumerate(articles, start=1):
         assert article.title == f"Article {i}"
+
+
+def test_get_articles_limited(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    articles = db.get_articles(limit=2, db=temp_db)
+    assert len(articles) == 2
+    for i, article in enumerate(articles, start=1):
+        assert article.title == f"Article {i}"
