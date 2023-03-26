@@ -74,4 +74,21 @@ def get_article_by_id(article_id: int, db: Session = None) -> Article:
     return article
 
 
+def get_articles(limit: int = None, db: Session = None) -> Article:
+    """
+    _summary_
+
+    Args:
+        limit (int, optional): _description_. Defaults to None.
+        db (Session, optional): _description_. Defaults to None.
+
+    Returns:
+        Article: _description_
+    """
+    if limit:
+        return db.query(Article).limit(limit).all()
+    else:
+        return db.query(Article).all()
+
+
 create_database(get_engine())

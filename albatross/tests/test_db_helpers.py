@@ -24,3 +24,19 @@ def test_get_articles_limited_to_less_than_total_num_of_articles(in_memory_prepo
     assert len(articles) == 2
     for i, article in enumerate(articles, start=1):
         assert article.title == f"Article {i}"
+
+
+def test_get_articles_limited_to_same_num_of_articles(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    articles = db.get_articles(limit=3, db=temp_db)
+    assert len(articles) == 3
+    for i, article in enumerate(articles, start=1):
+        assert article.title == f"Article {i}"
+
+
+def test_get_articles_limited_to_more_than_total_num_of_articles(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    articles = db.get_articles(limit=4, db=temp_db)
+    assert len(articles) == 3
+    for i, article in enumerate(articles, start=1):
+        assert article.title == f"Article {i}"
