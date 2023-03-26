@@ -8,3 +8,11 @@ def test_get_article(in_memory_prepopulated_db):
     assert article.id == 1
     assert article.title == "Article 1"
     assert article.author.name == "Author 1"
+
+
+def test_get_articles(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    articles = db.get_articles(db=temp_db)
+    assert len(articles) == 3
+    for i, article in enumerate(articles, start=1):
+        assert article.title == f"Article {i}"
