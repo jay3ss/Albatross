@@ -57,17 +57,19 @@ def get_engine() -> Engine:
     return create_engine(config.database_uri)
 
 
-def get_article_by_id(article_id: int, db: Session = get_session()) -> Article:
+def get_article_by_id(article_id: int, db: Session = None) -> Article:
     """
     Get an article from the database by its ID
 
     Args:
         article_id (int): article's ID
-        db (Session, optional): database session. Defaults to get_session().
+        db (Session, optional): database session. Defaults to None.
 
     Returns:
         Article: the article with the given ID
     """
+    if not db:
+        db = get_session()
     article = db.query(Article).filter(Article.id == article_id).first()
     return article
 
