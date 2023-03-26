@@ -5,7 +5,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 
 from albatross.settings import config
-from albatross.core.models import Base
+from albatross.core.models import Article, Base
 
 
 engine = create_engine(config.database_uri)
@@ -55,6 +55,21 @@ def get_engine() -> Engine:
         Engine: The SQLAlchemy engine instance.
     """
     return create_engine(config.database_uri)
+
+
+def get_article_by_id(article_id: int, db: Session = get_session()) -> Article:
+    """
+    Get an article from the database by its ID
+
+    Args:
+        article_id (int): _description_
+        db (Session, optional): _description_. Defaults to get_session().
+
+    Returns:
+        Article: _description_
+    """
+    article = db.query(Article).filter(Article.id == article_id).first()
+    return article
 
 
 create_database(get_engine())
