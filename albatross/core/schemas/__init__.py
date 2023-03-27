@@ -1,4 +1,4 @@
-from .schemas import Author, Base, Article
+from .schemas import Article, ArticleBase, ArticleCreate, ArticleUpdate
 
 
-__all__ = ["Author", "Base", "Article"]
+__all__ = ["Article", "ArticleBase", "ArticleCreate", "ArticleUpdate"]
