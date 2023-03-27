@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from albatross.settings import config
 from albatross.core.models import Article, Base
+from albatross.core.schemas import ArticleCreate
 
 
 engine = create_engine(config.database_uri)
@@ -103,6 +104,29 @@ def delete_article(article_id: int, db: Session = None) -> None:
         db = get_session()
     article = get_article_by_id(article_id=article_id, db=db)
     db.delete(article)
+
+
+def create_article(article: ArticleCreate, db: Session = None):
+    """
+    Creates a new article
+
+    Args:
+        article (ArticleCreate): the article Pydantic schema object
+        db (Session, optional): database session. Defaults to None.
+    """
+    if not db:
+        db = get_session()
+
+    new_article = Article(
+        title=article.title,
+        author_id=article.author_id,
+        content=article.content,
+        summary=article.summary,
+        image_url=article.image_url
+    )
+    db.add(new_article)
+    db.commit()
+    db.refresh(new_article)
 
 
 create_database(get_engine())
