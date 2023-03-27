@@ -1,5 +1,36 @@
 from datetime import datetime
+from typing import Optional
+
 from pydantic import BaseModel, Field
+
+
+class ArticleBase(BaseModel):
+    id: int
+    title: str
+    author: str
+    content: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    summary: Optional[str]
+    image_url: Optional[str]
+
+
+class ArticleCreate(ArticleBase):
+    author_id: int
+
+
+class ArticleUpdate(ArticleBase):
+    pass
+
+
+class Article(ArticleBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    author_id: int
+
+    class Config:
+        orm_mode = True
 
 
 class Author(BaseModel):
@@ -16,13 +47,5 @@ class Author(BaseModel):
         description="The date and time when the author was last updated",
     )
 
-
-class Article(BaseModel):
-    id: int
-    title: str
-    author: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    markdown_path: str
-    summary: str
-    image_url: str
+    class Config:
+        orm_mode = True
