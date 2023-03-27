@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -23,3 +24,21 @@ class ArticleUpdate(ArticleBase):
 
 class Article(ArticleBase):
     author_id: int
+
+
+class AuthorBase(BaseModel):
+    name: str
+
+
+class AuthorCreate(AuthorBase):
+    pass
+
+
+class AuthorUpdate(AuthorBase):
+    pass
+
+
+class Author(AuthorBase):
+    id: int
+    created_at: Optional[datetime.datetime]
+    updated_at: Optional[datetime.datetime]
