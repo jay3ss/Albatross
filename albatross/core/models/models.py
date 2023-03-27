@@ -25,10 +25,10 @@ class Article(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
-    summary = Column(Text, nullable=False)
+    summary = Column(Text)
+    content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    markdown_path = Column(String, nullable=False)
     image_url = Column(String)
     author_id = Column(Integer, ForeignKey("authors.id"), nullable=False)
     author = relationship("Author")
