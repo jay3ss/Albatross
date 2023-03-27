@@ -2,12 +2,11 @@ from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
-from albatross.settings import config
-from albatross.core.models import Article, Base
+from albatross.core.models import Article, Author, Base
 from albatross.core.schemas import ArticleCreate, ArticleUpdate
-
+from albatross.settings import config
 
 engine = create_engine(config.database_uri)
 
@@ -147,6 +146,24 @@ def update_article(article: ArticleUpdate, db: Session = None):
     db.commit()
     db.refresh(db_article)
     return db_article
+
+
+def get_author_by_id(author_id: int, db: Session = None) -> Author:
+    """
+    Get an author from the database by its ID
+
+    Args:
+        author_id (int): author's ID
+        db (Session, optional): database session. Defaults to None.
+
+    Returns:
+        Author: the author with the given ID
+    """
+    if not db:
+        db = get_session()
+
+    author = db.query(Author).filter_by(id=author_id).first()
+    return author
 
 
 create_database(get_engine())
