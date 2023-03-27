@@ -18,7 +18,7 @@ class ArticleCreate(ArticleBase):
 
 
 class ArticleUpdate(ArticleBase):
-    pass
+    id: int
 
 
 class Article(ArticleBase):
