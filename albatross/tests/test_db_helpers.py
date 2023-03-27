@@ -1,5 +1,5 @@
 from albatross.core.models import Author
-from albatross.core.schemas import ArticleCreate
+from albatross.core.schemas import ArticleCreate, ArticleUpdate
 
 from albatross.helpers import database as db
 from albatross.tests.fixtures import in_memory_prepopulated_db
@@ -73,3 +73,57 @@ def test_create_article(in_memory_prepopulated_db):
     db.create_article(article=new_article, db=temp_db)
     articles_again = db.get_articles(db=temp_db)
     assert len(articles_again) == len(articles) + 1
+
+
+def test_update_article_title(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    article = db.get_article_by_id(article_id=1, db=temp_db)
+    new_title = "I've just changed the title".title()
+    new_article = ArticleUpdate(
+        title=new_title,
+        author_id=article.author_id,
+        content=article.content,
+        id=article.id
+    )
+    db.update_article(article=new_article, db=temp_db)
+    updated_article = db.get_article_by_id(article_id=article.id, db=temp_db)
+    assert updated_article.title == new_title
+    assert updated_article.content == article.content
+    assert updated_article.author_id == article.author_id
+    assert updated_article.id == article.id
+
+
+def test_update_article_content(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    article = db.get_article_by_id(article_id=1, db=temp_db)
+    new_content = "I've just changed the content of the article"
+    new_article = ArticleUpdate(
+        title=article.title,
+        author_id=article.author_id,
+        content=new_content,
+        id=article.id
+    )
+    db.update_article(article=new_article, db=temp_db)
+    updated_article = db.get_article_by_id(article_id=article.id, db=temp_db)
+    assert updated_article.title == article.title
+    assert updated_article.content == new_content
+    assert updated_article.author_id == article.author_id
+    assert updated_article.id == article.id
+
+
+def test_update_article_author(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    article = db.get_article_by_id(article_id=1, db=temp_db)
+    new_author_id = 2
+    new_article = ArticleUpdate(
+        title=article.title,
+        author_id=new_author_id,
+        content=article.content,
+        id=article.id
+    )
+    db.update_article(article=new_article, db=temp_db)
+    updated_article = db.get_article_by_id(article_id=article.id, db=temp_db)
+    assert updated_article.title == article.title
+    assert updated_article.content == article.content
+    assert updated_article.author_id == new_author_id
+    assert updated_article.id == article.id
