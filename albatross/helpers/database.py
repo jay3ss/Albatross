@@ -74,16 +74,16 @@ def get_article_by_id(article_id: int, db: Session = None) -> Article:
     return article
 
 
-def get_articles(limit: int = None, db: Session = None) -> Article:
+def get_articles(limit: int = None, db: Session = None) -> list:
     """
-    _summary_
+    Gets all articles
 
     Args:
-        limit (int, optional): _description_. Defaults to None.
-        db (Session, optional): _description_. Defaults to None.
+        limit (int, optional): max number of Articles. Defaults to None.
+        db (Session, optional): database session. Defaults to None.
 
     Returns:
-        Article: _description_
+        list: list of Articles
     """
     if limit:
         return db.query(Article).limit(limit).all()
@@ -105,7 +105,7 @@ def delete_article(article_id: int, db: Session = None) -> None:
     db.delete(article)
 
 
-def create_article(article: ArticleCreate, db: Session = None):
+def create_article(article: ArticleCreate, db: Session = None) -> None:
     """
     Creates a new article
 
@@ -128,13 +128,16 @@ def create_article(article: ArticleCreate, db: Session = None):
     db.refresh(new_article)
 
 
-def update_article(article: ArticleUpdate, db: Session = None):
+def update_article(article: ArticleUpdate, db: Session = None) -> Article:
     """
     Updates an article
 
     Args:
         article (ArticleCreate): the article Pydantic schema object
         db (Session, optional): database session. Defaults to None.
+
+    Returns:
+        Article: the updated article
     """
     if not db:
         db = get_session()
