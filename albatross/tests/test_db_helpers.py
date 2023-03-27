@@ -127,3 +127,15 @@ def test_update_article_author(in_memory_prepopulated_db):
     assert updated_article.content == article.content
     assert updated_article.author_id == new_author_id
     assert updated_article.id == article.id
+
+
+def test_get_author_by_id(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    author = db.get_author_by_id(author_id=1, db=temp_db)
+    assert author.id == 1
+    assert author.name == "Author 1"
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main(["-s", __file__])
