@@ -91,4 +91,18 @@ def get_articles(limit: int = None, db: Session = None) -> Article:
         return db.query(Article).all()
 
 
+def delete_article(article_id: int, db: Session = None) -> None:
+    """
+    Deletes the article with the given ID
+
+    Args:
+        article_id (int): article's ID
+        db (Session, optional): database session. Defaults to None.
+    """
+    if not db:
+        db = get_session()
+    article = get_article_by_id(article_id=article_id, db=db)
+    db.delete(article)
+
+
 create_database(get_engine())
