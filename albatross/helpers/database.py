@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from albatross.settings import config
 from albatross.core.models import Article, Base
-from albatross.core.schemas import ArticleCreate
+from albatross.core.schemas import ArticleCreate, ArticleUpdate
 
 
 engine = create_engine(config.database_uri)
@@ -127,6 +127,26 @@ def create_article(article: ArticleCreate, db: Session = None):
     db.add(new_article)
     db.commit()
     db.refresh(new_article)
+
+
+def update_article(article: ArticleUpdate, db: Session = None):
+    """
+    Updates an article
+
+    Args:
+        article (ArticleCreate): the article Pydantic schema object
+        db (Session, optional): database session. Defaults to None.
+    """
+    if not db:
+        db = get_session()
+
+    db_article = get_article_by_id(article_id=article.id, db=db)
+    for field, value in article:
+        setattr(db_article, field, value)
+
+    db.commit()
+    db.refresh(db_article)
+    return db_article
 
 
 create_database(get_engine())
