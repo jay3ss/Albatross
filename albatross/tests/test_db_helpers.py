@@ -1,3 +1,6 @@
+from albatross.core.models import Author
+from albatross.core.schemas import ArticleCreate
+
 from albatross.helpers import database as db
 from albatross.tests.fixtures import in_memory_prepopulated_db
 
@@ -56,3 +59,17 @@ def test_delete_article(in_memory_prepopulated_db):
     assert articles[0].id == 2
     assert articles[1].id == 3
     assert db.get_article_by_id(article_id=1, db=temp_db) == None
+
+
+def test_create_article(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    articles = db.get_articles(db=temp_db)
+    author = temp_db.query(Author).first()
+    new_article = ArticleCreate(
+        title="New Article",
+        content="This is an article",
+        author_id=author.id
+    )
+    db.create_article(article=new_article, db=temp_db)
+    articles_again = db.get_articles(db=temp_db)
+    assert len(articles_again) == len(articles) + 1
