@@ -40,3 +40,13 @@ def test_get_articles_limited_to_more_than_total_num_of_articles(in_memory_prepo
     assert len(articles) == 3
     for i, article in enumerate(articles, start=1):
         assert article.title == f"Article {i}"
+
+
+def test_delete_article(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    db.delete_article(article_id=1, db=temp_db)
+    articles = db.get_articles(db=temp_db)
+    assert len(articles) == 2
+    assert articles[0].id == 2
+    assert articles[1].id == 3
+    assert db.get_article_by_id(article_id=1, db=temp_db) == None
