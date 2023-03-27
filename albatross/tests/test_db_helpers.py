@@ -10,6 +10,12 @@ def test_get_article_by_id(in_memory_prepopulated_db):
     assert article.author.name == "Author 1"
 
 
+def test_get_article_by_id_that_does_not_exist(in_memory_prepopulated_db):
+    temp_db = temp_db = in_memory_prepopulated_db
+    article = db.get_article_by_id(article_id=1000, db=temp_db)
+    assert article == None
+
+
 def test_get_articles(in_memory_prepopulated_db):
     temp_db = in_memory_prepopulated_db
     articles = db.get_articles(db=temp_db)
