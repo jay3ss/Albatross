@@ -24,20 +24,17 @@ def in_memory_prepopulated_db():
     post1 = Article(
         title="Article 1",
         author=author1,
-        markdown_path="path/to/post1.md",
-        summary="This is a summary of article 1",
+        content="This is a content of article 1",
     )
     post2 = Article(
         title="Article 2",
         author=author1,
-        markdown_path="path/to/post2.md",
-        summary="This is a summary of article 2",
+        content="This is a content of article 2",
     )
     post3 = Article(
         title="Article 3",
         author=author2,
-        markdown_path="path/to/post3.md",
-        summary="This is a summary of article 3",
+        content="This is a content of article 3",
     )
     session.add(post1)
     session.add(post2)
@@ -90,8 +87,7 @@ def test_post_model(in_memory_db):
     new_post = Article(
         title="My First Article",
         author=author,
-        markdown_path="/path/to/markdown.md",
-        summary="This is a summary of my first article",
+        content="This is a content of my first article",
     )
     in_memory_db.add(new_post)
     in_memory_db.commit()
