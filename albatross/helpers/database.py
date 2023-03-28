@@ -243,7 +243,7 @@ def delete_author(author_id: int, db: Session = None) -> bool:
         bool: Returns True if the author existed (and was successfully deleted),
         False otherwise
     """
-    author = db.query(Author).filter_by(id=author_id).first()
+    author = get_author_by_id(author_id=author_id, db=db)
     if author:
         db.delete(author)
         db.commit()
