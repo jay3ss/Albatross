@@ -170,6 +170,23 @@ def get_author_by_id(author_id: int, db: Session = None) -> Author:
     return author
 
 
+def get_authors(limit: int = None, db: Session = None) -> list:
+    """
+    Gets all authors
+
+    Args:
+        limit (int), optional): max number of authors. Defaults to None.
+        db (Session, optional): database session. Defaults to None.
+
+    Returns:
+        list: the authors
+    """
+    if limit:
+        return db.query(Author).limit(limit).all()
+
+    return db.query(Author).all()
+
+
 def create_author(author: AuthorCreate, db: Session = None) -> Author:
     """
     Get an author from the database by its ID
