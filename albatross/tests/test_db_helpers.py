@@ -150,6 +150,6 @@ def test_update_author_name(in_memory_prepopulated_db):
     author_id = 1
     author = db.get_author_by_id(author_id=author_id, db=temp_db)
     new_name = "My New Name"
-    updated_author = db.update_author(AuthorUpdate(name=new_name, id=author.id))
+    updated_author = db.update_author(AuthorUpdate(name=new_name, id=author.id), db=temp_db)
     assert updated_author.name == new_name
     assert updated_author.id == author_id
