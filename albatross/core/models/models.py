@@ -14,7 +14,9 @@ class Author(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    articles = relationship("Article", back_populates="author")
+    articles = relationship(
+        "Article", back_populates="author", cascade="all, delete-orphan"
+        )
 
     def __repr__(self) -> str:
         return f"<Author(name={self.name})>"
@@ -30,7 +32,7 @@ class Article(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     image_url = Column(String)
-    author_id = Column(Integer, ForeignKey("authors.id"), nullable=False)
+    author_id = Column(Integer, ForeignKey("authors.id"), nullable=True)
     author = relationship("Author")
 
     def __repr__(self) -> str:
