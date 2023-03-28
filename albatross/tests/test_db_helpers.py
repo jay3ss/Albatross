@@ -1,3 +1,4 @@
+"""TODO: write tests for every logical branch in the functions"""
 from albatross.core.models import Author
 from albatross.core.schemas import ArticleCreate, ArticleUpdate, AuthorCreate, AuthorUpdate
 
