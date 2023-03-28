@@ -213,4 +213,26 @@ def update_author(author: AuthorUpdate, db: Session = None) -> Author:
     return db_author
 
 
+def delete_author(author_id: int, db: Session = None) -> bool:
+    """
+    Deletes an author. Returns True if the author existed (and was successfully
+    deleted), False otherwise
+
+    Args:
+        author_id (int): the ID of the author to be deleted
+        db (Session, optional): database session. Defaults to None.
+
+    Returns:
+        bool: Returns True if the author existed (and was successfully deleted),
+        False otherwise
+    """
+    author = db.query(Author).filter_by(id=author_id).first()
+    if author:
+        db.delete(author)
+        db.commit()
+        return True
+
+    return False
+
+
 create_database(get_engine())
