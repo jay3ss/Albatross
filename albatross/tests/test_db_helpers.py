@@ -138,10 +138,10 @@ def test_get_author_by_id(in_memory_prepopulated_db):
 
 def test_create_author(in_memory_db):
     temp_db = in_memory_db
-    authors = temp_db.query(Author).all()
+    authors = db.get_authors(db=temp_db)
     new_author= AuthorCreate(name="Author 1")
     db.create_author(author=new_author, db=temp_db)
-    authors_again = temp_db.query(Author).all()
+    authors_again = db.get_authors(db=temp_db)
     assert len(authors_again) == len(authors) + 1
 
 
@@ -158,9 +158,9 @@ def test_update_author_name(in_memory_prepopulated_db):
 def test_deleting_author(in_memory_prepopulated_db):
     temp_db = in_memory_prepopulated_db
     author_id = 1
-    authors = temp_db.query(Author).all()
+    authors = db.get_authors(db=temp_db)
     was_deleted = db.delete_author(author_id=author_id, db=temp_db)
-    authors_again = temp_db.query(Author).all()
+    authors_again = db.get_authors(db=temp_db)
     assert was_deleted
     assert len(authors) -1 == len(authors_again)
 
@@ -168,9 +168,9 @@ def test_deleting_author(in_memory_prepopulated_db):
 def test_attempting_to_delete_author_that_dne(in_memory_prepopulated_db):
     temp_db = in_memory_prepopulated_db
     author_id = 1000000
-    authors = temp_db.query(Author).all()
+    authors = db.get_authors(db=temp_db)
     was_deleted = db.delete_author(author_id=author_id, db=temp_db)
-    authors_again = temp_db.query(Author).all()
+    authors_again = db.get_authors(db=temp_db)
     assert not was_deleted
     assert len(authors) == len(authors_again)
 
