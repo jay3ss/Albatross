@@ -159,6 +159,17 @@ def test_deleting_author(in_memory_prepopulated_db):
     temp_db = in_memory_prepopulated_db
     author_id = 1
     authors = temp_db.query(Author).all()
-    db.delete_author(author_id=author_id, db=temp_db)
+    was_deleted = db.delete_author(author_id=author_id, db=temp_db)
     authors_again = temp_db.query(Author).all()
+    assert was_deleted
     assert len(authors) -1 == len(authors_again)
+
+
+def test_attempting_to_delete_author_that_dne(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    author_id = 1000000
+    authors = temp_db.query(Author).all()
+    was_deleted = db.delete_author(author_id=author_id, db=temp_db)
+    authors_again = temp_db.query(Author).all()
+    assert not was_deleted
+    assert len(authors) == len(authors_again)
