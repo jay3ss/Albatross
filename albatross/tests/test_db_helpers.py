@@ -173,3 +173,23 @@ def test_attempting_to_delete_author_that_dne(in_memory_prepopulated_db):
     authors_again = temp_db.query(Author).all()
     assert not was_deleted
     assert len(authors) == len(authors_again)
+
+
+def test_get_authors(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    authors = db.get_authors(db=temp_db)
+    assert len(authors) == 2
+
+
+def test_get_authors_limited_less_than_exist(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    limit = 1
+    authors = db.get_authors(limit=limit, db=temp_db)
+    assert len(authors) == limit
+
+
+def test_get_authors_limited_more_than_exist(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    limit = 1000
+    authors = db.get_authors(limit=limit, db=temp_db)
+    assert len(authors) == 2
