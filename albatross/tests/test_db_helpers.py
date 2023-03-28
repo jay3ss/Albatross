@@ -153,3 +153,12 @@ def test_update_author_name(in_memory_prepopulated_db):
     updated_author = db.update_author(AuthorUpdate(name=new_name, id=author.id), db=temp_db)
     assert updated_author.name == new_name
     assert updated_author.id == author_id
+
+
+def test_deleting_author(in_memory_prepopulated_db):
+    temp_db = in_memory_prepopulated_db
+    author_id = 1
+    authors = temp_db.query(Author).all()
+    db.delete_author(author_id=author_id, db=temp_db)
+    authors_again = temp_db.query(Author).all()
+    assert len(authors) -1 == len(authors_again)
