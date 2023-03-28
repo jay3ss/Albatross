@@ -21,7 +21,7 @@ format:
 
 .PHONY: test
 test:
-	pytest -v
+	pytest
 
 .PHONY: serve
 serve:
