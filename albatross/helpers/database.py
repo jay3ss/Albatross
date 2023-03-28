@@ -5,7 +5,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from albatross.core.models import Article, Author, Base
-from albatross.core.schemas import ArticleCreate, ArticleUpdate, AuthorCreate
+from albatross.core.schemas import (ArticleCreate, ArticleUpdate,
+                                    AuthorCreate, AuthorUpdate)
 from albatross.settings import config
 
 engine = create_engine(config.database_uri)
@@ -187,6 +188,29 @@ def create_author(author: AuthorCreate, db: Session = None) -> Author:
     db.add(new_author)
     db.commit()
     db.refresh(new_author)
+
+
+def update_author(author: AuthorUpdate, db: Session = None) -> Author:
+    """
+    Updates the author
+
+    Args:
+        author (AuthorUpdate): the author to update
+        db (Session, optional): database session. Defaults to None.
+
+    Returns:
+        Author: updated author
+    """
+    if not db:
+        db = get_session()
+
+    db_author = get_author_by_id(author_id=author.id, db=db)
+    for field, value in author:
+        setattr(db_author, field, value)
+
+    db.commit()
+    db.refresh(db_author)
+    return db_author
 
 
 create_database(get_engine())
