@@ -4,7 +4,6 @@ from albatross.helpers import database as db
 
 
 router = APIRouter(prefix="articles")
-engine = db.get_engine()
 
 
 @router.get("/")
