@@ -88,8 +88,8 @@ def get_articles(limit: int = None, db: Session = None) -> list:
     """
     if limit:
         return db.query(Article).limit(limit).all()
-    else:
-        return db.query(Article).all()
+
+    return db.query(Article).all()
 
 
 def delete_article(article_id: int, db: Session = None) -> None:
