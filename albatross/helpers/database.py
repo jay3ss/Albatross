@@ -86,6 +86,9 @@ def get_articles(limit: int = None, db: Session = None) -> list:
     Returns:
         list: list of Articles
     """
+    if not db:
+        db = get_session()
+
     if limit:
         return db.query(Article).limit(limit).all()
 
@@ -181,6 +184,9 @@ def get_authors(limit: int = None, db: Session = None) -> list:
     Returns:
         list: the authors
     """
+    if not db:
+        db = get_session()
+
     if limit:
         return db.query(Author).limit(limit).all()
 
@@ -243,6 +249,9 @@ def delete_author(author_id: int, db: Session = None) -> bool:
         bool: Returns True if the author existed (and was successfully deleted),
         False otherwise
     """
+    if not db:
+        db = get_session()
+
     author = get_author_by_id(author_id=author_id, db=db)
     if author:
         db.delete(author)
