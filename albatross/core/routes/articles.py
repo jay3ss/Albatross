@@ -15,7 +15,8 @@ async def index():
 
 @router.get("/{id}")
 async def read_article(id: int):
-    return {"article": f"article {id}"}
+    article = db.get_article(id)
+    return {"article": article}
 
 
 @router.get("/new")
@@ -25,9 +26,11 @@ async def new_article():
 
 @router.get("{id}/edit/")
 async def edit_article(id: int):
-    return {"article": [id]}
+    article = db.get_article(id)
+    return {"article": article}
 
 
 @router.get("{id}/delete/")
 async def delete_article(id: int):
+    article = db.get_article(id)
     return {"article": "deleted"}
