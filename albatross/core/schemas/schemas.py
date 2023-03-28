@@ -35,7 +35,7 @@ class AuthorCreate(AuthorBase):
 
 
 class AuthorUpdate(AuthorBase):
-    pass
+    id: int
 
 
 class Author(AuthorBase):
