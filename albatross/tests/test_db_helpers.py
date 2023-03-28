@@ -1,8 +1,8 @@
 from albatross.core.models import Author
-from albatross.core.schemas import ArticleCreate, ArticleUpdate
+from albatross.core.schemas import ArticleCreate, ArticleUpdate, AuthorCreate
 
 from albatross.helpers import database as db
-from albatross.tests.fixtures import in_memory_prepopulated_db
+from albatross.tests.fixtures import in_memory_db, in_memory_prepopulated_db
 
 
 def test_get_article_by_id(in_memory_prepopulated_db):
@@ -136,6 +136,10 @@ def test_get_author_by_id(in_memory_prepopulated_db):
     assert author.name == "Author 1"
 
 
-if __name__ == "__main__":
-    import pytest
-    pytest.main(["-s", __file__])
+def test_create_author(in_memory_db):
+    temp_db = in_memory_db
+    authors = temp_db.query(Author).all()
+    new_author= AuthorCreate(name="Author 1")
+    db.create_author(author=new_author, db=temp_db)
+    authors_again = temp_db.query(Author).all()
+    assert len(authors_again) == len(authors) + 1
