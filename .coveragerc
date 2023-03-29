@@ -1,0 +1,3 @@
+[run]
+source = albatross
+omit = albatross/tests/example.py
