@@ -39,6 +39,7 @@ class AuthorUpdate(AuthorBase):
 
 
 class Author(AuthorBase):
+    id: int
     name: str
     created_at: Optional[datetime.datetime]
     updated_at: Optional[datetime.datetime]
