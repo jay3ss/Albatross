@@ -211,6 +211,7 @@ def create_author(author: AuthorCreate, db: Session = None) -> Author:
     db.add(new_author)
     db.commit()
     db.refresh(new_author)
+    return new_author
 
 
 def update_author(author: AuthorUpdate, db: Session = None) -> Author:
