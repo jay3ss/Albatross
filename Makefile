@@ -25,7 +25,7 @@ test:
 
 .PHONY: serve
 serve:
-	uvicorn app:app --reload
+	uvicorn albatross.main:app --reload
 
 .PHONY: coverage
 coverage:
