@@ -39,8 +39,8 @@ def test_get_nonexistent_author(mock_get_author):
 @mock.patch("albatross.helpers.database.get_authors")
 def test_get_all_authors_no_limit(mock_get_authors):
     mock_authors = [
-        schemas.Author(id=1, name="Author 1"),
-        schemas.Author(id=2, name="Author 2")
+        models.Author(name="Author 1"),
+        models.Author(name="Author 2")
     ]
     mock_get_authors.return_value = mock_authors
 
@@ -58,14 +58,20 @@ def test_get_all_authors_no_limit(mock_get_authors):
 
 @mock.patch("albatross.helpers.database.get_authors")
 def test_get_all_authors_limit_5(mock_get_authors):
-    mock_authors = [models.Author(name=f"Author {i}") for i in range(5)]
+    limit = 5
+    mock_authors = [models.Author(name=f"Author {i}") for i in range(1, limit+1)]
     mock_get_authors.return_value = mock_authors
 
     response = client.get("/authors", params={"limit": 5})
-    assert response.status_code == HTTPStatus.OK
-    assert len(response.json()) == len(mock_authors)
 
-    mock_get_authors.assert_called_once_with(limit=5)
+    assert response.status_code == HTTPStatus.OK
+    assert response.headers["content-type"] == "text/html; charset=utf-8"
+
+    rendered_template = response.content.decode("utf-8")
+    for author in mock_authors:
+        assert author.name in rendered_template
+
+    mock_get_authors.assert_called_once_with(limit=limit)
 
 
 @mock.patch("albatross.helpers.database.create_author")
