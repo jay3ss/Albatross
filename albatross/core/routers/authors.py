@@ -4,7 +4,6 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 from albatross.core import schemas
-from albatross.core.schemas import AuthorCreate
 from albatross.helpers import database as db
 
 
@@ -18,7 +17,7 @@ async def index(limit: int = None):
 
 
 @router.post("/new", status_code=HTTPStatus.CREATED)
-async def create_author(author: AuthorCreate):
+async def create_author(author: schemas.AuthorCreate):
     new_author = db.create_author(author)
     return new_author
 
