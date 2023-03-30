@@ -3,8 +3,7 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-from albatross.core import models
-from albatross.core import schemas
+from albatross.core import models, schemas
 from albatross.main import app
 
 
