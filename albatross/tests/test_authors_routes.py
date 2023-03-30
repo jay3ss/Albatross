@@ -38,12 +38,20 @@ def test_get_nonexistent_author(mock_get_author):
 
 @mock.patch("albatross.helpers.database.get_authors")
 def test_get_all_authors_no_limit(mock_get_authors):
-    mock_authors = [models.Author(name=f"Author {i}") for i in range(10)]
+    mock_authors = [
+        schemas.Author(id=1, name="Author 1"),
+        schemas.Author(id=2, name="Author 2")
+    ]
     mock_get_authors.return_value = mock_authors
 
     response = client.get("/authors")
+
     assert response.status_code == HTTPStatus.OK
-    assert len(response.json()) == len(mock_authors)
+    assert response.headers["content-type"] == "text/html; charset=utf-8"
+
+    rendered_template = response.content.decode("utf-8")
+    assert "Author 1" in rendered_template
+    assert "Author 2" in rendered_template
 
     mock_get_authors.assert_called_once_with(limit=None)
 
