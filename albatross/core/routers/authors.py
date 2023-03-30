@@ -2,13 +2,17 @@ from http import HTTPStatus
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
 
 from albatross.core import schemas
 from albatross.core.schemas import AuthorCreate
 from albatross.helpers import database as db
+from albatross.settings import config
 
 
 router = APIRouter(prefix="/authors")
+
+templates = Jinja2Templates(directory=config.templates_dir)
 
 
 @router.get("/")
