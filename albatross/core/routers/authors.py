@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 
@@ -15,9 +15,12 @@ templates = Jinja2Templates(directory=config.templates_dir)
 
 
 @router.get("/")
-async def index(limit: int = None):
+async def index(request: Request, limit: int = None):
     authors = db.get_authors(limit=limit)
-    return authors
+    return templates.TemplateResponse(
+        name="authors/index.html",
+        context={"request": request, "authors": authors}
+    )
 
 
 @router.post("/new", status_code=HTTPStatus.CREATED)

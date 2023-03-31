@@ -2,14 +2,19 @@ from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import QueuePool
 
 from albatross.core.models import Article, Author, Base
 from albatross.core.schemas import (ArticleCreate, ArticleUpdate,
                                     AuthorCreate, AuthorUpdate)
 from albatross.settings import config
 
-engine = create_engine(config.database_uri)
+
+engine = create_engine(config.database_uri, poolclass=QueuePool)
+Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+session = Session()
 
 
 @contextmanager
@@ -27,7 +32,7 @@ def get_session(engine: Engine = None) -> Session:
     if not engine:
         engine = get_engine()
 
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
     session = Session()
     try:
         yield session
@@ -70,7 +75,7 @@ def get_article_by_id(article_id: int, db: Session = None) -> Article:
         Article: the article with the given ID
     """
     if not db:
-        db = get_session()
+        db = session
     article = db.query(Article).filter(Article.id == article_id).first()
     return article
 
@@ -87,11 +92,9 @@ def get_articles(limit: int = None, db: Session = None) -> list:
         list: list of Articles
     """
     if not db:
-        db = get_session()
+        db = session
 
-    with db as session:
-        results = session.query(Article).limit(limit).all()
-
+    results = db.query(Article).limit(limit).all()
     return results
 
 
@@ -104,9 +107,18 @@ def delete_article(article_id: int, db: Session = None) -> None:
         db (Session, optional): database session. Defaults to None.
     """
     if not db:
-        db = get_session()
-    article = get_article_by_id(article_id=article_id, db=db)
-    db.delete(article)
+        db = session
+
+    try:
+        article = get_article_by_id(article_id=article_id, db=db)
+        db.delete(article)
+        db.commit()
+    except SQLAlchemyError as e:
+        raise e
+        db.rollback()
+    finally:
+        db.close()
+
 
 
 def create_article(article: ArticleCreate, db: Session = None) -> None:
@@ -118,7 +130,7 @@ def create_article(article: ArticleCreate, db: Session = None) -> None:
         db (Session, optional): database session. Defaults to None.
     """
     if not db:
-        db = get_session()
+        db = session
 
     new_article = Article(
         title=article.title,
@@ -127,9 +139,17 @@ def create_article(article: ArticleCreate, db: Session = None) -> None:
         summary=article.summary,
         image_url=article.image_url
     )
-    db.add(new_article)
-    db.commit()
-    db.refresh(new_article)
+    try:
+        db.add(new_article)
+        db.commit()
+        db.refresh(new_article)
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
+
+    return new_article
 
 
 def update_article(article: ArticleUpdate, db: Session = None) -> Article:
@@ -144,15 +164,21 @@ def update_article(article: ArticleUpdate, db: Session = None) -> Article:
         Article: the updated article
     """
     if not db:
-        db = get_session()
+        db = session
 
-    db_article = get_article_by_id(article_id=article.id, db=db)
-    for field, value in article:
-        setattr(db_article, field, value)
-
-    db.commit()
-    db.refresh(db_article)
-    return db_article
+    try:
+        db_article = get_article_by_id(article_id=article.id, db=db)
+        if db_article:
+            for field, value in article:
+                setattr(db_article, field, value)
+            db.commit()
+            db.refresh(db_article)
+            return db_article
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
 
 
 def get_author_by_id(author_id: int, db: Session = None) -> Author:
@@ -167,7 +193,7 @@ def get_author_by_id(author_id: int, db: Session = None) -> Author:
         Author: the author with the given ID
     """
     if not db:
-        db = get_session()
+        db = session
 
     author = db.query(Author).filter_by(id=author_id).first()
     return author
@@ -185,12 +211,9 @@ def get_authors(limit: int = None, db: Session = None) -> list:
         list: the authors
     """
     if not db:
-        db = get_session()
+        db = session
 
-    if limit:
-        return db.query(Author).limit(limit).all()
-
-    return db.query(Author).all()
+    return db.query(Author).limit(limit).all()
 
 
 def create_author(author: AuthorCreate, db: Session = None) -> Author:
@@ -205,12 +228,20 @@ def create_author(author: AuthorCreate, db: Session = None) -> Author:
         Author: the author with the given ID
     """
     if not db:
-        db = get_session()
+        db = session
 
     new_author = Author(name=author.name)
-    db.add(new_author)
-    db.commit()
-    db.refresh(new_author)
+
+    try:
+        db.add(new_author)
+        db.commit()
+        db.refresh(new_author)
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise e
+    finally:
+        db.rollback()
+
     return new_author
 
 
@@ -226,7 +257,7 @@ def update_author(author: AuthorUpdate, db: Session = None) -> Author:
         Author: updated author
     """
     if not db:
-        db = get_session()
+        db = session
 
     db_author = get_author_by_id(author_id=author.id, db=db)
     for field, value in author:
@@ -251,7 +282,7 @@ def delete_author(author_id: int, db: Session = None) -> bool:
         False otherwise
     """
     if not db:
-        db = get_session()
+        db = session
 
     author = get_author_by_id(author_id=author_id, db=db)
     if author:

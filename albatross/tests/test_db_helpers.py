@@ -54,12 +54,14 @@ def test_get_articles_limited_to_more_than_total_num_of_articles(in_memory_prepo
 
 def test_delete_article(in_memory_prepopulated_db):
     temp_db = in_memory_prepopulated_db
-    db.delete_article(article_id=1, db=temp_db)
+    author_id = 1
+    # article = db.get_article_by_id(article_id=author_id, db=temp_db)
+    db.delete_article(article_id=author_id, db=temp_db)
     articles = db.get_articles(db=temp_db)
     assert len(articles) == 2
     assert articles[0].id == 2
     assert articles[1].id == 3
-    assert db.get_article_by_id(article_id=1, db=temp_db) == None
+    assert db.get_article_by_id(article_id=author_id, db=temp_db) == None
 
 
 def test_create_article(in_memory_prepopulated_db):
