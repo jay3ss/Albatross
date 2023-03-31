@@ -1,5 +1,3 @@
-from contextlib import contextmanager
-
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
@@ -15,33 +13,6 @@ from albatross.settings import config
 engine = create_engine(config.database_uri, poolclass=QueuePool)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 session = Session()
-
-
-@contextmanager
-def get_session(engine: Engine = None) -> Session:
-    """
-    Yields a database session and handles any issues with committing or rolling
-    back changes.
-
-    Parameters:
-    engine (Engine): the database engine
-
-    Yields:
-        The database session.
-    """
-    if not engine:
-        engine = get_engine()
-
-    Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
 
 
 def create_database(engine: Engine):
