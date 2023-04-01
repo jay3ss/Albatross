@@ -1,3 +1,5 @@
+import jinja2
+
 from albatross.core import models
 
 
