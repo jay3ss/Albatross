@@ -6,12 +6,14 @@ from fastapi.templating import Jinja2Templates
 
 from albatross.core import schemas
 from albatross.helpers import database as db
+from albatross.helpers import templates as th
 from albatross.settings import config
 
 
 router = APIRouter(prefix="/authors")
 
 templates = Jinja2Templates(directory=config.templates_dir)
+templates.env.filters["datetime_format"] = th.datetime_format
 
 
 @router.get("/", name="read_authors")
