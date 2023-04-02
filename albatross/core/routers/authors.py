@@ -14,7 +14,7 @@ router = APIRouter(prefix="/authors")
 templates = Jinja2Templates(directory=config.templates_dir)
 
 
-@router.get("/")
+@router.get("/", name="read_authors")
 async def index(request: Request, limit: int = None):
     authors = db.get_authors(limit=limit)
     return templates.TemplateResponse(
@@ -23,7 +23,7 @@ async def index(request: Request, limit: int = None):
     )
 
 
-@router.post("/new", status_code=HTTPStatus.CREATED)
+@router.post("/new", status_code=HTTPStatus.CREATED, name="create_author")
 async def create_author(author: schemas.AuthorCreate):
     new_author = db.create_author(author)
     return new_author
@@ -39,7 +39,7 @@ async def read_author(author_id: int):
     return {"author": author}
 
 
-@router.put("/{author_id}")
+@router.put("/{author_id}", name="update_author")
 async def update_author(author_id: int, author: schemas.AuthorUpdate):
     # NOTE:
     # is using the 'AuthorUpdate' object's 'id' attribute smart?
@@ -54,7 +54,7 @@ async def update_author(author_id: int, author: schemas.AuthorUpdate):
     return {"author": updated_author}
 
 
-@router.delete("/{author_id}")
+@router.delete("/{author_id}", name="delete_author")
 async def delete_author(author_id: int):
     was_deleted = db.delete_author(author_id=author_id)
     if not was_deleted:
