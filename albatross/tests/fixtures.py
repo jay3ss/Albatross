@@ -1,3 +1,5 @@
+import datetime as dt
+
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
@@ -21,20 +23,24 @@ def in_memory_prepopulated_db():
     session.add(author2)
     session.commit()
 
+    created_at = dt.datetime(2023, 4, 1)
     post1 = Article(
         title="Article 1",
         author=author1,
         content="This is a content of article 1",
+        created_at=created_at,
     )
     post2 = Article(
         title="Article 2",
         author=author1,
         content="This is a content of article 2",
+        created_at=created_at,
     )
     post3 = Article(
         title="Article 3",
         author=author2,
         content="This is a content of article 3",
+        created_at=created_at,
     )
     session.add(post1)
     session.add(post2)
