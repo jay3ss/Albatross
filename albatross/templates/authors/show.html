@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title%}{{ author.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ author.name }}</h1>
+
+
+<p>{{ author.name }} has <em>{{ author.articles|length }} articles</em>.</p>
+{# TODO: create ul>li block for displaying articles #}
+{% endblock %}
