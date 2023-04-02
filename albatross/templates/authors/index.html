@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
-
 {% block title%}Authors{% endblock %}
 
 {% block content %}
 <h1>Authors</h1>
 
 <ul>
-    {% for author in authors %}
-    <li>{{ author.name }}</li>
+    {% for author in authors|sort(attribute="name") %}
+    <li>
+        <a href="{{ url_for('read_author', author_id=author.id) }}">{{ author.name }}</a>
+        <em>{{ author.articles|length }} articles</em>
+    </li>
     {% endfor %}
 </ul>
+
+<div>
+    {#<a href="{{ url_for('create_author') }}">New Author</a>#}
+</div>
 {% endblock %}
