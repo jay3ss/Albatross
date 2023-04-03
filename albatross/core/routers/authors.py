@@ -25,6 +25,14 @@ async def index(request: Request, limit: int = None):
     )
 
 
+@router.get("/new", name="new_author")
+async def new_author(request: Request):
+    return templates.TemplateResponse(
+        name="authors/new.html",
+        context={"request": request}
+    )
+
+
 @router.post("/new", status_code=HTTPStatus.CREATED, name="create_author")
 async def create_author(author: schemas.AuthorCreate):
     new_author = db.create_author(author)

@@ -95,6 +95,14 @@ def test_create_author(mock_create_author):
     )
 
 
+def test_new_author():
+    response = client.get("/authors/new")
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.headers["content-type"] == "text/html; charset=utf-8"
+    assert b"<form" in response.content
+
+
 @mock.patch("albatross.helpers.database.update_author")
 def test_update_author(mock_update_author):
     author_id = 1
