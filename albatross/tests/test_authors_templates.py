@@ -36,6 +36,7 @@ def test_show_author_template():
     assert f"<title>{author.name}</title>" in rendered
     assert f"<h1>{author.name}</h1>" in rendered
     assert f"{author.name} has <em>0 articles</em>" in rendered
+    assert "<a href=\"/authors/\">Back</a>" in rendered
 
 
 def test_show_author_template_with_articles(in_memory_prepopulated_db):
@@ -54,6 +55,7 @@ def test_show_author_template_with_articles(in_memory_prepopulated_db):
     assert f"{author.name} has <em>{len(author.articles)} articles</em>" in rendered
     for article in author.articles:
         assert article.title in rendered
+    assert "<a href=\"/authors/\">Back</a>" in rendered
 
 
 if __name__ == "__main__":
