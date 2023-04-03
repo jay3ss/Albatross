@@ -1,10 +1,13 @@
 import datetime as dt
 
+from fastapi.templating import Jinja2Templates
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
 from albatross.core.models import Author, Base, Article
+from albatross.helpers import templates as th
+from albatross.settings import config
 
 
 @pytest.fixture
@@ -68,3 +71,10 @@ def in_memory_db():
     # Clean up the database after the tests are done
     session.close()
     engine.dispose()
+
+
+@pytest.fixture
+def templates_env():
+    templates = Jinja2Templates(directory=config.templates_dir)
+    templates.env.filters["datetime_format"] = th.datetime_format
+    return templates.env
