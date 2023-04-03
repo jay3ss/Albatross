@@ -1,7 +1,3 @@
-import datetime as dt
-
-from fastapi.templating import Jinja2Templates
-
 from albatross.core import models
 from albatross.helpers import database as db
 from albatross.helpers import templates as th
@@ -45,7 +41,6 @@ def test_show_author_template_with_articles(in_memory_prepopulated_db, templates
     url_for = app.url_path_for
     rendered = template.render(author=author, url_for=url_for)
 
-    created_at = dt.datetime(2023, 4, 1)
     assert f"<title>{author.name}</title>" in rendered
     assert f"<h1>{author.name}</h1>" in rendered
     assert f"{author.name} has <em>{len(author.articles)} articles</em>" in rendered
