@@ -80,7 +80,7 @@ def test_get_all_authors_limit_5(mock_get_authors):
 
 
 @mock.patch("albatross.helpers.database.create_author")
-def test_create_author(mock_create_author):
+def test_create_author_post_method(mock_create_author):
     mock_author = models.Author(name="Jane Doe", id=1)
     mock_create_author.return_value = mock_author
     new_author = schemas.Author(name=mock_author.name, id=mock_author.id)
