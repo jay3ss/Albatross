@@ -13,14 +13,19 @@ client = TestClient(app)
 
 @mock.patch("albatross.helpers.database.get_author_by_id")
 def test_get_existing_author(mock_get_author):
-    mock_author = schemas.Author(id=1, name="John Doe")
+    author_id = 1
+    mock_author = schemas.Author(id=author_id, name="John Doe")
     mock_get_author.return_value = mock_author
 
-    response = client.get("/authors/1")
-    assert response.status_code == HTTPStatus.OK
-    assert response.json()["author"] == mock_author.dict()
+    response = client.get(f"/authors/{author_id}")
 
-    mock_get_author.assert_called_once_with(author_id=1)
+    assert response.status_code == HTTPStatus.OK
+    assert response.headers["content-type"] == "text/html; charset=utf-8"
+
+    rendered_template = response.content.decode("utf-8")
+    assert mock_author.name in rendered_template
+
+    mock_get_author.assert_called_once_with(author_id=author_id)
 
 
 @mock.patch("albatross.helpers.database.get_author_by_id")
