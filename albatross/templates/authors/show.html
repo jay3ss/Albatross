@@ -8,4 +8,14 @@
 
 <p>{{ author.name }} has <em>{{ author.articles|length }} articles</em>.</p>
 {# TODO: create ul>li block for displaying articles #}
+{% if author.articles %}
+{% for article in author.articles %}
+<ul>
+  <li>
+    {{ article.title }} |
+    <em>{{ article.created_on|sort(attribute="created_on") }}</em>
+  </li>
+</ul>
+{% endfor %}
+{% endif %}
 {% endblock %}
