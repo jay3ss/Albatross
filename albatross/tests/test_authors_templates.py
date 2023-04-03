@@ -50,6 +50,11 @@ def test_show_author_template_with_articles(in_memory_prepopulated_db, templates
     assert "<a href=\"/authors/\">Back</a>" in rendered
 
 
+def test_create_author_template(templates_env):
+    template = templates_env.get_template("authors/create.html")
+
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main(["-s", __file__])
