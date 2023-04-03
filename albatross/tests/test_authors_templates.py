@@ -1,17 +1,17 @@
 import datetime as dt
 
-import jinja2
+from fastapi.templating import Jinja2Templates
 
 from albatross.core import models
 from albatross.helpers import database as db
+from albatross.helpers import templates as th
 from albatross.main import app
-from albatross.tests.fixtures import in_memory_prepopulated_db
+from albatross.settings import config
+from albatross.tests.fixtures import in_memory_prepopulated_db, templates_env
 
 
-def test_authors_index_template():
-    template = jinja2.Environment(
-        loader=jinja2.PackageLoader("albatross", "templates")
-    ).get_template("authors/index.html")
+def test_authors_index_template(templates_env):
+    template = templates_env.get_template("authors/index.html")
 
     authors = [models.Author(name="Author 1", id=1), models.Author(name="Author 2", id=2)]
     url_for = app.url_path_for
@@ -24,10 +24,8 @@ def test_authors_index_template():
         assert f"<em>{len(author.articles)} articles</em>"
 
 
-def test_show_author_template():
-    template = jinja2.Environment(
-        loader=jinja2.PackageLoader("albatross", "templates")
-    ).get_template("authors/show.html")
+def test_show_author_template(templates_env):
+    template = templates_env.get_template("authors/show.html")
 
     author = models.Author(name="Author 1")
     url_for = app.url_path_for
@@ -39,11 +37,9 @@ def test_show_author_template():
     assert "<a href=\"/authors/\">Back</a>" in rendered
 
 
-def test_show_author_template_with_articles(in_memory_prepopulated_db):
+def test_show_author_template_with_articles(in_memory_prepopulated_db, templates_env):
     temp_db = in_memory_prepopulated_db
-    template = jinja2.Environment(
-        loader=jinja2.PackageLoader("albatross", "templates")
-    ).get_template("authors/show.html")
+    template = templates_env.get_template("authors/show.html")
 
     author = db.get_author_by_id(author_id=1, db=temp_db)
     url_for = app.url_path_for
@@ -55,6 +51,7 @@ def test_show_author_template_with_articles(in_memory_prepopulated_db):
     assert f"{author.name} has <em>{len(author.articles)} articles</em>" in rendered
     for article in author.articles:
         assert article.title in rendered
+        assert f"<em>on {th.datetime_format(article.created_at)}</em>" in rendered
     assert "<a href=\"/authors/\">Back</a>" in rendered
 
 
