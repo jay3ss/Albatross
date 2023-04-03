@@ -100,7 +100,7 @@ def test_new_author():
 
     assert response.status_code == HTTPStatus.OK
     assert response.headers["content-type"] == "text/html; charset=utf-8"
-    assert "<form" in response.content
+    assert b"<form" in response.content
 
 
 @mock.patch("albatross.helpers.database.update_author")
