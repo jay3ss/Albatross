@@ -1,4 +1,4 @@
-from albatross.core import models
+from albatross.core import forms, models
 from albatross.helpers import database as db
 from albatross.helpers import templates as th
 from albatross.main import app
@@ -54,7 +54,21 @@ def test_new_author_template_with_empty_form(templates_env):
     template = templates_env.get_template("authors/new.html")
 
     form = forms.NewAuthorForm()
-    rendered = template.render(form=form)
+    url_for = app.url_path_for
+    rendered = template.render(form=form, url_for=url_for)
+
+    assert "<title>New Author</title>" in rendered
+    assert "Create Author" in rendered
+    assert "<form" in rendered
+    assert "action=\"/authors/new\"" in rendered
+    assert "method=\"post\"" in rendered
+    assert "<label" in rendered
+    assert "for=\"name\"" in rendered
+    assert "<label" in rendered
+    assert "name=\"name\"" in rendered
+    assert "type=\"text\"" in rendered
+    assert "<button" in rendered
+    assert ">Submit<" in rendered
 
 
 if __name__ == "__main__":
