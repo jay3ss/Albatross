@@ -9,7 +9,7 @@ setup-dev:
 .PHONY: clean
 clean:
 	rm -rf `find . -name __pycache__ -type d`
-	find . -name '*~' -exec rm --force {} +
+	find . -name '*~' -exec rm -iv {} +
 
 .PHONY: lint
 lint:
