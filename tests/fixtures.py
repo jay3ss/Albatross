@@ -1,6 +1,6 @@
 import pytest
 
-from app import create_app, db
+from app import create_app, db, models
 from .helpers import AuthActions
 from .testing_configs import TestConfig
 
@@ -13,6 +13,12 @@ def app():
     app_context = app.app_context()
     app_context.push()
     db.create_all()
+
+    # create the user in the database so we can log in
+    u = models.User(username="test", email="test@example.com")
+    u.set_password("password")
+    db.session.add(u)
+    db.session.commit()
 
     yield app
 
