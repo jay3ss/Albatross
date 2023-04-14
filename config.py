@@ -27,9 +27,9 @@ def env_var(key: str, default: Any) -> Any:
 
 
 class Config:
-    debug: bool = env_var("DEBUG", False)
-    testing: bool = env_var("TESTING", False)
-    secret_key: str = env_var("SECRET_KEY", "my-secret-key")
+    DEBUG: bool = env_var("DEBUG", False)
+    TESTING: bool = env_var("TESTING", False)
+    SECRET_KEY: str = env_var("SECRET_KEY", "my-secret-key")
     SQLALCHEMY_DATABASE_URI = env_var(
         "DATABASE_URI", f"sqlite:///{os.path.join(base_dir, 'app.db')}"
     )
