@@ -1,4 +1,4 @@
-from .models import Author, Base, Article
+from .models import Author, Article
 
 
-__all__ = ["Author", "Base", "Article"]
+__all__ = ["Author", "Article"]

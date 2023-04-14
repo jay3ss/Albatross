@@ -1,4 +1,6 @@
-FastAPI
+Flask
+flask-migrate
+Flask-SQLAlchemy
 Jinja2
 Markdown
 Pelican
@@ -7,5 +9,4 @@ python-dateutil
 python-dotenv
 python-slugify
 pyyaml
-SQLAlchemy
-uvicorn
+gunicorn

@@ -5,9 +5,10 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 
+from albatross import create_app
 from albatross.core.models import Author, Base, Article
 from albatross.helpers import templates as th
-from albatross.settings import config
+import config
 
 
 @pytest.fixture
@@ -75,6 +76,16 @@ def in_memory_db():
 
 @pytest.fixture
 def templates_env():
-    templates = Jinja2Templates(directory=config.templates_dir)
+    templates = Jinja2Templates(directory=config.config.templates_dir)
     templates.env.filters["datetime_format"] = th.datetime_format
     return templates.env
+
+
+@pytest.fixture
+def test_app():
+    class TestConfig(config.Config):
+        testing: bool = True
+        SQLALCHEMY_DATABASE_URI: str = "sqlite://"
+
+    app = create_app(config_class=TestConfig)
+    return app

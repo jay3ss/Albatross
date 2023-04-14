@@ -1,5 +1,6 @@
 black
 coverage
+flask-moreshell
 flake8
 httpx
 ipdb

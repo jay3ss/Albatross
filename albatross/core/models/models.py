@@ -1,20 +1,18 @@
 from datetime import datetime
+from albatross import db
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import declarative_base, relationship
-
-
-Base = declarative_base()
+# Base = declarative_base()
 
 
-class Author(Base):
+# class Author(Base):
+class Author(db.Model):
     __tablename__ = "authors"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    articles = relationship(
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    articles = db.relationship(
         "Article", back_populates="author", cascade="all, delete-orphan"
         )
 
@@ -22,18 +20,19 @@ class Author(Base):
         return f"<Author(name={self.name})>"
 
 
-class Article(Base):
+# class Article(Base):
+class Article(db.Model):
     __tablename__ = "articles"
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
-    summary = Column(Text)
-    content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    image_url = Column(String)
-    author_id = Column(Integer, ForeignKey("authors.id"), nullable=True)
-    author = relationship("Author")
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    summary = db.Column(db.Text)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    image_url = db.Column(db.String)
+    author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=True)
+    author = db.relationship("Author")
 
     def __repr__(self) -> str:
         return f"<Article(title='{self.title}', author='{self.author.name}')>"

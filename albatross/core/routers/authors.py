@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from albatross.core import schemas
 from albatross.helpers import database as db
 from albatross.helpers import templates as th
-from albatross.settings import config
+from config import config
 
 
 router = APIRouter(prefix="/authors")
