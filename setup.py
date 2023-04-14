@@ -4,6 +4,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirements.txt") as f:
+    install_requires = f.read().splitlines()
+
+with open("requirements-dev.txt") as f:
+    extras_require = {"dev": f.read().splitlines()}
 
 setuptools.setup(
     name="albatross",
@@ -19,17 +24,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-        "FastAPI",
-        "Jinja2",
-        "Markdown",
-        "Pelican",
-        "pydantic",
-        "python-dateutil",
-        "python-dotenv",
-        "python-slugify",
-        "SQLAlchemy",
-        "uvicorn",
-    ],
+    install_requires=install_requires,
+    extras_require=extras_require,
     python_requires=">=3.10",
 )

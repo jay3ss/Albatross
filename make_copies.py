@@ -6,7 +6,7 @@ def backup_py_files(
     root_dir: str,
     file_ext: str = ".py",
     new_ext: str = "_backup.py",
-    topdown: bool = True
+    topdown: bool = True,
 ) -> None:
     """
     Backup .py files in a directory and its immediate subdirectories.
@@ -31,7 +31,7 @@ def backup_py_files(
                     dst_filename = filename.replace(file_ext, new_ext)
                     dst_path = os.path.join(dirpath, dst_filename)
                     shutil.copy2(src_path, dst_path)
-                    print(f'Copied {src_path} to {dst_path}')
+                    print(f"Copied {src_path} to {dst_path}")
 
 
 if __name__ == "__main__":

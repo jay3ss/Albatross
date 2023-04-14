@@ -1,7 +1,5 @@
-black
-coverage
 flask-moreshell
-flake8
-httpx
-ipdb
 pytest
+coverage
+flake8
+black

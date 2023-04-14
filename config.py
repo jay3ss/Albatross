@@ -1,18 +1,36 @@
+import os
+from typing import Any
+
 from dotenv import load_dotenv
-from pydantic import BaseConfig, Field
 
 
 load_dotenv()
 
-
-class Config(BaseConfig):
-    database_uri: str = Field(env="DATABASE_URI")
-    debug: bool = Field(default=False, env="DEBUG")
-    secret_key: str = Field(..., env="SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI: str = Field(env="DATABASE_URI")
-
-    # other settings
-    # add other settings as needed
+base_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-config = Config()
+def env_var(key: str, default: Any) -> Any:
+    """
+    Retrieve the value of an environment variable with a default value if not
+    set.
+
+    Args:
+        key (str): The name of the environment variable to retrieve.
+        default (Any): The default value to return if the environment variable
+        is not set.
+
+    Returns:
+        Any: The value of the environment variable if set, otherwise the default
+        value.
+    """
+    return os.environ.get(key, default=default)
+
+
+class Config:
+    debug: bool = env_var("DEBUG", False)
+    testing: bool = env_var("TESTING", False)
+    secret_key: str = env_var("SECRET_KEY", "my-secret-key")
+    SQLALCHEMY_DATABASE_URI = env_var(
+        "DATABASE_URI", f"sqlite:///{os.path.join(base_dir, 'app.db')}"
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = env_var("TRACK_MODIFICATIONS", False)
