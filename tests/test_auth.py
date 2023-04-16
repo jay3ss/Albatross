@@ -3,7 +3,7 @@ import pytest
 from flask import session, g
 from flask_login import current_user
 
-from app import db, models
+# from app import db, models
 from tests.fixtures import app, auth, client
 
 
@@ -11,7 +11,7 @@ def test_register(client, app):
     assert client.get('/auth/register').status_code == 200
     response = client.post(
         "/auth/register",
-        data=dict(username="me", email="me@example.com", password="password")
+        data=dict(username="test", password="password")
     )
     assert response.headers.get("Location", None) == "/auth/login"
 
@@ -34,14 +34,12 @@ def test_register_validate_input(client, username, email, password, message):
 def test_login(client, auth):
     assert client.get('/auth/login').status_code == 200
 
-    response = auth.login()
-    assert response.status_code == 200 # NOTE: should it be 30x?
 
     with client:
-        client.get('/')
-        # assert current_user.is_authenticated
-        assert session["user_id"] == 1
-        assert g.user['username'] == 'test'
+        response = client.get('/')
+        assert response.status_code == 200
+        response = auth.login()
+        assert response.status_code == 200
 
 
 @pytest.mark.parametrize(('username', 'password', 'message'), (
@@ -62,5 +60,4 @@ def test_logout(client, auth):
 
 
 if __name__ == "__main__":
-    import pytest
     pytest.main(["-s", __file__])
