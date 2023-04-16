@@ -1,5 +1,5 @@
 from flask import flash, redirect, render_template, request, url_for, session, g
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import db, models
@@ -26,6 +26,7 @@ def login():
 
 @bp.route("/logout")
 def logout():
+    logout_user()
     return ""
 
 
