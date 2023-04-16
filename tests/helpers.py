@@ -1,4 +1,3 @@
-from werkzeug.security import generate_password_hash
 
 
 class AuthActions:
@@ -9,10 +8,10 @@ class AuthActions:
         self._client = client
 
     def login(self, username='test', password="password"):
-        password_hash = generate_password_hash(password)
+
         return self._client.post(
             '/auth/login',
-            data=dict(username=username, password_hash=password_hash)
+            data=dict(username=username, password=password)
         )
 
     def logout(self):
