@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -6,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
 
+bootstrap = Bootstrap5()
 db = SQLAlchemy()
 login = LoginManager()
 migrate = Migrate()
@@ -25,6 +27,7 @@ def create_app(config_class: Config = Config) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    bootstrap.init_app(app)
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)
