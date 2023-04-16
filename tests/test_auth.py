@@ -1,6 +1,5 @@
 import pytest
 
-
 from tests.fixtures import app, auth, client
 
 
