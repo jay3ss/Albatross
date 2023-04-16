@@ -1,9 +1,6 @@
-
 import pytest
-from flask import session, g
-from flask_login import current_user
 
-# from app import db, models
+
 from tests.fixtures import app, auth, client
 
 
