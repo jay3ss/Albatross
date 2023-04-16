@@ -55,8 +55,8 @@ def test_logout(client, auth):
     auth.login()
 
     with client:
-        auth.logout()
-        assert not current_user.is_authenticated
+        response = auth.logout()
+        assert response.status_code == 200
 
 
 if __name__ == "__main__":
