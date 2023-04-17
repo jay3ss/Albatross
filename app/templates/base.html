@@ -11,12 +11,18 @@
             {{ bootstrap.load_css() }}
         {% endblock %}
 
-        <title>Your page title</title>
+        {% block title %}
+            <title>
+                Albatross{% if title %} - {{ title }}{% endif %}
+            </title>
+            {% endblock %}
         {% endblock %}
     </head>
     <body>
-        <!-- Your page content -->
-        {% block content %}{% endblock %}
+        <div class="container">
+            <!-- Your page content -->
+            {% block content %}{% endblock %}
+        </div>
 
         {% block scripts %}
             <!-- Optional JavaScript -->
