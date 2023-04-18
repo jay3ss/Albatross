@@ -1,56 +1,71 @@
+import flask
+from flask import url_for
 import pytest
 
 from tests.fixtures import app, auth, client
 
 
-def test_register(client, app):
-    assert client.get('/auth/register').status_code == 200
-    response = client.post(
-        "/auth/register",
-        data=dict(username="test", password="password")
+def test_register(client):
+    registration_url = url_for("auth.register", _external=False)
+    assert client.get(registration_url).status_code == 200
+
+    data = data=dict(
+        username="non-existent-user",
+        email="non-existent-email@example.com",
+        password="password",
+        password2="password",
     )
-    assert response.headers.get("Location", None) == "/auth/login"
+    response = client.post(registration_url, data=data)
+    assert response.status_code == 302
 
-    # with app.app_context():
-    #     assert
 
-@pytest.mark.parametrize(('username', 'email', 'password', 'message'), (
-    ('', '', '', b'Username is required.'),
-    ('a', '', '', b'Password is required.'),
-    ('test', 'test', 'test@example.com', b'already registered'),
+@pytest.mark.parametrize(('username', 'email', 'password', 'password2', 'message'), (
+    ('', '', '', '', 'This field is required.'),
+    ('a', '', '', '', 'This field is required.'),
+    ('test', 'test@example.com', 'password', "password", 'already exists'),
 ))
-def test_register_validate_input(client, username, email, password, message):
+def test_register_validate_input(client, username, email, password, password2, message):
+    data=dict(username=username, email=email, password=password, password2=password2)
     response = client.post(
-        '/auth/register',
-        data=dict(username=username, email=email, password=password)
+        url_for("auth.register"),
+        data=data,
+        follow_redirects=True
     )
-    assert message in response.data
+
+    assert message in response.text
+
+
+def test_redirect_when_trying_to_register_while_authenticated(client, auth):
+    auth.login()
+
+    response = client.get(url_for("auth.register"), follow_redirects=True)
+    assert response.request.path == url_for("main.index", _external=False)
 
 
 def test_login(client, auth):
     assert client.get('/auth/login').status_code == 200
 
-    with client:
-        response = auth.login()
-        assert response.status_code == 200
+    response = auth.login()
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(('username', 'password', 'message'), (
-    ('a', 'test', b'Incorrect username or password.'),
-    ('test', 'a', b'Incorrect password or password.'),
+    ('a', 'test', 'Incorrect username or password.'),
+    ('test', 'a', 'Incorrect username or password.'),
+    ('test', 'password', 'Home'),
 ))
-def test_login_validate_input(auth, username, password, message):
-    response = auth.login(username, password)
-    assert message in response.data
+def test_login_validate_input(client, username, password, message):
+    response  = client.post(
+        url_for("auth.login"),
+        data=dict(username=username, password=password),
+        follow_redirects=True
+    )
+    assert message in response.text
 
 
-def test_logout(client, auth):
+
+def test_logout(auth):
     auth.login()
 
-    with client:
-        response = auth.logout()
-        assert response.status_code == 200
-
-
-if __name__ == "__main__":
-    pytest.main(["-s", __file__])
+    response = auth.logout()
+    assert response.status_code == 302

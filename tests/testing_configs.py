@@ -7,3 +7,4 @@ class TestConfig(config.Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     APPLICATION_ROOT = ""
     SERVER_NAME = "localhost.localdomain"
+    WTF_CSRF_ENABLED = False

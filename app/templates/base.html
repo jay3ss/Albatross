@@ -1,3 +1,6 @@
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -19,10 +22,13 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container">
+        <main class="container">
             <!-- Your page content -->
+            {{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
             {% block content %}{% endblock %}
-        </div>
+        </main>
+
+        {% include "_nav.html" %}
 
         {% block scripts %}
             <!-- Optional JavaScript -->
