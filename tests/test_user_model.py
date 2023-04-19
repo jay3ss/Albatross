@@ -1,7 +1,9 @@
 import unittest
 
-from app import db, create_app
-from app.models import User
+# from flask_login import load_user
+
+from app import db, create_app, login
+from app.models import User, load_user
 from tests.testing_configs import TestConfig
 
 
@@ -22,3 +24,17 @@ class UserModelCase(unittest.TestCase):
         u.set_password("cat")
         self.assertFalse(u.check_password("dog"))
         self.assertTrue(u.check_password("cat"))
+
+    def test_string_representation(self):
+        name = "susan"
+        u = User(username=name)
+        assert name in str(u)
+
+    def test_loading_of_user(self):
+        u = User(username="test", email="test@example.com")
+        u.set_password("password")
+        db.session.add(u)
+        db.session.commit()
+        loaded_user = load_user(u.id)
+
+        assert loaded_user.id == u.id
