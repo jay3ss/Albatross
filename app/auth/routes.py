@@ -9,7 +9,7 @@ from app.auth import bp, forms
 @bp.route("/login", methods=["get", "post"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.index")) # pragma: no cover
 
     form = forms.LoginForm()
     if form.validate_on_submit():
