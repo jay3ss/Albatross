@@ -34,6 +34,15 @@ def client(app):
 
 
 @pytest.fixture
+def session(app):
+    """Create a new database session for a test."""
+    with app.app_context():
+        yield db.session
+        db.session.rollback()
+        db.drop_all()
+
+
+@pytest.fixture
 def auth(client):
     """Authentication fixture"""
     return AuthActions(client)
