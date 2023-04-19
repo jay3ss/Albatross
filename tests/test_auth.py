@@ -32,6 +32,8 @@ def test_register(client):
         ("a", "a@example", "asdf", "", "This field is required."),
         ("a", "a@example", "", "asdf", "This field is required."),
         ("test", "test@example.com", "password", "password", "already exists"),
+        ("test", "email@example.com", "password", "password", "already exists"),
+        ("username", "test@example.com", "password", "password", "already exists"),
     ),
 )
 def test_register_validate_input(client, username, email, password, password2, message):
