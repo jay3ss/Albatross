@@ -35,11 +35,12 @@ def create_app(config_class: Config = Config) -> Flask:
     migrate.init_app(app, db)
 
     from app.auth import bp as auth_bp
-
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
-    from app.main import bp as main_bp
+    from app.articles import bp as articles_bp
+    app.register_blueprint(articles_bp, url_prefix="/articles")
 
+    from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
     return app
