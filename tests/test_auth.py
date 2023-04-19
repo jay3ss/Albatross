@@ -74,6 +74,15 @@ def test_login_validate_input(client, username, password, message):
     assert message in response.text
 
 
+def test_redirection_after_successful_login(client):
+    response = client.post(
+        url_for("auth.login"),
+        data=dict(username="test", password="password"),
+        follow_redirects=True
+    )
+    assert response.request.path == url_for("main.index", _external=False)
+
+
 def test_logout(auth):
     auth.login()
 
