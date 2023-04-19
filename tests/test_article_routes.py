@@ -10,6 +10,13 @@ def test_attempt_to_get_all_articles_while_not_authenticated(client):
     assert "Sign in" in response.text
 
 
+def test_attempt_to_get_all_articles_while_authenticated(auth, client):
+    auth.login()
+    response = client.get(url_for("articles.articles"))
+    assert response.status_code == 200
+    assert "Articles" in response.text
+
+
 def test_create_article(client, auth):
     auth.login()
     response = client.post(
