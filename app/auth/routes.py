@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, url_for, session, g
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
