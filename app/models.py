@@ -62,7 +62,7 @@ class Article(db.Model):
         return generate_slug(title)
 
     def __repr__(self) -> str:
-        if not getattr(self, "username", None):
+        if not self.user:
             return f"<Article(title='{self.title}')>"
         return f"<Article(title='{self.title}', user='{self.user.username}')>"
 
