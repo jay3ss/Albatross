@@ -4,6 +4,7 @@ from app import db, create_app
 from app.models import User
 from tests.testing_configs import TestConfig
 
+
 class UserModelCase(unittest.TestCase):
     def setUp(self) -> None:
         self.app = create_app(TestConfig)
