@@ -34,7 +34,6 @@ def logout():
 
 @bp.route("/register", methods=["get", "post"])
 def register():
-    flash("Testing the flash messages.")
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
