@@ -15,7 +15,6 @@ class TestConfig(config.Config):
 
 
 class TestAuthorsRoutes(unittest.TestCase):
-
     def setUp(self) -> None:
         self.app = create_app(config_class=TestConfig)
         self.app_context = self.app.app_context()
@@ -38,8 +37,6 @@ class TestAuthorsRoutes(unittest.TestCase):
 
         mock_get_author.assert_called_once_with(author_id=author_id)
 
-
-
     @mock.patch("albatross.helpers.database.get_author_by_id")
     def test_get_existing_author(self, mock_get_author):
         author_id = 1
@@ -56,7 +53,6 @@ class TestAuthorsRoutes(unittest.TestCase):
 
         mock_get_author.assert_called_once_with(author_id=author_id)
 
-
     @mock.patch("albatross.helpers.database.get_author_by_id")
     def test_get_nonexistent_author(self, mock_get_author):
         mock_author = None
@@ -69,13 +65,9 @@ class TestAuthorsRoutes(unittest.TestCase):
 
         mock_get_author.assert_called_once_with(author_id=author_id)
 
-
     @mock.patch("albatross.helpers.database.get_authors")
     def test_get_all_authors_no_limit(self, mock_get_authors):
-        mock_authors = [
-            models.Author(name="Author 1"),
-            models.Author(name="Author 2")
-        ]
+        mock_authors = [models.Author(name="Author 1"), models.Author(name="Author 2")]
         mock_get_authors.return_value = mock_authors
 
         response = self.client.get("/authors")
@@ -89,11 +81,10 @@ class TestAuthorsRoutes(unittest.TestCase):
 
         mock_get_authors.assert_called_once_with(limit=None)
 
-
     @mock.patch("albatross.helpers.database.get_authors")
     def test_get_all_authors_limit_5(self, mock_get_authors):
         limit = 5
-        mock_authors = [models.Author(name=f"Author {i}") for i in range(1, limit+1)]
+        mock_authors = [models.Author(name=f"Author {i}") for i in range(1, limit + 1)]
         mock_get_authors.return_value = mock_authors
 
         response = self.client.get("/authors", params={"limit": 5})
@@ -106,7 +97,6 @@ class TestAuthorsRoutes(unittest.TestCase):
             self.assertIn(author.name, rendered_template)
 
         mock_get_authors.assert_called_once_with(limit=limit)
-
 
     @mock.patch("albatross.helpers.database.create_author")
     def test_create_author(self, mock_create_author):
@@ -187,4 +177,5 @@ class TestAuthorsRoutes(unittest.TestCase):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

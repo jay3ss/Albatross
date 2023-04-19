@@ -11,10 +11,12 @@ class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     articles = db.relationship(
         "Article", back_populates="author", cascade="all, delete-orphan"
-        )
+    )
 
     def __repr__(self) -> str:
         return f"<Author(name={self.name})>"
@@ -29,7 +31,9 @@ class Article(db.Model):
     summary = db.Column(db.Text)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     image_url = db.Column(db.String)
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=True)
     author = db.relationship("Author")

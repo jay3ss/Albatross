@@ -1,3 +1,3 @@
 [run]
-source = albatross
+source = app
 omit = albatross/tests/example.py

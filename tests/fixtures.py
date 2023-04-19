@@ -29,7 +29,7 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Test client fixture """
+    """Test client fixture"""
     return app.test_client()
 
 

@@ -20,16 +20,14 @@ templates.env.filters["datetime_format"] = th.datetime_format
 async def index(request: Request, limit: int = None):
     authors = db.get_authors(limit=limit)
     return templates.TemplateResponse(
-        name="authors/index.html",
-        context={"request": request, "authors": authors}
+        name="authors/index.html", context={"request": request, "authors": authors}
     )
 
 
 @router.get("/new", name="new_author")
 async def new_author(request: Request):
     return templates.TemplateResponse(
-        name="authors/new.html",
-        context={"request": request}
+        name="authors/new.html", context={"request": request}
     )
 
 
@@ -47,8 +45,7 @@ async def read_author(request: Request, author_id: int):
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=detail)
 
     return templates.TemplateResponse(
-        name="authors/show.html",
-        context={"request": request, "author": author}
+        name="authors/show.html", context={"request": request, "author": author}
     )
 
 

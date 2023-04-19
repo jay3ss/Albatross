@@ -91,7 +91,6 @@
 #         db.close()
 
 
-
 # def create_article(article: ArticleCreate, db: Session = None) -> None:
 #     """
 #     Creates a new article

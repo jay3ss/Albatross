@@ -12,4 +12,3 @@ def test_datetime_format_custom_format():
     dt_obj = dt.datetime(2023, 4, 1, 12, 30)
     formatted = datetime_format(dt_obj, "%B %d, %Y")
     assert formatted == "April 01, 2023"
-
