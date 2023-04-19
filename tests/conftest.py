@@ -46,3 +46,16 @@ def session(app):
 def auth(client):
     """Authentication fixture"""
     return AuthActions(client)
+
+
+
+@pytest.fixture
+def article(session):
+    """Fixture to create a sample article in the database for testing."""
+    article = models.Article(
+        title='Test Article',
+        content='This is a test article content'
+    )
+    session.add(article)
+    session.commit()
+    return article
