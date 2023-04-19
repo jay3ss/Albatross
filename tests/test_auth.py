@@ -1,8 +1,6 @@
 from flask import url_for
 import pytest
 
-from tests.fixtures import app, auth, client
-
 
 def test_register(client):
     registration_url = url_for("auth.register", _external=False)

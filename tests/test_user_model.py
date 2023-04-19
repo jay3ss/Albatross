@@ -1,6 +1,5 @@
 import unittest
 
-# from flask_login import load_user
 
 from app import db, create_app, login
 from app.models import User, load_user

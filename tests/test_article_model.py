@@ -1,7 +1,6 @@
 import pytest
 
 from app.models import Article
-from tests.fixtures import app, session
 
 
 # Test generate_slug method
