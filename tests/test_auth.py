@@ -1,4 +1,3 @@
-import flask
 from flask import url_for
 import pytest
 
