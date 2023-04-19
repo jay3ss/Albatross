@@ -24,6 +24,13 @@ def test_register(client):
     (
         ("", "", "", "", "This field is required."),
         ("a", "", "", "", "This field is required."),
+        ("", "a", "", "", "Invalid email address."),
+        ("", "", "a", "", "This field is required."),
+        ("", "", "", "a", "This field is required."),
+        ("a", "a", "", "", "This field is required."),
+        ("a", "a@example", "", "", "This field is required."),
+        ("a", "a@example", "asdf", "", "This field is required."),
+        ("a", "a@example", "", "asdf", "This field is required."),
         ("test", "test@example.com", "password", "password", "already exists"),
     ),
 )
