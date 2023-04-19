@@ -40,7 +40,7 @@ def register():
     form = forms.RegistrationForm()
     if form.validate_on_submit():
         user_by_email = models.User.query.filter_by(email=form.email.data).first()
-        user_by_username = models.User.query.filter_by(email=form.username.data).first()
+        user_by_username = models.User.query.filter_by(username=form.username.data).first()
         if user_by_email or user_by_username:
             flash("A user with that name or email already exists.", "danger")
         else:
