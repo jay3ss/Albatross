@@ -1,9 +1,13 @@
 from datetime import datetime as dt
+from random import choices
+import string
 
 from flask_login import UserMixin
+from sqlalchemy import event
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, login
+from app.helpers.articles import generate_slug
 
 
 class User(UserMixin, db.Model):
@@ -27,7 +31,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self) -> str:
-        return f"<User(name={self.name})>"
+        return f"<User(name={self.username})>"
 
 
 class Article(db.Model):
@@ -42,9 +46,46 @@ class Article(db.Model):
     image_url = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
     user = db.relationship("User")
+    slug = db.Column(db.String, unique=True, name="uq_article_slug")
+
+    @staticmethod
+    def generate_slug(title: str) -> str:
+        """
+        Generate slug from title.
+
+        Args:
+            title (str): The title to generate slug from.
+
+        Returns:
+            str: The generated slug.
+        """
+        return generate_slug(title)
 
     def __repr__(self) -> str:
-        return f"<Article(title='{self.title}', user='{self.user.name}')>"
+        if not getattr(self, "username", None):
+            return f"<Article(title='{self.title}')>"
+        return f"<Article(title='{self.title}', user='{self.user.username}')>"
+
+
+# Define an event listener to generate slug before insert
+@event.listens_for(Article, "before_insert")
+def generate_slug_before_insert(mapper, connection, target):
+    slug = Article.generate_slug(target.title)
+    while Article.query.filter_by(slug=slug).first() is not None:
+        # Slug already exists, append a random letter or digit to make it unique
+        random_char = choices(string.ascii_letters + string.digits, k=1)[0]
+        slug = f"{slug}{random_char}"
+    target.slug = slug
+
+# Define an event listener to generate slug before update
+@event.listens_for(Article, "before_update")
+def generate_slug_before_update(mapper, connection, target):
+    slug = Article.generate_slug(target.title)
+    while Article.query.filter_by(slug=slug).filter(Article.id != target.id).first() is not None:
+        # Slug already exists, append a random letter or digit to make it unique
+        random_char = choices(string.ascii_letters + string.digits, k=1)[0]
+        slug = f"{slug}{random_char}"
+    target.slug = slug
 
 
 @login.user_loader
