@@ -34,3 +34,4 @@ class Config:
         "DATABASE_URI", f"sqlite:///{os.path.join(base_dir, 'app.db')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = env_var("TRACK_MODIFICATIONS", False)
+    BOOTSTRAP_BOOTSWATCH_THEME = "cosmo"
