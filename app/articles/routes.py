@@ -11,3 +11,5 @@ def articles():
     if not current_user.is_authenticated:
         flash("You must be logged in to access that page.")
         return redirect(url_for("auth.login"))
+    articles = Article.query.filter_by(user=current_user).all()
+    return render_template("articles/articles.html", articles=articles)
