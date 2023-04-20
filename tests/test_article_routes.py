@@ -79,7 +79,7 @@ def test_create_article(client, auth):
     assert "Test Article" in response.text
 
 
-def test_edit_article(client, auth, article):
+def test_edit_article_while_authenticated(client, auth, article):
     auth.login()
     response = client.post(
         url_for("articles.edit_article", slug=article.slug),
