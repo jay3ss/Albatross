@@ -2,4 +2,14 @@
 
 {% block content %}
 <h1>Your Articles</h1>
+
+{% if articles %}
+  {% for article in articles %}
+  <ul>
+    <li><a href="{{ url_for('articles.article', slug=article.slug) }}">{{ article.title }}</a></li>
+  </ul>
+  {% endfor %}
+{% else %}
+
+{% endif %}
 {% endblock %}
