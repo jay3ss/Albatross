@@ -141,14 +141,25 @@ def test_edit_nonexistent_article(auth, client):
     assert response.status_code == 404
 
 
-def test_delete_article_while_authenticated(client, auth, article):
+def test_delete_article_while_authenticated(client, auth, article, session):
+    title = "Test Article Title"
+    content = "Test article content"
+    user = session.get(models.User, 1)
+    article = models.Article(title=title, content=content, user=user)
+    session.add(article)
+    session.commit()
+
+    articles_before_deletion = models.Article.query.filter_by(user_id=user.id).all()
+
     auth.login()
     response = client.post(
         url_for("articles.delete_article", slug=article.slug),
         follow_redirects=True
     )
+    articles_after_deletion = models.Article.query.filter_by(user_id=user.id).all()
     assert response.status_code == 200
-    assert "Article deleted" in response.text
+    assert len(articles_before_deletion) - 1 == len(articles_after_deletion)
+
 
 
 def test_delete_article_while_not_authenticated(client, article):
