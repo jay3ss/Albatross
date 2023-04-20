@@ -1,8 +1,12 @@
-<footer class="text-center">
-  {% block footer %}
-      <small>
-        &copy; <script>document.write(new Date().getFullYear())</script>
-        <a href="//github.com/jay3ss" target="_blank">jay ess</a>
-      </small>
-  {% endblock %}
+{% block footer %}
+<footer class="text-center footer mt-auto py-3 bg-light">
+  <div class="container">
+    <small>
+      <span class="site-name text-decoration-none">Albatross</span>
+      &copy;
+      <script>document.write(new Date().getFullYear())</script>
+      <a href="//github.com/jay3ss" target="_blank">jay ess</a>
+    </small>
+  </div>
 </footer>
+{% endblock %}
