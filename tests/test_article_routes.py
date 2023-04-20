@@ -45,6 +45,26 @@ def test_get_single_article_while_authenticated(auth, client, session):
     assert article.content in response.text
 
 
+def test_that_all_articles_are_displayed(auth, client, session):
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(
+            title=f"This is Article {i}",
+            content=f"Test Article {i} Content",
+            user=user
+        )
+        for i in range(20)
+    ]
+    session.add_all(articles)
+
+    auth.login()
+
+    response = client.get(url_for("articles.articles"))
+    for article in articles:
+        assert article.title in response.text
+        assert article.created_at.strftime('%Y-%m-%d') in response.text
+
+
 def test_get_single_article_while_not_authenticated(client, session):
     title = "Test Article Title"
     content = "Test article content"
