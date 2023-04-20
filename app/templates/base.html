@@ -12,6 +12,15 @@
         {% block styles %}
             <!-- Bootstrap CSS -->
             {{ bootstrap.load_css() }}
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+            <style>
+                .site-name {
+                    font-family: 'Lilita One', cursive;
+                    font-size: xx-large;
+                }
+            </style>
         {% endblock %}
 
         {% block title %}
@@ -22,6 +31,8 @@
         {% endblock %}
     </head>
     <body>
+        {% include "_nav.html" %}
+
         <main class="container">
             <!-- Your page content -->
             {{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
