@@ -93,6 +93,26 @@ def test_edit_article_while_authenticated(client, auth, article):
     assert "Edited Article" in response.text
 
 
+def test_edit_article_while_not_authenticated(article, client):
+    response = client.get(
+        url_for("articles.edit_article", slug=article.slug),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+
+    # take care of 'next' parameter
+    login_url = url_for("auth.login", _external=False)
+    assert response.location[:len(login_url)] == login_url
+
+    response = client.get(
+        url_for("articles.edit_article", slug=article.slug),
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+
+
 def test_delete_article(client, auth, article):
     auth.login()
     response = client.post(
