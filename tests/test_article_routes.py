@@ -113,6 +113,14 @@ def test_edit_article_while_not_authenticated(article, client):
     assert response.status_code == 200
 
 
+def test_edit_nonexistent_article(auth, client):
+    auth.login()
+
+    response = client.get(url_for("articles.edit_article", slug="nonexistent"))
+
+    assert response.status_code == 404
+
+
 def test_delete_article(client, auth, article):
     auth.login()
     response = client.post(
