@@ -153,9 +153,9 @@ def test_delete_article_while_authenticated(client, auth, article):
 
 def test_delete_article_while_not_authenticated(client, article):
     response = client.post(
-        url_for("articles.delete_article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.delete_article", slug=article.slug)
     )
-    assert response.status_code == 404
+
+    assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
-    assert response.location[len(login_url)] == login_url
+    assert response.location[:len(login_url)] == login_url
