@@ -70,7 +70,8 @@ def test_create_article(client, auth):
         url_for("articles.create_article"),
         data={
             "title": "Test Article",
-            "content": "This is a test article content"
+            "content": "This is a test article content",
+            # "summary": "",
         },
         follow_redirects=True
     )
