@@ -79,18 +79,18 @@ def test_create_article(client, auth):
     assert "Test Article" in response.text
 
 
-def test_update_article(client, auth, article):
+def test_edit_article(client, auth, article):
     auth.login()
     response = client.post(
-        url_for("articles.update_article", slug=article.slug),
+        url_for("articles.edit_article", slug=article.slug),
         data={
-            "title": "Updated Article",
-            "content": "This is an updated article content",
+            "title": "Edited Article",
+            "content": "This is an edit article content",
         },
         follow_redirects=True
     )
     assert response.status_code == 200
-    assert "Updated Article" in response.text
+    assert "Edited Article" in response.text
 
 
 def test_delete_article(client, auth, article):
