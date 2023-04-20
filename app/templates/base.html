@@ -3,47 +3,55 @@
 
 <!doctype html>
 <html lang="en">
-    <head>
-        {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        {% block styles %}
-            <!-- Bootstrap CSS -->
-            {{ bootstrap.load_css() }}
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-            <style>
-                .site-name {
-                    font-family: 'Lilita One', cursive;
-                    font-size: xx-large;
-                }
-            </style>
-        {% endblock %}
+<head>
+  {% block head %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        {% block title %}
-            <title>
-                Albatross{% if title %} - {{ title }}{% endif %}
-            </title>
-            {% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% include "_nav.html" %}
+  {% block styles %}
+  <!-- Bootstrap CSS -->
+  {{ bootstrap.load_css() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  <style>
+    .site-name {
+      font-family: 'Lilita One', cursive;
+      /* font-size: xx-large; */
+    }
 
-        <main class="container">
-            <!-- Your page content -->
-            {{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
-            {% block content %}{% endblock %}
-        </main>
+  </style>
+  {% endblock %}
 
-        {% include "_footer.html" %}
+  {% block title %}
+  <title>
+    Albatross{% if title %} - {{ title }}{% endif %}
+  </title>
+  {% endblock %}
+  {% endblock %}
+</head>
 
-        {% block scripts %}
-            <!-- Optional JavaScript -->
-            {{ bootstrap.load_js() }}
-        {% endblock %}
-    </body>
+<body>
+  {% include "_nav.html" %}
+
+  <main class="container">
+    <!-- Your page content -->
+    <div class="row">
+      <div class="col-lg-4">
+        {{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
+      </div>
+    </div>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "_footer.html" %}
+
+  {% block scripts %}
+  <!-- Optional JavaScript -->
+  {{ bootstrap.load_js() }}
+  {% endblock %}
+</body>
+
 </html>
