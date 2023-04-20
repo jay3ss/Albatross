@@ -141,7 +141,7 @@ def test_edit_nonexistent_article(auth, client):
     assert response.status_code == 404
 
 
-def test_delete_article(client, auth, article):
+def test_delete_article_while_authenticated(client, auth, article):
     auth.login()
     response = client.post(
         url_for("articles.delete_article", slug=article.slug),
@@ -150,3 +150,12 @@ def test_delete_article(client, auth, article):
     assert response.status_code == 200
     assert "Article deleted" in response.text
 
+
+def test_delete_article_while_not_authenticated(client, article):
+    response = client.post(
+        url_for("articles.delete_article", slug=article.slug),
+        follow_redirects=False
+    )
+    assert response.status_code == 404
+    login_url = url_for("auth.login", _external=False)
+    assert response.location[len(login_url)] == login_url
