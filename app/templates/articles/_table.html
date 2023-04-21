@@ -1,0 +1,19 @@
+{% from "bootstrap5/table.html" import render_table %}
+
+
+<div class="row">
+  <div class="col">
+    {{
+      render_table(
+        articles,
+        titles=[("title", "Title"), ("created_at", "Created On")],
+        urlize_columns=("slug",),
+        show_actions=True,
+        model=Article,
+        view_url=("articles.article", [("slug", ":slug")]),
+        edit_url=("articles.edit_article", [("slug", ":slug")]),
+        delete_url=("articles.delete_article", [("slug", ":slug")]),
+      )
+    }}
+  </div>
+</div>
