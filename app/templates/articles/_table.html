@@ -3,18 +3,63 @@
 
 <div class="row">
   <div class="col">
-    {{
+    {# {{
       render_table(
         articles,
         titles=[("title", "Title"), ("created_at", "Created On")],
-        urlize_columns=("slug",),
+        urlize_columns=("title"),
+        responsive=True,
         show_actions=True,
         model=Article,
         view_url=("articles.article", [("slug", ":slug")]),
         edit_url=("articles.edit_article", [("slug", ":slug")]),
         delete_url=("articles.delete_article", [("slug", ":slug")]),
         table_classes="table-borderless",
+        actions_title="View/Edit/Delete",
       )
-    }}
+    }} #}
+    {# columns: title (w/link), published date, actions (edit/delete) #}
+    <div class="table-responsive">
+      <table class="table table-borderless align-middle">
+        <thead>
+          <tr>
+            <th scope="row">Title</th>
+            <th scope="row">Published On</th>
+            <th scope="row">Draft?</th>
+            <th scope="row"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for article in articles %}
+          <tr>
+            <td>
+              <a href="{{ url_for('articles.article', slug=article.slug) }}">
+                {{ article.title|truncate(40) }}
+              </a>
+            </td>
+            <td>{{ article.created_at }}</td>
+            <td>{{ article.is_draft }}</td>
+            <td>
+              <span>
+                <form action="{{ url_for('articles.edit_article', slug=article.slug) }}" method="post">
+                  <a class="btn btn-primary" href="{{ url_for('articles.edit_article', slug=article.slug) }}">
+                    Edit
+                  </a>
+                  <button
+                    class="btn btn-danger"
+                    type="submit"
+                    onclick="return confirm('Are you sure you want to delete this?')">
+                    Delete
+                  </button>
+                </form>
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
+
+
