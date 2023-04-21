@@ -3,11 +3,13 @@ from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 from config import Config
 
 
 bootstrap = Bootstrap5()
+csrf_protect = CSRFProtect()
 db = SQLAlchemy()
 login = LoginManager()
 login.login_message = "Please log in to access this page."
@@ -30,6 +32,7 @@ def create_app(config_class: Config = Config) -> Flask:
     app.config.from_object(config_class)
 
     bootstrap.init_app(app)
+    csrf_protect.init_app(app)
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)
