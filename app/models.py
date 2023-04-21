@@ -46,7 +46,8 @@ class Article(db.Model):
     image_url = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
     user = db.relationship("User")
-    slug = db.Column(db.String, unique=True, name="uq_article_slug")
+    slug = db.Column(db.String, unique=True, name="uq_article_slug", index=True)
+    is_draft = db.Column(db.Boolean, default=True, nullable=False)
 
     @staticmethod
     def generate_slug(title: str) -> str:
