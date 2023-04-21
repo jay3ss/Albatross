@@ -154,10 +154,11 @@ def test_delete_article_while_authenticated(client, auth, article, session):
     auth.login()
     response = client.post(
         url_for("articles.delete_article", slug=article.slug),
-        follow_redirects=True
+        follow_redirects=False
     )
     articles_after_deletion = models.Article.query.filter_by(user_id=user.id).all()
-    assert response.status_code == 200
+    assert response.status_code == 302
+    assert response.location == url_for("articles.articles", _external=False)
     assert len(articles_before_deletion) - 1 == len(articles_after_deletion)
 
 
