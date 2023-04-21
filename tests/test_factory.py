@@ -1,6 +1,6 @@
 from app import create_app
 
-from tests.testing_configs import TestConfig
+from config import TestConfig
 
 
 def test_config():

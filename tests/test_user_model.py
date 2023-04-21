@@ -3,7 +3,7 @@ import unittest
 
 from app import db, create_app, login
 from app.models import User, load_user
-from tests.testing_configs import TestConfig
+from config import TestConfig
 
 
 class UserModelCase(unittest.TestCase):

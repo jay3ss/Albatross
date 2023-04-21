@@ -2,7 +2,7 @@ import pytest
 
 from app import create_app, db, models
 from .helpers import AuthActions
-from .testing_configs import TestConfig
+from config import TestConfig
 
 
 @pytest.fixture

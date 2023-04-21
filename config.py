@@ -35,3 +35,12 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = env_var("TRACK_MODIFICATIONS", False)
     BOOTSTRAP_BOOTSWATCH_THEME = "litera"
+
+
+class TestConfig(Config):
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    APPLICATION_ROOT = ""
+    SERVER_NAME = "localhost.localdomain"
+    WTF_CSRF_ENABLED = False
