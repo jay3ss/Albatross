@@ -2,10 +2,12 @@
 
 {% block content %}
 
-<article class="col-lg-4">
-  <div class="bs-component">
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.content }}</p>
-  </div>
-</article>
+<div class="row">
+  <article class="col">
+    <div class="bs-component">
+      <h1>{{ article.title }}</h1>
+      <p>{{ article.content }}</p>
+    </div>
+  </article>
+</div>
 {% endblock %}
