@@ -102,6 +102,10 @@ def test_create_article(client, auth):
 
 def test_edit_article_while_authenticated(client, auth, article):
     auth.login()
+
+    response = client.get(url_for("articles.edit_article", slug=article.slug))
+    assert response.status_code == 200
+
     response = client.post(
         url_for("articles.edit_article", slug=article.slug),
         data={
