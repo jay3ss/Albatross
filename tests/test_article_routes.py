@@ -85,6 +85,16 @@ def test_get_single_article_while_not_authenticated(client, session):
     assert "Sign in" in response.text
 
 
+def test_create_article_while_not_authenticated(client):
+    response = client.get(
+        url_for("articles.create_article"),
+        follow_redirects=False
+    )
+    assert response.status_code == 302
+    login_url = url_for("auth.login", _external=False)
+    assert response.location[:len(login_url)] == login_url
+
+
 def test_create_article_while_authenticated(client, auth):
     auth.login()
     response = client.post(
