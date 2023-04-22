@@ -25,7 +25,7 @@ test:
 
 .PHONY: serve
 serve:
-	uvicorn albatross.main:app --reload
+	flask run
 
 .PHONY: coverage
 coverage:
