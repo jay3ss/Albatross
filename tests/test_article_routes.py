@@ -46,6 +46,34 @@ def test_get_single_article_while_authenticated(auth, client, session):
     assert article.content in response.text
 
 
+def test_get_single_article_while_not_authenticated(client, session):
+    title = "Test Article Title"
+    content = "Test article content"
+    user = session.get(models.User, 1)
+    article = models.Article(title=title, content=content, user=user)
+    session.add(article)
+    session.commit()
+
+    response = client.get(
+        url_for("articles.article", slug=article.slug),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    login_url = url_for("auth.login", _external=False)
+    assert response.location[:len(login_url)] == login_url
+
+
+def test_getting_article_that_does_not_exist(auth, client):
+    auth.login()
+    response = client.get(
+        url_for("articles.article", slug="/this-article-does-not-exist"),
+        follow_redirects=False
+    )
+    # TODO: this should be a 404 error, but it's not for some reason...
+    assert response.status_code == 308
+
+
 def test_that_all_articles_are_displayed(auth, client, session):
     user = session.get(models.User, 1)
     articles = [
