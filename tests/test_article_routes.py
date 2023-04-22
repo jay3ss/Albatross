@@ -1,6 +1,7 @@
 from flask import url_for
 
 from app import models
+from app.jinja.filters import datetime_format
 
 
 def test_attempt_to_get_all_articles_while_not_authenticated(client):
@@ -62,7 +63,7 @@ def test_that_all_articles_are_displayed(auth, client, session):
     response = client.get(url_for("articles.articles"))
     for article in articles:
         assert article.title in response.text
-        assert article.created_at.strftime('%Y-%m-%d') in response.text
+        assert datetime_format(article.created_at) in response.text
 
 
 def test_get_single_article_while_not_authenticated(client, session):
