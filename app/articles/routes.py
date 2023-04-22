@@ -16,7 +16,7 @@ def articles():
 @bp.route("/<slug>")
 @login_required
 def article(slug):
-    article = Article.query.filter_by(slug=slug).first()
+    article = db.first_or_404(db.select(Article).filter_by(slug=slug))
     return render_template("articles/article.html", article=article)
 
 

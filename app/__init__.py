@@ -44,6 +44,9 @@ def create_app(config_class: Config = Config) -> Flask:
     from app.articles import bp as articles_bp
     app.register_blueprint(articles_bp, url_prefix="/articles")
 
+    from app.errors import bp as errors_bp
+    app.register_blueprint(errors_bp)
+
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
