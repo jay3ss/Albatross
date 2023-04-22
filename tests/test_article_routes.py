@@ -216,3 +216,20 @@ def test_delete_article_while_not_authenticated(client, article):
     assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
     assert response.location[:len(login_url)] == login_url
+
+
+def test_deleting_article_that_does_not_belong_to_the_user(auth, client, session):
+    current_user = session.get(models.User, 1)
+    article = models.Article(title="Title", content="Content", user=current_user)
+    new_user = models.User(username="bob", email="bob@example.com")
+    password = "password"
+    new_user.set_password(password)
+    session.add(article)
+    session.add(new_user)
+    session.commit()
+
+    old_article_count = len(models.Article.query.all())
+
+    auth.login(username=new_user.username, password=password)
+    client.post(url_for("articles.delete_article", slug=article.slug))
+    assert old_article_count == len(models.Article.query.all())
