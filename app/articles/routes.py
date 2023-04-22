@@ -21,6 +21,7 @@ def article(slug):
 
 
 @bp.route("/new", methods=["get", "post"])
+@login_required
 def create_article():
     form = forms.CreateArticleForm()
     if form.validate_on_submit():
