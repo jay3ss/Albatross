@@ -85,14 +85,13 @@ def test_get_single_article_while_not_authenticated(client, session):
     assert "Sign in" in response.text
 
 
-def test_create_article(client, auth):
+def test_create_article_while_authenticated(client, auth):
     auth.login()
     response = client.post(
         url_for("articles.create_article"),
         data={
             "title": "Test Article",
             "content": "This is a test article content",
-            # "summary": "",
         },
         follow_redirects=True
     )
