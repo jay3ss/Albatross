@@ -1,7 +1,6 @@
 import unittest
 
-
-from app import db, create_app, login
+from app import db, create_app
 from app.models import User, load_user
 from config import TestConfig
 
