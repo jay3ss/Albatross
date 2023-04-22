@@ -124,6 +124,10 @@ def test_create_article_while_not_authenticated(client):
 
 def test_create_article_while_authenticated(client, auth):
     auth.login()
+
+    response = client.get(url_for("articles.create_article"))
+    assert response.status_code == 200
+
     response = client.post(
         url_for("articles.create_article"),
         data={
