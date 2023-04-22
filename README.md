@@ -1,6 +1,6 @@
 # Albatross
 
-This is a CMS for the [Pelican](https://blog.getpelican.com/) static site generator. It is a web-based application built with [FastAPI](https://fastapi.tiangolo.com/) and [Jinja](https://jinja.palletsprojects.com/).
+This is a CMS for the [Pelican](https://blog.getpelican.com/) static site generator. It is a web-based application built with [Flask](https://flask.palletsprojects.com//) and [Jinja](https://jinja.palletsprojects.com/).
 
 *Note*: This is experimental as I am developing this with the help of ChatGPT.
 
@@ -15,7 +15,7 @@ This is a CMS for the [Pelican](https://blog.getpelican.com/) static site genera
 
 - Python 3.10 or higher
 - Pelican
-- FastAPI
+- Flask
 - Jinja
 - SQLAlchemy
 - Pygments
