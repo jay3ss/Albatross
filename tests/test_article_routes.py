@@ -67,11 +67,10 @@ def test_get_single_article_while_not_authenticated(client, session):
 def test_getting_article_that_does_not_exist(auth, client):
     auth.login()
     response = client.get(
-        url_for("articles.article", slug="/this-article-does-not-exist"),
+        url_for("articles.article", slug="this-article-does-not-exist"),
         follow_redirects=False
     )
-    # TODO: this should be a 404 error, but it's not for some reason...
-    assert response.status_code == 308
+    assert response.status_code == 404
 
 
 def test_that_all_articles_are_displayed(auth, client, session):
