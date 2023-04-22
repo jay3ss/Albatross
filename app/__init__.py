@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 
+from app.jinja import register_jinja_mapping
 from config import Config
 
 
@@ -45,6 +46,9 @@ def create_app(config_class: Config = Config) -> Flask:
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    # register the custom filters
+    register_jinja_mapping(app)
 
     return app
 
