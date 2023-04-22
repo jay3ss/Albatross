@@ -1,3 +1,5 @@
+import string
+
 from flask import url_for
 
 import pytest
@@ -17,26 +19,43 @@ def test_register(client):
     assert response.status_code == 302
 
 
-@pytest.mark.parametrize(
-    ("username", "email", "password", "password2", "message"),
-    (
-        ("user", "user@example.com", "password", "password2", None),
-        ("user@1", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-        ("user name", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-        ("user@name", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-        ("user12345678901234567890", "user@example.com", "password", "password2", None),
-        ("user", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-        ("userこんにちは", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-        ("@user", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
-    ),
-)
-def test_registration_validating_username(client, username, email, password, password2, message):
-    # Perform username validation and check if the error message matches the expected value
-    data = dict(username=username, email=email, password=password, password2=password2)
-    response = client.post(url_for("auth.register"), data=data, follow_redirects=True)
+def test_registration_with_valid_usernames(client):
+    usernames = [f"user{end}" for end in ["", "137", "_", "-", "こんにちは"]]
+    email = "user@example.com"
+    password = "password"
+    message = "Username must contain only alphanumeric characters"
 
-    if message:
-        assert message in response.text
+    for username in usernames:
+        data = dict(
+            username=username,
+            email=email,
+            password=password,
+            password2=password
+        )
+        response = client.post(url_for("auth.register"), data=data)
+
+        assert message not in response.text
+
+
+def test_registration_with_invalid_usernames(client):
+    username = "user{char}"
+    email = "user@example.com"
+    password = "password"
+    message = "Username must contain only alphanumeric characters"
+
+    allowed_chars = "-_"
+    for char in string.punctuation:
+        if char not in allowed_chars:
+            data = dict(
+                username=username.format(char=char),
+                email=email,
+                password=password,
+                password2=password
+            )
+            response = client.post(url_for("auth.register"), data=data)
+
+            if message:
+                assert message in response.text
 
 
 @pytest.mark.parametrize(
