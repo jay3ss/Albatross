@@ -74,9 +74,12 @@ def generate_slug_before_insert(mapper, connection, target):
     slug = Article.generate_slug(target.title)
     while Article.query.filter_by(slug=slug).first() is not None:
         # Slug already exists, append a random letter or digit to make it unique
-        random_char = choices(string.ascii_letters + string.digits, k=1)[0] # pragma: no cover
-        slug = f"{slug}{random_char}" # pragma: no cover
+        random_char = choices(string.ascii_letters + string.digits, k=1)[
+            0
+        ]  # pragma: no cover
+        slug = f"{slug}{random_char}"  # pragma: no cover
     target.slug = slug
+
 
 # Define an event listener to generate slug before update
 # @event.listens_for(Article, "before_update")

@@ -55,20 +55,19 @@ def test_get_single_article_while_not_authenticated(client, session):
     session.commit()
 
     response = client.get(
-        url_for("articles.article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.article", slug=article.slug), follow_redirects=False
     )
 
     assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
-    assert response.location[:len(login_url)] == login_url
+    assert response.location[: len(login_url)] == login_url
 
 
 def test_getting_article_that_does_not_exist(auth, client):
     auth.login()
     response = client.get(
         url_for("articles.article", slug="this-article-does-not-exist"),
-        follow_redirects=False
+        follow_redirects=False,
     )
     assert response.status_code == 404
 
@@ -77,9 +76,7 @@ def test_that_all_articles_are_displayed(auth, client, session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(
-            title=f"This is Article {i}",
-            content=f"Test Article {i} Content",
-            user=user
+            title=f"This is Article {i}", content=f"Test Article {i} Content", user=user
         )
         for i in range(20)
     ]
@@ -105,21 +102,17 @@ def test_get_single_article_while_not_authenticated(client, session):
     assert response.status_code == 302
 
     response = client.get(
-        url_for("articles.article", slug=article.slug),
-        follow_redirects=True
+        url_for("articles.article", slug=article.slug), follow_redirects=True
     )
     assert response.status_code == 200
     assert "Sign in" in response.text
 
 
 def test_create_article_while_not_authenticated(client):
-    response = client.get(
-        url_for("articles.create_article"),
-        follow_redirects=False
-    )
+    response = client.get(url_for("articles.create_article"), follow_redirects=False)
     assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
-    assert response.location[:len(login_url)] == login_url
+    assert response.location[: len(login_url)] == login_url
 
 
 def test_create_article_while_authenticated(client, auth):
@@ -134,7 +127,7 @@ def test_create_article_while_authenticated(client, auth):
             "title": "Test Article",
             "content": "This is a test article content",
         },
-        follow_redirects=True
+        follow_redirects=True,
     )
     assert response.status_code == 200
     assert "Test Article" in response.text
@@ -152,7 +145,7 @@ def test_edit_article_while_authenticated(client, auth, article):
             "title": "Edited Article",
             "content": "This is an edit article content",
         },
-        follow_redirects=True
+        follow_redirects=True,
     )
     assert response.status_code == 200
     assert "Edited Article" in response.text
@@ -160,19 +153,17 @@ def test_edit_article_while_authenticated(client, auth, article):
 
 def test_edit_article_while_not_authenticated(article, client):
     response = client.get(
-        url_for("articles.edit_article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.edit_article", slug=article.slug), follow_redirects=False
     )
 
     assert response.status_code == 302
 
     # take care of 'next' parameter
     login_url = url_for("auth.login", _external=False)
-    assert response.location[:len(login_url)] == login_url
+    assert response.location[: len(login_url)] == login_url
 
     response = client.get(
-        url_for("articles.edit_article", slug=article.slug),
-        follow_redirects=True
+        url_for("articles.edit_article", slug=article.slug), follow_redirects=True
     )
 
     assert response.status_code == 200
@@ -198,8 +189,7 @@ def test_delete_article_while_authenticated(client, auth, article, session):
 
     auth.login()
     response = client.post(
-        url_for("articles.delete_article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.delete_article", slug=article.slug), follow_redirects=False
     )
     articles_after_deletion = models.Article.query.filter_by(user_id=user.id).all()
     assert response.status_code == 302
@@ -207,15 +197,12 @@ def test_delete_article_while_authenticated(client, auth, article, session):
     assert len(articles_before_deletion) - 1 == len(articles_after_deletion)
 
 
-
 def test_delete_article_while_not_authenticated(client, article):
-    response = client.post(
-        url_for("articles.delete_article", slug=article.slug)
-    )
+    response = client.post(url_for("articles.delete_article", slug=article.slug))
 
     assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
-    assert response.location[:len(login_url)] == login_url
+    assert response.location[: len(login_url)] == login_url
 
 
 def test_deleting_article_that_does_not_belong_to_the_user(auth, client, session):

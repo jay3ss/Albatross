@@ -41,10 +41,7 @@ def test_generate_slug_before_insert(session):
 # Test uniqueness of generated slugs
 def test_slug_uniqueness(session):
     title = "Test Article Title"
-    articles = [
-        Article(title=title, content="Test Article Content")
-        for _ in range(20)
-    ]
+    articles = [Article(title=title, content="Test Article Content") for _ in range(20)]
     session.add_all(articles)
     session.commit()
 
@@ -59,7 +56,7 @@ def test_article_creation(session):
         summary="Test Article Summary",
         content="Test Article Content",
         image_url="test.jpg",
-        user_id=1
+        user_id=1,
     )
     session.add(article)
     session.commit()
@@ -108,7 +105,7 @@ def test_article_update(session):
         summary="Test Article Summary",
         content="Test Article Content",
         image_url="test.jpg",
-        user_id=1
+        user_id=1,
     )
     session.add(article)
     session.commit()
@@ -137,7 +134,7 @@ def test_article_deletion(session):
         summary="Test Article Summary",
         content="Test Article Content",
         image_url="test.jpg",
-        user_id=1
+        user_id=1,
     )
     session.add(article)
     session.commit()
@@ -158,7 +155,7 @@ def test_article_get_by_id(session):
         summary="Test Article Summary",
         content="Test Article Content",
         image_url="test.jpg",
-        user_id=1
+        user_id=1,
     )
     session.add(article)
     session.commit()
@@ -179,7 +176,7 @@ def test_article_string_representation_with_author(session):
         summary="Test Article Summary",
         content="Test Article Content",
         image_url="test.jpg",
-        user_id=1
+        user_id=1,
     )
     session.add(article)
     session.commit()

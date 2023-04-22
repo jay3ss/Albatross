@@ -35,6 +35,6 @@ def register_filters(app: Flask) -> Flask:
     Adapted from:
     https://abstractkitchen.com/blog/how-to-create-custom-jinja-filters-in-flask/
     """
-    app.jinja_env.filters['datetime_format']: list = datetime_format
+    app.jinja_env.filters["datetime_format"]: list = datetime_format
 
     return app

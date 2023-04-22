@@ -27,10 +27,7 @@ def test_registration_with_valid_usernames(client):
 
     for username in usernames:
         data = dict(
-            username=username,
-            email=email,
-            password=password,
-            password2=password
+            username=username, email=email, password=password, password2=password
         )
         response = client.post(url_for("auth.register"), data=data)
 
@@ -50,7 +47,7 @@ def test_registration_with_invalid_usernames(client):
                 username=username.format(char=char),
                 email=email,
                 password=password,
-                password2=password
+                password2=password,
             )
             response = client.post(url_for("auth.register"), data=data)
 
@@ -117,7 +114,7 @@ def test_redirection_after_successful_login(client):
     response = client.post(
         url_for("auth.login"),
         data=dict(username="test", password="password"),
-        follow_redirects=True
+        follow_redirects=True,
     )
     assert response.request.path == url_for("main.index", _external=False)
 

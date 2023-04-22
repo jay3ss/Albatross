@@ -5,22 +5,121 @@ from app import db, models
 
 # List of male, female, and gender neutral first names from multiple cultures
 names = [
-    "Ayden", "Aisha", "Akira", "Alonso", "Amina", "Anahi", "Anaya", "Angel",
-    "Ari", "Aria", "Asa", "Avery", "Ayaan", "Bella", "Brayden", "Caleb",
-    "Camila", "Carlos", "Chase", "Christian", "Claire", "Daniel", "Daphne",
-    "Diego", "Eli", "Ella", "Elliot", "Eloise", "Emiliano", "Emma",
-    "Esperanza", "Ethan", "Evelyn", "Finn", "Gabriel", "Gia", "Giovanni",
-    "Grace", "Hazel", "Hudson", "Ingrid", "Isaac", "Isabella", "Ivan",
-    "Jaden", "Jasmine", "Jasper", "Jayden", "Jocelyn", "Jorge", "Josiah",
-    "Julia", "Kai", "Kian", "Kiera", "Koa", "Kyrie", "Landon", "Layla", "Leo",
-    "Liliana", "Lola", "Lucas", "Luciana", "Luna", "Lydia", "Maddox",
-    "Makayla", "Malakai", "Malia", "Marcelo", "Maria", "Mateo", "Maya", "Mia",
-    "Miles", "Milena", "Nadia", "Nash", "Natalie", "Nathaniel", "Nia", "Nina",
-    "Nora", "Oliver", "Oscar", "Paloma", "Penelope", "Rafael", "Rayaan",
-    "Reyansh", "Riley", "River", "Robert", "Rosalie", "Ryder", "Santiago",
-    "Sasha", "Sebastian", "Selena", "Sienna", "Sofia", "Solomon", "Sophia",
-    "Stella", "Talia", "Theo", "Valeria", "Victoria", "Xavier", "Yahir", "Yara",
-    "Zaid", "Zara", "Zion"
+    "Ayden",
+    "Aisha",
+    "Akira",
+    "Alonso",
+    "Amina",
+    "Anahi",
+    "Anaya",
+    "Angel",
+    "Ari",
+    "Aria",
+    "Asa",
+    "Avery",
+    "Ayaan",
+    "Bella",
+    "Brayden",
+    "Caleb",
+    "Camila",
+    "Carlos",
+    "Chase",
+    "Christian",
+    "Claire",
+    "Daniel",
+    "Daphne",
+    "Diego",
+    "Eli",
+    "Ella",
+    "Elliot",
+    "Eloise",
+    "Emiliano",
+    "Emma",
+    "Esperanza",
+    "Ethan",
+    "Evelyn",
+    "Finn",
+    "Gabriel",
+    "Gia",
+    "Giovanni",
+    "Grace",
+    "Hazel",
+    "Hudson",
+    "Ingrid",
+    "Isaac",
+    "Isabella",
+    "Ivan",
+    "Jaden",
+    "Jasmine",
+    "Jasper",
+    "Jayden",
+    "Jocelyn",
+    "Jorge",
+    "Josiah",
+    "Julia",
+    "Kai",
+    "Kian",
+    "Kiera",
+    "Koa",
+    "Kyrie",
+    "Landon",
+    "Layla",
+    "Leo",
+    "Liliana",
+    "Lola",
+    "Lucas",
+    "Luciana",
+    "Luna",
+    "Lydia",
+    "Maddox",
+    "Makayla",
+    "Malakai",
+    "Malia",
+    "Marcelo",
+    "Maria",
+    "Mateo",
+    "Maya",
+    "Mia",
+    "Miles",
+    "Milena",
+    "Nadia",
+    "Nash",
+    "Natalie",
+    "Nathaniel",
+    "Nia",
+    "Nina",
+    "Nora",
+    "Oliver",
+    "Oscar",
+    "Paloma",
+    "Penelope",
+    "Rafael",
+    "Rayaan",
+    "Reyansh",
+    "Riley",
+    "River",
+    "Robert",
+    "Rosalie",
+    "Ryder",
+    "Santiago",
+    "Sasha",
+    "Sebastian",
+    "Selena",
+    "Sienna",
+    "Sofia",
+    "Solomon",
+    "Sophia",
+    "Stella",
+    "Talia",
+    "Theo",
+    "Valeria",
+    "Victoria",
+    "Xavier",
+    "Yahir",
+    "Yara",
+    "Zaid",
+    "Zara",
+    "Zion",
 ]
 
 # Create list of tuples with name and email address
@@ -85,28 +184,35 @@ contents = [
 ]
 
 
-
 # Define a function to generate random titles
 def generate_title():
     words = [
-        "Lorem", "Ipsum", "Dolor", "sit", "Amet",
-        "Consectetur", "Adipiscing", "Elit", "sed", "Eget"
+        "Lorem",
+        "Ipsum",
+        "Dolor",
+        "sit",
+        "Amet",
+        "Consectetur",
+        "Adipiscing",
+        "Elit",
+        "sed",
+        "Eget",
     ]
-    title = " ".join(random.choice(words) for _ in range(3)) + " " + \
-            "".join(random.choice(string.ascii_letters) for _ in range(5))
+    title = (
+        " ".join(random.choice(words) for _ in range(3))
+        + " "
+        + "".join(random.choice(string.ascii_letters) for _ in range(5))
+    )
     return title
 
 
-users = [
-    models.User(username=name, email=email)
-    for name, email in name_email_tuples
-]
+users = [models.User(username=name, email=email) for name, email in name_email_tuples]
 [user.set_password("password") for user in users]
 articles = [
     models.Article(
         title=generate_title(),
         content=random.choice(contents),
-        user=random.choice(users)
+        user=random.choice(users),
     )
     for _ in range(1000)
 ]

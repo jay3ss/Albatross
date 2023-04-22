@@ -17,10 +17,12 @@ class RegistrationForm(FlaskForm):
             DataRequired(),
             Regexp(
                 regex=r"^[\w-]+$",
-                message=("Username must contain only alphanumeric "
-                         "characters, underscores, or hyphens.")
-            )
-        ]
+                message=(
+                    "Username must contain only alphanumeric "
+                    "characters, underscores, or hyphens."
+                ),
+            ),
+        ],
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
