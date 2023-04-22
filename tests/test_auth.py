@@ -1,4 +1,5 @@
 from flask import url_for
+
 import pytest
 
 
@@ -14,6 +15,28 @@ def test_register(client):
     )
     response = client.post(registration_url, data=data)
     assert response.status_code == 302
+
+
+@pytest.mark.parametrize(
+    ("username", "email", "password", "password2", "message"),
+    (
+        ("user", "user@example.com", "password", "password2", None),
+        ("user@1", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+        ("user name", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+        ("user@name", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+        ("user12345678901234567890", "user@example.com", "password", "password2", None),
+        ("user", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+        ("userこんにちは", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+        ("@user", "user@example.com", "password", "password2", "Username must contain only alphanumeric characters."),
+    ),
+)
+def test_registration_validating_username(client, username, email, password, password2, message):
+    # Perform username validation and check if the error message matches the expected value
+    data = dict(username=username, email=email, password=password, password2=password2)
+    response = client.post(url_for("auth.register"), data=data, follow_redirects=True)
+
+    if message:
+        assert message in response.text
 
 
 @pytest.mark.parametrize(
