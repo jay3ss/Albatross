@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), nullable=False, index=True, unique=True)
+    username_lower = db.Column(db.String(128), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), index=True, unique=True)
     joined_on = db.Column(db.DateTime, default=dt.utcnow)
     updated_at = db.Column(db.DateTime, default=dt.utcnow, onupdate=dt.utcnow)
@@ -67,7 +68,7 @@ class Article(db.Model):
     slug = db.Column(db.String, unique=True, name="uq_article_slug", index=True)
     is_draft = db.Column(db.Boolean, default=True, nullable=False)
 
-    # Define many-to-many relationship with Article
+    # Define many-to-many relationship with ArticleData
     data = db.relationship(
         "ArticleData",
         secondary=article_articledata,
