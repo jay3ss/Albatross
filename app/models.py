@@ -31,6 +31,20 @@ class User(UserMixin, db.Model):
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def is_username_taken(username: str) -> bool:
+        """
+        Checks if the given username is taken
+
+        Args:
+            username (str): The username to check
+
+        Returns:
+            bool: True if the username is taken, False otherwise
+        """
+        user = User.query.filter_by(username_lower=username.lower()).first()
+        return user is not None
+
     def __repr__(self) -> str:
         return f"<User(name={self.username})>"
 
