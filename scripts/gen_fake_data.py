@@ -207,6 +207,7 @@ def generate_title():
 
 
 users = [models.User(username=name, email=email) for name, email in name_email_tuples]
+# users = models.User.query.all()
 [user.set_password("password") for user in users]
 articles = [
     models.Article(
@@ -214,7 +215,7 @@ articles = [
         content=random.choice(contents),
         user=random.choice(users),
     )
-    for _ in range(1000)
+    for _ in range(5000)
 ]
 
 
