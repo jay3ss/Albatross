@@ -1,6 +1,7 @@
 import pytest
 
 from app import create_app, db, models
+from app.helpers import users as uh
 from .helpers import AuthActions
 from config import TestConfig
 
@@ -15,10 +16,12 @@ def app():
     db.create_all()
 
     # create the user in the database so we can log in
-    u = models.User(username="test", email="test@example.com")
-    u.set_password("password")
-    db.session.add(u)
-    db.session.commit()
+    uh.register(
+        username="test",
+        email="test@example.com",
+        password="password",
+        session=db.session
+    )
 
     yield app
 
