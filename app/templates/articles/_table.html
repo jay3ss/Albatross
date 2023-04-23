@@ -1,24 +1,9 @@
+{% from "bootstrap5/pagination.html" import render_pager %}
 {% from "bootstrap5/table.html" import render_table %}
-
 
 <div class="row">
   <div class="col">
-    {# {{
-      render_table(
-        articles,
-        titles=[("title", "Title"), ("created_at", "Created On")],
-        urlize_columns=("title"),
-        responsive=True,
-        show_actions=True,
-        model=Article,
-        view_url=("articles.article", [("slug", ":slug")]),
-        edit_url=("articles.edit_article", [("slug", ":slug")]),
-        delete_url=("articles.delete_article", [("slug", ":slug")]),
-        table_classes="table-borderless",
-        actions_title="View/Edit/Delete",
-      )
-    }} #}
-    {# columns: title (w/link), published date, actions (edit/delete) #}
+    {# columns: title (w/link), published date, is_draft, actions (edit/delete) #}
     <div class="table-responsive">
       <table class="table table-borderless align-middle">
         <thead>
@@ -59,6 +44,12 @@
         </tbody>
       </table>
     </div>
+
+    {% if articles|length > pagination.per_page %}
+    <div class="breadcrumbs">
+      {{ render_pager(pagination) }}
+    </div>
+    {% endif %}
   </div>
 </div>
 
