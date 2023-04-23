@@ -83,7 +83,7 @@ def test_redirect_when_trying_to_register_while_authenticated(client, auth):
     auth.login()
 
     response = client.get(url_for("auth.register"), follow_redirects=True)
-    assert response.request.path == url_for("main.index", _external=False)
+    assert response.request.path == url_for("articles.articles", _external=False)
 
 
 def test_login(client, auth):
@@ -116,7 +116,7 @@ def test_redirection_after_successful_login(client):
         data=dict(username="test", password="password"),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("main.index", _external=False)
+    assert response.request.path == url_for("articles.articles", _external=False)
 
 
 def test_logout(auth):
