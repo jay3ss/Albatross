@@ -72,13 +72,13 @@ def test_getting_article_that_does_not_exist(auth, client):
     assert response.status_code == 404
 
 
-def test_that_all_articles_are_displayed(auth, client, session):
+def test_that_all_articles_are_displayed(app, auth, client, session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(
             title=f"This is Article {i}", content=f"Test Article {i} Content", user=user
         )
-        for i in range(20)
+        for i in range(app.config["ARTICLES_PER_PAGE"] - 1)
     ]
     session.add_all(articles)
 
@@ -220,3 +220,124 @@ def test_deleting_article_that_does_not_belong_to_the_user(auth, client, session
     auth.login(username=new_user.username, password=password)
     client.post(url_for("articles.delete_article", slug=article.slug))
     assert old_article_count == len(models.Article.query.all())
+
+
+def test_pagination_no_articles(auth, client):
+    # Test that no pagination is shown when there are no articles
+    auth.login()
+    response = client.get(url_for("articles.articles"), follow_redirects=True)
+    assert response.status_code == 200
+    assert response.request.path == url_for("articles.articles", _external=False)
+    assert "No articles found." in response.text
+    assert "Next" not in response.text
+    assert "Prev" not in response.text
+
+
+def test_pagination_less_than_articles_per_page(auth, client, session):
+    # Set up the Config object with the desired ARTICLES_PER_PAGE value
+    # app.config["ARTICLES_PER_PAGE"] = 10
+
+    # Create test data for articles
+    username = "fake_user"
+    password = "password"
+    user = models.User(username=username, email="e@example.com")
+    user.set_password(password)
+    article = models.Article(title=f"Article 0", content="Content", user=user)
+
+    # Save the test data to the database
+    session.add(article)
+    session.commit()
+
+    # Test that no pagination is shown when there are less articles than
+    # ARTICLES_PER_PAGE
+    auth.login(username=username, password=password)
+    response = client.get(url_for("articles.articles"))
+    assert "Article 0" in response.text
+    assert "Next" not in response.text
+    assert "Prev" not in response.text
+
+
+def test_pagination_same_as_articles_per_page(app, auth, client, session):
+    # Set up the Config object with the desired ARTICLES_PER_PAGE value
+    app.config["ARTICLES_PER_PAGE"] = 10
+
+    # Create test data for articles
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content="Content", user=user)
+        for i in range(app.config["ARTICLES_PER_PAGE"])
+    ]
+
+    # Save the test data to the database
+    session.add_all(articles)
+    session.commit()
+
+    # Test that no pagination is shown when there are the same number of articles
+    # as ARTICLES_PER_PAGE
+    auth.login()
+    response = client.get(url_for("articles.articles"))
+    assert "Article 0" in response.text
+    assert "Article 9" in response.text
+    assert "Next" not in response.text
+    assert "Prev" not in response.text
+
+
+def test_pagination_more_than_articles_per_page(app, auth, client, session):
+    # Set up the Config object with the desired ARTICLES_PER_PAGE value
+    app.config["ARTICLES_PER_PAGE"] = 10
+
+    # Create test data for articles
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content="Content", user=user)
+        for i in range(app.config["ARTICLES_PER_PAGE"] + 1)
+    ]
+
+    # Save the test data to the database
+    session.add_all(articles)
+    session.commit()
+
+    # Test that pagination is shown when there are more articles than
+    # ARTICLES_PER_PAGE
+    auth.login()
+    response = client.get(url_for("articles.articles"))
+    assert "Article 0" in response.text
+    assert "Article 9" in response.text
+    assert "Next" in response.text
+
+
+def test_pagination_pagination_links(app, auth, client, session):
+    # Set up the Config object with the desired ARTICLES_PER_PAGE value
+    app.config["ARTICLES_PER_PAGE"] = 10
+
+    # Create test data for articles
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content="Content", user=user)
+        for i in range(app.config["ARTICLES_PER_PAGE"] * 5)
+    ]
+
+    # Save the test data to the database
+    session.add_all(articles)
+    session.commit()
+
+    auth.login()
+    response = client.get(url_for("articles.articles"))
+    assert "Article 0" in response.text
+    assert "Article 9" in response.text
+
+    response = client.get(url_for("articles.articles", page=2))
+    assert "Article 10" in response.text
+    assert "Article 14" in response.text
+
+    response = client.get(url_for("articles.articles", page=1))
+    assert "Article 0" in response.text
+    assert "Article 9" in response.text
+
+    response = client.get(url_for("articles.articles", page=3))
+    assert "Article 10" not in response.text
+    assert "Article 14" not in response.text
+
+    response = client.get(url_for("articles.articles", page=4))
+    assert "Article 10" not in response.text
+    assert "Article 14" not in response.text
