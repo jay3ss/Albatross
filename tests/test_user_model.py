@@ -1,38 +1,48 @@
-import unittest
-
-from app import db, create_app
+from app.helpers import users as uh
 from app.models import User, load_user
-from config import TestConfig
 
 
-class UserModelCase(unittest.TestCase):
-    def setUp(self) -> None:
-        self.app = create_app(TestConfig)
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.create_all()
+def test_password_hashing(session):
+    uh.register("bill", "bill@example.com", "cat", session)
+    u = User.query.filter_by(username="bill").first()
 
-    def tearDown(self) -> None:
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
+    assert not u.check_password("dog")
+    assert u.check_password("cat")
 
-    def test_password_hashing(self) -> None:
-        u = User(username="susan")
-        u.set_password("cat")
-        self.assertFalse(u.check_password("dog"))
-        self.assertTrue(u.check_password("cat"))
 
-    def test_string_representation(self):
-        name = "susan"
-        u = User(username=name)
-        assert name in str(u)
+def test_string_representation():
+    name = "susan"
+    u = User(username=name)
+    assert name in str(u)
 
-    def test_loading_of_user(self):
-        u = User(username="test", email="test@example.com")
-        u.set_password("password")
-        db.session.add(u)
-        db.session.commit()
-        loaded_user = load_user(u.id)
 
-        assert loaded_user.id == u.id
+def test_loading_of_user(app):
+    user_id = 1
+    loaded_user = load_user(user_id)
+
+    assert loaded_user.id == user_id
+
+
+def test_username_uniqueness(session):
+    # Create a user
+    result = uh.register("Bill", "bill@example.com", "password", session)
+    assert result
+
+    # Attempt to create another user with the same username (different
+    # capitalization)
+    result = uh.register("BiLl", "bill@example.com", "password", session)
+    assert not result
+
+
+def test_username_uniqueness_case_insensitive(session):
+    # Create a user
+    result = uh.register("Bill", "bill@example.com", "password", session)
+    assert result
+
+    result = uh.register("bILL", "william@example.com", "password", session)
+    assert not result
+
+    # Check if the username is unique (case-insensitive)
+    assert User.is_username_taken("bILL")
+    assert User.is_username_taken('bill')
+    assert User.is_username_taken('BILl')
