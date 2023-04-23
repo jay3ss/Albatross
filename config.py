@@ -35,6 +35,7 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = env_var("TRACK_MODIFICATIONS", False)
     BOOTSTRAP_BOOTSWATCH_THEME = "litera"
+    ARTICLES_PER_PAGE = env_var("ARTICLES_PER_PAGE", 25)
 
 
 class TestConfig(Config):
@@ -44,3 +45,4 @@ class TestConfig(Config):
     APPLICATION_ROOT = ""
     SERVER_NAME = "localhost.localdomain"
     WTF_CSRF_ENABLED = False
+    ARTICLES_PER_PAGE = 10

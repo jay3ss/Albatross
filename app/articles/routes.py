@@ -1,4 +1,5 @@
-from flask import flash, redirect, render_template, url_for
+from flask import (current_app, flash, redirect, render_template, request,
+                   url_for)
 from flask_login import current_user, login_required
 
 from app import db
@@ -9,8 +10,21 @@ from app.models import Article
 @bp.route("/")
 @login_required
 def articles():
-    articles = Article.query.filter_by(user=current_user).all()
-    return render_template("articles/articles.html", articles=articles, Article=Article)
+    per_page = current_app.config["ARTICLES_PER_PAGE"]
+    page = request.args.get("page", 1, type=int)
+    pagination = (
+    Article
+        .query
+        .filter_by(user=current_user)
+        .paginate(page=page, per_page=per_page)
+    )
+    articles = pagination.items
+    return render_template(
+        "articles/articles.html",
+        articles=articles,
+        Article=Article,
+        pagination=pagination
+    )
 
 
 @bp.route("/<slug>")

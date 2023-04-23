@@ -1,5 +1,4 @@
 {% from "bootstrap5/pagination.html" import render_pager %}
-{% from "bootstrap5/table.html" import render_table %}
 
 <div class="row">
   <div class="col">
@@ -44,12 +43,6 @@
         </tbody>
       </table>
     </div>
-
-    {% if articles|length > pagination.per_page %}
-    <div class="breadcrumbs">
-      {{ render_pager(pagination) }}
-    </div>
-    {% endif %}
   </div>
 </div>
 

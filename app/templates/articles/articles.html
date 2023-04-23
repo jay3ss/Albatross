@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% from "bootstrap5/pagination.html" import render_pager %}
+
 
 {% block content %}
 <div class="row">
@@ -13,8 +15,15 @@
     <div class="bs-component">
     {% if articles %}
       {% include "articles/_table.html" %}
+
+      {% if pagination.total > pagination.per_page %}
+      <div class="breadcrumbs">
+        {{ render_pager(pagination) }}
+      </div>
+      {% endif %}
     {% else %}
       <p>No articles found. Click the link  below to create your first article!</p>
+
     {% endif %}
     <p>
       <a class="btn btn-primary" href="{{ url_for('articles.create_article') }}">
