@@ -12,35 +12,9 @@
   <div class="col col-md-10">
     <div class="bs-component">
     {% if articles %}
-    {#
-      {% for article in articles %}
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <a href="{{ url_for('articles.article', slug=article.slug) }}">
-            {{ article.title }}
-          </a>
-          <span class="badge bg-primary">
-            {{ article.created_at.strftime('%Y-%m-%d') }}
-          </span>
-          <div class="">
-            <form action="{{ url_for('articles.delete_article', slug=article.slug) }}" method="post">
-              <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">
-                Delete
-              </button>
-              <a href="{{ url_for('articles.edit_article', slug=article.slug) }}" class="btn btn-primary">
-            </form>
-            Edit
-            </a>
-          </div>
-          <a href="{{ url_for('articles.delete_article', slug=article.slug) }}" class="btn btn-danger">
-            Delete
-          </a>
-        </li>
-      </ul>
-
-      {% endfor %}
-      #}
       {% include "articles/_table.html" %}
+    {% else %}
+      <p>No articles found. Click the link  below to create your first article!</p>
     {% endif %}
     <p>
       <a class="btn btn-primary" href="{{ url_for('articles.create_article') }}">
