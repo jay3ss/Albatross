@@ -206,7 +206,10 @@ def generate_title():
     return title
 
 
-users = [models.User(username=name, email=email) for name, email in name_email_tuples]
+users = [
+    models.User(username=name, username_lower=name.lower(), email=email)
+    for name, email in name_email_tuples
+]
 # users = models.User.query.all()
 [user.set_password("password") for user in users]
 articles = [
