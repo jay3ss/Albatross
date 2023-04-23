@@ -34,6 +34,24 @@ class User(UserMixin, db.Model):
         return f"<User(name={self.username})>"
 
 
+article_articledata = db.Table(
+    "article_articledata",
+    db.Column("article_id", db.Integer, db.ForeignKey("articles.id"), primary_key=True),
+    db.Column("metadata_id", db.Integer, db.ForeignKey("articledata.id"), primary_key=True),
+)
+
+
+class ArticleData(db.Model):
+    __tablename__ = "articledata"
+
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(64), nullable=False)
+    value = db.Column(db.String(256), nullable=False)
+
+    def __repr__(self):
+        return f"<ArticleData(key='{self.key}', value='{self.value}')>"
+
+
 class Article(db.Model):
     __tablename__ = "articles"
 
@@ -48,6 +66,13 @@ class Article(db.Model):
     user = db.relationship("User")
     slug = db.Column(db.String, unique=True, name="uq_article_slug", index=True)
     is_draft = db.Column(db.Boolean, default=True, nullable=False)
+
+    # Define many-to-many relationship with Article
+    data = db.relationship(
+        "ArticleData",
+        secondary=article_articledata,
+        lazy="dynamic",
+    )
 
     @staticmethod
     def generate_slug(title: str) -> str:
