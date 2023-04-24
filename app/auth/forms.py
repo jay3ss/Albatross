@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, Email, Regexp
 
+from app.validators import UniqueEmail
+
 
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
@@ -24,7 +26,7 @@ class RegistrationForm(FlaskForm):
             ),
         ],
     )
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    email = StringField("Email", validators=[DataRequired(), Email(), UniqueEmail()])
     password = PasswordField("Password", validators=[DataRequired()])
     password2 = PasswordField(
         "Confirm Password", validators=[DataRequired(), EqualTo("password")]
