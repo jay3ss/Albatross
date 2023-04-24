@@ -1,7 +1,9 @@
 import string
+from unittest.mock import patch
 
 from flask import url_for
 import pytest
+from wtforms import ValidationError
 
 from app import models
 from app.helpers import users as uh
@@ -73,14 +75,27 @@ def test_registration_with_invalid_usernames(client):
         ("a", "a@example", "", "", "This field is required."),
         ("a", "a@example", "asdf", "", "This field is required."),
         ("a", "a@example", "", "asdf", "This field is required."),
-        ("test", "test@example.com", "password", "password", "already exists"),
         ("test", "email@example.com", "password", "password", "already exists"),
-        ("username", "test@example.com", "password", "password", "already exists"),
     ),
 )
 def test_register_validate_input(client, username, email, password, password2, message):
     data = dict(username=username, email=email, password=password, password2=password2)
     response = client.post(url_for("auth.register"), data=data, follow_redirects=True)
+
+    assert message in response.text
+
+
+def test_register_email_already_exist(client):
+    data = dict(
+        username="user2379637",
+        email="test@example.com",
+        password="password",
+        password2="password"
+    )
+    message = "Email is already taken."
+
+    with patch.object(models.User, 'is_email_taken', return_value=True):
+        response = client.post(url_for("auth.register"), data=data, follow_redirects=True)
 
     assert message in response.text
 
