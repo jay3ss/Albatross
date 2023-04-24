@@ -42,3 +42,14 @@ def test_getting_userpage_while_authenticated(auth, client, session):
     )
     assert response.status_code == 200
     assert user.username in response.text
+
+
+def test_capitalization_agnostic_user_profile_routing(auth, client, session):
+    user = session.get(models.User, 1)
+    auth.login()
+
+    response = client.get(url_for("main.profile", username=user.username))
+    assert response.status_code == 200
+
+    response = client.get(url_for("main.profile", username=user.username.upper()))
+    assert response.status_code == 200
