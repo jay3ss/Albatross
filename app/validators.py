@@ -12,6 +12,7 @@ Exceptions:
 - None
 """
 from wtforms import ValidationError
+from app import models
 
 
 class UniqueEmail:
@@ -26,4 +27,5 @@ class UniqueEmail:
         self.message = message
 
     def __call__(self, form, field):
+        if models.User.is_email_taken(field.data):
             raise ValidationError(self.message)
