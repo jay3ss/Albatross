@@ -45,6 +45,20 @@ class User(UserMixin, db.Model):
         user = User.query.filter_by(username_lower=username.lower()).first()
         return user is not None
 
+    @staticmethod
+    def is_email_taken(email: str) -> bool:
+        """
+        Checks if the given email is taken
+
+        Args:
+            email (str): The email to check
+
+        Returns:
+            bool: True if the email is taken, False otherwise
+        """
+        user = User.query.filter_by(email=email.lower()).first()
+        return user is not None
+
     def __repr__(self) -> str:
         return f"<User(name={self.username})>"
 
