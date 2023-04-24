@@ -5,6 +5,7 @@ import string
 from flask_login import UserMixin
 from sqlalchemy import event
 from werkzeug.security import check_password_hash, generate_password_hash
+from wtforms import ValidationError
 
 from app import db, login
 from app.helpers.articles import generate_slug
@@ -144,6 +145,18 @@ def generate_slug_before_insert(mapper, connection, target):
 #         random_char = choices(string.ascii_letters + string.digits, k=1)[0] # pragma: no cover
 #         slug = f"{slug}{random_char}" # pragma: no cover
 #     target.slug = slug
+
+
+# Define an event listener to set the lowercase version of the user's email
+@event.listens_for(User, "before_insert")
+def generate_slug_before_insert(mapper, connection, target):
+    target.email = target.email.lower()
+
+
+# Define an event listener to set the lowercase version of the user's email
+@event.listens_for(User, "before_update")
+def generate_slug_before_update(mapper, connection, target):
+    target.email = target.email.lower()
 
 
 @login.user_loader
