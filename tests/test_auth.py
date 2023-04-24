@@ -1,31 +1,36 @@
 import string
 
 from flask import url_for
-
 import pytest
+
+from app import models
 
 
 def test_register(client):
     registration_url = url_for("auth.register", _external=False)
     assert client.get(registration_url).status_code == 200
-
+    assert not models.User.is_username_taken("non-existent-user")
     data = data = dict(
         username="non-existent-user",
         email="non-existent-email@example.com",
         password="password",
         password2="password",
     )
-    response = client.post(registration_url, data=data)
+    response = client.post(
+        registration_url, data=data, follow_redirects=False
+    )
+    assert models.User.is_username_taken("non-existent-user")
     assert response.status_code == 302
 
 
 def test_registration_with_valid_usernames(client):
-    usernames = [f"user{end}" for end in ["", "137", "_", "-", "こんにちは"]]
-    email = "user@example.com"
+    endings = ["", "137", "_", "-", "こんにちは"]
+    usernames = [f"user{end}" for end in endings]
+    emails = [f"{username}@example.com" for username in usernames]
     password = "password"
     message = "Username must contain only alphanumeric characters"
 
-    for username in usernames:
+    for username, email in zip(usernames, emails):
         data = dict(
             username=username, email=email, password=password, password2=password
         )
@@ -83,7 +88,7 @@ def test_redirect_when_trying_to_register_while_authenticated(client, auth):
     auth.login()
 
     response = client.get(url_for("auth.register"), follow_redirects=True)
-    assert response.request.path == url_for("articles.articles", _external=False)
+    assert response.request.path == url_for("main.profile", username="test", _external=False)
 
 
 def test_login(client, auth):
@@ -116,7 +121,7 @@ def test_redirection_after_successful_login(client):
         data=dict(username="test", password="password"),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("articles.articles", _external=False)
+    assert response.request.path == url_for("main.profile", username="test", _external=False)
 
 
 def test_logout(auth):
