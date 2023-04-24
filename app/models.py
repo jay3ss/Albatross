@@ -22,7 +22,7 @@ class User(UserMixin, db.Model):
     articles = db.relationship(
         "Article", back_populates="user", cascade="all, delete-orphan"
     )
-    # about = db.Column(db.String(140), nullable=True)
+    about = db.Column(db.String(280), nullable=True)
     password_hash = db.Column(db.String(128))
 
     def set_password(self, password: str):
