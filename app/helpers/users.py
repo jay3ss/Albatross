@@ -42,6 +42,5 @@ def register(username: str, email: str, password: str, session: SQLAlchemy = db.
         session.commit()
         return True
     except:
-        db.session.rollback()
+        session.rollback()
         return False
-
