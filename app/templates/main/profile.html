@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>Welcome, {{ user.username }}!</h1>
+  <h1 class="text-center">Welcome, {{ user.username }}!</h1>
   <p>You have written {{ user.articles|length }} articles.</p>
   <a href="{{ url_for('articles.create_article') }}" class="btn btn-primary">Create New Article</a>
   <a href="{{ url_for('articles.articles') }}" class="btn btn-primary">View Articles</a>
