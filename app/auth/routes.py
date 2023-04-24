@@ -4,6 +4,7 @@ from werkzeug.urls import url_parse
 
 from app import db, models
 from app.auth import bp, forms
+from app.helpers import users as uh
 
 
 @bp.route("/login", methods=["get", "post"])
@@ -39,17 +40,15 @@ def register():
 
     form = forms.RegistrationForm()
     if form.validate_on_submit():
-        user_by_email = models.User.query.filter_by(email=form.email.data).first()
-        user_by_username = models.User.query.filter_by(
-            username=form.username.data
-        ).first()
-        if user_by_email or user_by_username:
+        successful_registration = uh.register(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data,
+            session=db.session,
+        )
+        if not successful_registration:
             flash("A user with that name or email already exists.", "danger")
         else:
-            user = models.User(username=form.username.data, email=form.email.data)
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
             flash("Congratulations, you are now a registered user!", "success")
             return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form, title="Register")
