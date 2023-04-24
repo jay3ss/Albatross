@@ -4,6 +4,10 @@
 <div class="container mt-5">
   <h1 class="text-center">Welcome, {{ user.username }}!</h1>
   <p>You have written {{ user.articles|length }} articles.</p>
+  {% if user.about_me %}
+  <h2>About Me</h2>
+  <p>{{ user.about_me }}</p>
+  {% endif %}
   <a href="{{ url_for('articles.create_article') }}" class="btn btn-primary">Create New Article</a>
   <a href="{{ url_for('articles.articles') }}" class="btn btn-primary">View Articles</a>
   {# <a href="{{ url_for('articles.compile') }}" class="btn btn-primary">Compile Articles</a> #}
