@@ -1,6 +1,7 @@
 from flask import url_for
 
 from app import models
+from app.helpers import users as uh
 from app.jinja.filters import datetime_format
 
 
@@ -208,16 +209,20 @@ def test_delete_article_while_not_authenticated(client, article):
 def test_deleting_article_that_does_not_belong_to_the_user(auth, client, session):
     current_user = session.get(models.User, 1)
     article = models.Article(title="Title", content="Content", user=current_user)
-    new_user = models.User(username="bob", email="bob@example.com")
+    username = "bob"
     password = "password"
-    new_user.set_password(password)
+    uh.register(
+        username="bob",
+        email="bob@example.com",
+        password=password,
+        session=session
+    )
     session.add(article)
-    session.add(new_user)
     session.commit()
 
     old_article_count = len(models.Article.query.all())
 
-    auth.login(username=new_user.username, password=password)
+    auth.login(username=username, password=password)
     client.post(url_for("articles.delete_article", slug=article.slug))
     assert old_article_count == len(models.Article.query.all())
 
@@ -240,7 +245,13 @@ def test_pagination_less_than_articles_per_page(auth, client, session):
     # Create test data for articles
     username = "fake_user"
     password = "password"
-    user = models.User(username=username, email="e@example.com")
+    uh.register(
+        username=username,
+        email="e@example.com",
+        password=password,
+        session=session
+    )
+    user = session.get(models.User, 2)
     user.set_password(password)
     article = models.Article(title=f"Article 0", content="Content", user=user)
 
