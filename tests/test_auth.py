@@ -4,6 +4,7 @@ from flask import url_for
 import pytest
 
 from app import models
+from app.helpers import users as uh
 
 
 def test_register(client):
@@ -129,3 +130,18 @@ def test_logout(auth):
 
     response = auth.logout()
     assert response.status_code == 302
+
+
+def test_register_case_insensitive_email(client, session):
+    user = session.get(models.User, 1)
+    data = dict(
+        username="bill",
+        email=user.email.upper(),
+        password="cat",
+        password2="cat"
+    )
+    response = client.post(
+        url_for("auth.register"),
+        data=dict(username="bill", email=user.email.upper(), password="password", password2="password")
+    )
+    assert "Email is already taken" in response.text
