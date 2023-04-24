@@ -46,3 +46,19 @@ def test_username_uniqueness_case_insensitive(session):
     assert User.is_username_taken("bILL")
     assert User.is_username_taken('bill')
     assert User.is_username_taken('BILl')
+
+def test_email_uniqueness(session):
+    user = session.get(User, 1)
+
+    assert User.is_email_taken(user.email)
+    assert not User.is_email_taken("blah@blah.com")
+
+
+def test_email_uniqueness_case_insensitive(session):
+    # Create a user
+    user = session.get(User, 1)
+
+    # Check if the email is unique (case-insensitive)
+    assert User.is_email_taken(user.email.upper())
+    assert User.is_email_taken(user.email.capitalize())
+    assert User.is_email_taken("TeSt@ExAmPlE.com")
