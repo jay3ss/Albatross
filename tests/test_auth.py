@@ -3,10 +3,8 @@ from unittest.mock import patch
 
 from flask import url_for
 import pytest
-from wtforms import ValidationError
 
 from app import models
-from app.helpers import users as uh
 
 
 def test_register(client):
