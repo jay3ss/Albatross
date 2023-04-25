@@ -31,6 +31,26 @@ class User(UserMixin, db.Model):
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
+    @property
+    def num_drafts(self) -> int:
+        """
+        Returns the number of articles that are marked as a draft.
+
+        Returns:
+            int: the number of articles that are marked as a draft.
+        """
+        return len([a for a in self.articles if a.is_draft])
+
+    @property
+    def num_published(self) -> int:
+        """
+        Returns the number of articles that are marked as a draft.
+
+        Returns:
+            int: the number of articles that are marked as a draft.
+        """
+        return len([a for a in self.articles if not a.is_draft])
+
     @staticmethod
     def is_username_taken(username: str) -> bool:
         """
