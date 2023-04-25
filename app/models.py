@@ -159,6 +159,24 @@ def generate_slug_before_update(mapper, connection, target):
     target.email = target.email.lower()
 
 
+# Define an event listener to set the lowercase version of the user's username
+@event.listens_for(User, "before_insert")
+def generate_slug_before_insert(mapper, connection, target):
+    target.username_lower = target.username.lower()
+
+
+# Define an event listener to set the lowercase version of the user's username
+@event.listens_for(User, "before_update")
+def generate_slug_before_update(mapper, connection, target):
+    target.username_lower = target.username.lower()
+
+
+# Define an event listener to set the updated datetime
+@event.listens_for(User, "before_update")
+def generate_slug_before_update(mapper, connection, target):
+    target.updated_at = dt.utcnow()
+
+
 @login.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
