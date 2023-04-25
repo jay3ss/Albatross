@@ -1,5 +1,5 @@
 from app.helpers import users as uh
-from app.models import User, load_user
+from app.models import Article, User, load_user
 
 
 def test_password_hashing(session):
@@ -80,3 +80,48 @@ def test_generate_slug_before_update(session):
     session.commit()
 
     assert user.username_lower == "janedoe"
+
+
+def test_generate_slug_before_update(session):
+    user = User(username="JohnDoe", email="jd@example.com")
+    session.add(user)
+    session.commit()
+
+    updated_at = user.updated_at
+
+    user.username = "JaneDoe"
+    session.commit()
+
+    assert user.updated_at is not None
+    assert updated_at < user.updated_at
+
+
+def test_num_drafts(session):
+    # Create a test User object
+    user = User()
+
+    # Create some test articles
+    article1 = Article(is_draft=True)
+    article2 = Article(is_draft=True)
+    article3 = Article(is_draft=False)
+
+    # Add articles to user's articles list
+    user.articles = [article1, article2, article3]
+
+    # Test num_drafts property
+    assert user.num_drafts == 2  # Expect 2 drafts
+
+def test_num_published(session):
+    # Create a test User object
+    user = User()
+
+    # Create some test articles
+    article1 = Article(is_draft=True)
+    article2 = Article(is_draft=True)
+    article3 = Article(is_draft=False)
+
+    # Add articles to user's articles list
+    user.articles = [article1, article2, article3]
+
+    # Test num_published property
+    assert user.num_published == 1  # Expect 1 published article
