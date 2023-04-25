@@ -3,14 +3,47 @@
 {% block content %}
 <div class="container mt-5">
   <h1 class="text-center">Welcome, {{ user.username }}!</h1>
-  <p>You have written {{ user.articles|length }} articles.</p>
-  {% if user.about_me %}
   <h2>About Me</h2>
-  <p>{{ user.about_me }}</p>
+  {% if user.about %}
+  <p>{{ user.about }}</p>
+  {% else %}
+    <p>Click below to add info about yourself!</p>
   {% endif %}
+  <a href="{{ url_for('main.update_profile', username=user.username) }}"
+     class="btn btn-primary" >
+    Edit Profile
+  </a>
+  {% if user.updated_at %}
+    <p><small class="text-muted">
+      You last updated your profile on
+      {{ user.updated_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+    </small></p>
+  {% endif %}
+  <h2>Your Content</h2>
+  About your content:
+  <ul>
+    <li>You have written {{ user.articles|length }} articles.</li>
+    <li>You have {{ user.num_drafts }} drafts.</li>
+    <li>You have {{ user.num_published }} published articles.</li>
+  </ul>
+  <div class="d-flex justify-content-center">
+    <div class="btn-group" role="group" aria-label="Button group">
+      <a href="{{ url_for('articles.create_article') }}" class="btn btn-primary">
+        Create New
+      </a>
+      <a href="{{ url_for('articles.articles') }}" class="btn btn-primary">
+        View
+      </a>
+      <a href="#" class="btn btn-success">
+        Compile
+      </a>
+    </div>
+  </div>
+  {#
   <a href="{{ url_for('articles.create_article') }}" class="btn btn-primary">Create New Article</a>
   <a href="{{ url_for('articles.articles') }}" class="btn btn-primary">View Articles</a>
-  {# <a href="{{ url_for('articles.compile') }}" class="btn btn-primary">Compile Articles</a> #}
+  <a href="{{ url_for('articles.compile') }}" class="btn btn-primary">Compile Articles</a>
+  #}
   <!-- Add any other useful/helpful/interesting links or content here -->
 </div>
 {% endblock %}
