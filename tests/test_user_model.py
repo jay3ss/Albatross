@@ -96,7 +96,7 @@ def test_generate_slug_before_update(session):
     assert updated_at < user.updated_at
 
 
-def test_num_drafts(session):
+def test_num_drafts():
     # Create a test User object
     user = User()
 
@@ -111,7 +111,7 @@ def test_num_drafts(session):
     # Test num_drafts property
     assert user.num_drafts == 2  # Expect 2 drafts
 
-def test_num_published(session):
+def test_num_published():
     # Create a test User object
     user = User()
 
