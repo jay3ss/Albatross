@@ -21,7 +21,7 @@
                 {{ article.title|truncate(40) }}
               </a>
             </td>
-            <td>{{ article.created_at|datetime_format }}</td>
+            <td>{{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}</td>
             <td>{{ article.is_draft }}</td>
             <td>
               <span>
