@@ -5,7 +5,6 @@ import string
 from flask_login import UserMixin
 from sqlalchemy import event
 from werkzeug.security import check_password_hash, generate_password_hash
-from wtforms import ValidationError
 
 from app import db, login
 from app.helpers.articles import generate_slug
