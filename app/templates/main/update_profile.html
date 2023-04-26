@@ -1,6 +1,11 @@
 {% extends "base.html" %}
-{% from 'bootstrap5/form.html' import render_form %}
+{% from "bootstrap5/form.html" import render_form %}
 
 {% block content %}
-  {{ render_form(form, novalidate=True) }}
+<div class="row">
+  <div class="col">
+    {{ render_form(form) }}
+  </div>
+</div>
+
 {% endblock %}
