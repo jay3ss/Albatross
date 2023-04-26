@@ -1,9 +1,10 @@
+import string
 from datetime import datetime as dt
 from random import choices
-import string
 
 from flask_login import UserMixin
 from sqlalchemy import event
+from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, login
@@ -83,19 +84,23 @@ class User(UserMixin, db.Model):
         return f"<User(name={self.username})>"
 
 
-article_articledata = db.Table(
-    "article_articledata",
-    db.Column("article_id", db.Integer, db.ForeignKey("articles.id"), primary_key=True),
-    db.Column("metadata_id", db.Integer, db.ForeignKey("articledata.id"), primary_key=True),
+article_data_association_table = db.Table(
+    "article_data_association_table",
+    db.Column("articledata_id", db.ForeignKey("articles.id"), primary_key=True),
+    db.Column("article_id", db.ForeignKey("articledata.id"), primary_key=True),
 )
 
 
 class ArticleData(db.Model):
     __tablename__ = "articledata"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     key = db.Column(db.String(64), nullable=False)
     value = db.Column(db.String(256), nullable=False)
+    article_id = db.Column(db.Integer, db.ForeignKey("articles.id"))
+    articles: Mapped[list["Article"]] = db.relationship(
+        "Article", secondary=article_data_association_table, back_populates="data"
+    )
 
     def __repr__(self):
         return f"<ArticleData(key='{self.key}', value='{self.value}')>"
@@ -104,7 +109,7 @@ class ArticleData(db.Model):
 class Article(db.Model):
     __tablename__ = "articles"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     title = db.Column(db.String, nullable=False)
     summary = db.Column(db.Text)
     content = db.Column(db.Text, nullable=False)
@@ -117,11 +122,22 @@ class Article(db.Model):
     is_draft = db.Column(db.Boolean, default=True, nullable=False)
 
     # Define many-to-many relationship with ArticleData
-    data = db.relationship(
-        "ArticleData",
-        secondary=article_articledata,
-        lazy="dynamic",
+    data: Mapped[list[ArticleData]] = db.relationship(
+        "ArticleData", secondary=article_data_association_table, back_populates="articles"
     )
+
+    def filter_data_by_key(self, key: str) -> list["Article"]:
+        """
+        Get the ArticleData object associated with the given key for this Article.
+
+        Args:
+            key (str): The key to search for in the Article's data.
+
+        Returns:
+            ArticleData or None: The ArticleData object if found, else None.
+        """
+        article_data = list(filter(lambda e: e.key==key, self.data))
+        return article_data
 
     @staticmethod
     def generate_slug(title: str) -> str:
