@@ -14,7 +14,9 @@ def login():
 
     form = forms.LoginForm()
     if form.validate_on_submit():
-        user = models.User.query.filter_by(username=form.username.data).first()
+        user = models.User.query.filter_by(
+            username_lower=form.username.data.lower()
+        ).first()
         if not user or not user.check_password(form.password.data):
             flash("Incorrect username or password.", "danger")
             return redirect(url_for("auth.login"))
