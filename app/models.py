@@ -102,6 +102,14 @@ class ArticleData(db.Model):
         "Article", secondary=article_data_association_table, back_populates="data"
     )
 
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "key": self.key,
+            "value": self.value,
+            "article_ids": [article.id for article in self.articles]
+        }
+
     def __repr__(self):
         return f"<ArticleData(key='{self.key}', value='{self.value}')>"
 
