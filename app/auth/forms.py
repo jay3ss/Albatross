@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, Email, Regexp
+from wtforms.validators import DataRequired, EqualTo, Email, Regexp, ValidationError
 
-from app.validators import UniqueEmail
+from app import models
 
 
 class LoginForm(FlaskForm):
@@ -26,9 +26,16 @@ class RegistrationForm(FlaskForm):
             ),
         ],
     )
-    email = StringField("Email", validators=[DataRequired(), Email(), UniqueEmail()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     password2 = PasswordField(
         "Confirm Password", validators=[DataRequired(), EqualTo("password")]
     )
     submit = SubmitField("Register")
+
+    def validate_email(self, field):
+        """
+        Custom validator to check if the new email is already taken.
+        """
+        if models.User.is_email_taken(field.data.lower()):
+            raise ValidationError('Email is already taken.')
