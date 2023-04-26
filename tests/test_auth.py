@@ -158,3 +158,11 @@ def test_register_case_insensitive_email(client, session):
         data=dict(username="bill", email=user.email.upper(), password="password", password2="password")
     )
     assert "Email is already taken" in response.text
+
+
+def test_register_case_insensitive_login(auth, client, session):
+    user = session.get(models.User, 1)
+    response = auth.login(username=user.username.upper(), password="password")
+
+    assert response.status_code == 200
+    assert "Incorrect" not in response.text
