@@ -57,7 +57,10 @@ def edit_article(slug):
         form.populate_obj(article)
         db.session.commit()
         return redirect(url_for("articles.article", slug=slug))
-    form = forms.EditArticleForm(obj=article)
+    form.content.data = article.content
+    form.title.data = article.title
+    form.summary.data = article.summary
+    # TODO: add more fields
     return render_template("articles/edit.html", form=form, article=article)
 
 
