@@ -142,3 +142,24 @@ def test_clear_article_data_from_article(session):
     assert len(retrieved_article_data_1) == 0
     assert len(retrieved_article_data_2) == 0
     assert len(retrieved_article_data_3) == 0
+
+
+def test_article_data_to_dict(session):
+    user = session.get(User, 1)
+    # Create new Article and ArticleData objects
+    article_data = ArticleData(key="key", value="value")
+    article = Article(title="Test Article", content="Content", user=user)
+    article.data.append(article_data)
+    another_article = Article(title="Another Article", content="Content", user=user)
+    another_article.data.append(article_data)
+    session.commit()
+    session.add(article)
+
+    article_data = session.get(ArticleData, 1)
+    ad_dict = article_data.to_dict()
+
+    assert ad_dict["id"] == 1
+    assert ad_dict["key"] == "key"
+    assert ad_dict["value"] == "value"
+    assert 1 in ad_dict["article_ids"]
+    assert 2 in ad_dict["article_ids"]
