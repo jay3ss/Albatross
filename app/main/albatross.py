@@ -4,13 +4,13 @@ from tempfile import NamedTemporaryFile
 from app.models import Article
 
 
-def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
+def create_post(content: str, metadata: list[dict], base_dir: Path) -> Path:
     """
     Create a new (temporary) article file with the given metadata and content.
 
     Parameters:
         content (str): The content of the article.
-        metadata (dict): The metadata for the article.
+        metadata (list[dict]): The metadata for the article.
         base_dir (Path): The base directory where the article file will be created.
 
     Returns:
@@ -30,5 +30,5 @@ def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
 
 
 def article_to_post(article: Article) -> Path:
-    # if article.
+    metadata = [ad.to_dict() for ad in article.data]
     return create_post(article.content)
