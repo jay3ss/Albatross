@@ -34,14 +34,14 @@ def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
 
 def article_to_post(article: Article, base_dir: Path) -> Path:
     """
-    _summary_
+    Convert an Article object to a Pelican-ready markdown post.
 
-    Args:
-        article (Article): _description_
-        base_dir (Path): _description_
+    Parameters:
+        article (Article): The article to convert.
+        base_dir (Path): The base directory where the post file will be created.
 
     Returns:
-        Path: _description_
+        Path: The path to the Pelican-ready markdown post file.
     """
     metadata = _create_metadata(article)
     return create_post(article.content, metadata, base_dir)
@@ -49,15 +49,15 @@ def article_to_post(article: Article, base_dir: Path) -> Path:
 
 def _create_metadata(article: Article) -> dict:
     """
-    _summary_
+    Create a dictionary of metadata for a Pelican-ready markdown post.
 
-    Args:
-        article (Article): _description_
+    Parameters:
+        article (Article): The article to create metadata for.
 
     Returns:
-        dict: _description_
+        dict: The metadata dictionary.
 
-    metadata info found at:
+    Metadata info found at:
     https://docs.getpelican.com/en/stable/content.html#file-metadata
     """
     metadata_lists = ["tags", "keywords"]
