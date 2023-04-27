@@ -1,6 +1,5 @@
 from pathlib import Path
 import tempfile
-from tempfile import NamedTemporaryFile
 
 from app.models import Article
 
