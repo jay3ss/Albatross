@@ -11,3 +11,4 @@ flask-wtf
 pydantic
 pyjwt
 python-dotenv
+python-slugify
