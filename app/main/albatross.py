@@ -1,4 +1,5 @@
 from pathlib import Path
+import tempfile
 from tempfile import NamedTemporaryFile
 
 from app.models import Article
@@ -16,18 +17,19 @@ def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
     Returns:
         Path: path to the temporary article file
     """
-    tf = NamedTemporaryFile(dir=base_dir, suffix=".md", mode="w", delete=False)
-
-    tf.write("---\n")
-    for key, value in metadata.items():
-        if isinstance(value, set):
-            tf.write(f"{key}: {', '.join(sorted([v for v in value]))}\n")
-        else:
-            tf.write(f"{key}: {value}\n")
-    tf.write("---\n")
-    tf.write("\n" + content)
-    file_path = Path(tf.name)
-    tf.close()
+    with tempfile.NamedTemporaryFile(dir=base_dir,
+                                     suffix=".md",
+                                     mode="w",
+                                     delete=False) as tf:
+        tf.write("---\n")
+        for key, value in metadata.items():
+            if isinstance(value, set):
+                tf.write(f"{key}: {', '.join(sorted([v for v in value]))}\n")
+            else:
+                tf.write(f"{key}: {value}\n")
+        tf.write("---\n")
+        tf.write("\n" + content)
+        file_path = Path(tf.name)
 
     return file_path
 
