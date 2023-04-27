@@ -8,7 +8,9 @@ flask-migrate
 flask-moment
 flask-sqlalchemy
 flask-wtf
+pelican[markdown]
 pydantic
 pyjwt
 python-dotenv
 python-slugify
+pyyaml
