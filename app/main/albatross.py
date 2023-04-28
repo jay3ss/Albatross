@@ -1,14 +1,36 @@
 from pathlib import Path
 import tempfile
 
+import pelican
+
 from app.models import Article
+
+
+def compile_posts(articles: list[Article], directory: Path | None = None) -> None:
+    """
+    Compile a list of Article objects into Pelican-ready Markdown files in a
+    temporary directory.
+
+    Args:
+        articles (list[Article]): A list of Article objects to be compiled.
+        directory (Path | None, optional): The directory where the temporary
+        directory will be created. Defaults to None.
+    """
+    settings = pelican.read_settings()
+    with tempfile.TemporaryDirectory(prefix="content", dir=directory) as td:
+        for article in articles:
+            article_to_post(article=article, base_dir=directory)
+
+        settings["PATH"] = td
+        pel = pelican.Pelican(settings=settings)
+        pel.run()
 
 
 def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
     """
     Create a new (temporary) article file with the given metadata and content.
 
-    Parameters:
+    Args:
         content (str): The content of the article.
         metadata (dict): The metadata for the article.
         base_dir (Path): The base directory where the article file will be created.
@@ -16,12 +38,23 @@ def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
     Returns:
         Path: path to the temporary article file
     """
-    with tempfile.NamedTemporaryFile(dir=base_dir,
-                                     suffix=".md",
-                                     mode="w",
-                                     delete=False) as tf:
+    # with tempfile.NamedTemporaryFile(dir=base_dir,
+    #                                  suffix=".md",
+    #                                  mode="w",
+    #                                  delete=False) as tf:
+    slug = metadata["slug"]
+    with open(f"{slug}.md", "w") as tf:
+        # a Markdown post for Pelican has the following format:
+        # ---
+        # metadata_key_1: metadata_value_1
+        # metadata_key_2: metadata_value_2
+        # ...
+        # metadata_key_n: metadata_value_n
+        # ---
+        # content
         tf.write("---\n")
         for key, value in metadata.items():
+            # metadata can be a list (set here) or a string, integer, ...
             if isinstance(value, set):
                 tf.write(f"{key}: {', '.join(sorted([v for v in value]))}\n")
             else:
@@ -37,7 +70,7 @@ def article_to_post(article: Article, base_dir: Path) -> Path:
     """
     Convert an Article object to a Pelican-ready markdown post.
 
-    Parameters:
+    Args:
         article (Article): The article to convert.
         base_dir (Path): The base directory where the post file will be created.
 
@@ -52,7 +85,7 @@ def _create_metadata(article: Article) -> dict:
     """
     Create a dictionary of metadata for a Pelican-ready markdown post.
 
-    Parameters:
+    Args:
         article (Article): The article to create metadata for.
 
     Returns:
