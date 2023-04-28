@@ -21,7 +21,7 @@ class Settings:
 
     def update(self, new_settings: dict | Path | str) -> "Settings":
         """
-        _summary_
+        Updates the settings with contents of the new settings
 
         Args:
             new_settings (dict | Path | str): Either a dict of the settings
