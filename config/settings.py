@@ -1,4 +1,13 @@
+from pathlib import Path
 from pelican import read_settings
+
+
+class Settings:
+
+    def __init__(self, user_file: Path | str | None = None) -> None:
+        if not user_file:
+            user_file = None
+        self._user_file = user_file
 
 
 def get_user_settings() -> dict:
