@@ -167,8 +167,8 @@ def test_compile_posts_calls_article_to_post_for_each_article(session):
 
     assert mock_article_to_post.call_count == len(articles)
     expected_calls = [
-        [(), {"article": articles[i], "base_dir": None}]
-        for i in range(len(articles))
+        [(), {"article": article, "base_dir": None}]
+        for article in articles
     ]
     call_args_list = [list(cal) for cal in mock_article_to_post.call_args_list]
     assert call_args_list == expected_calls
