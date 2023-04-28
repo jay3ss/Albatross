@@ -1,16 +1,20 @@
 from datetime import datetime, timedelta
+from pathlib import Path
+import shutil
+from unittest.mock import MagicMock, patch
 
-from app.main.albatross import create_post, article_to_post
 from app import models
+from app.main.albatross import article_to_post, compile_posts, create_post
 
 
 def test_create_post(tmpdir):
     # Create a dictionary with the metadata for the article
-    metadata = {"title": "Test article", "author": "Test Author"}
+    metadata = {"title": "Test article", "author": "Test Author", "slug": "slug"}
     # Create a string with the content for the article
     content = "This is a test article"
     # Call the create_post function and store the result in a variable
     post_file = create_post(content, metadata, tmpdir)
+
     # Use the assert function to check that the returned path exists and is a file
     assert post_file.exists() and post_file.is_file()
     # Use the assert function to check that the metadata and content of the
@@ -18,7 +22,9 @@ def test_create_post(tmpdir):
     post_content = "---\n"
     post_content += "\n".join([f"{key}: {value}" for key, value in metadata.items()])
     post_content += f"\n---\n\n{content}"
+
     assert post_file.read_text() == post_content
+    Path(metadata["slug"] + ".md").unlink()
 
 
 def test_create_post_metadata(tmpdir):
@@ -41,6 +47,8 @@ def test_create_post_metadata(tmpdir):
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
+
+    Path(metadata["slug"] + ".md").unlink()
 
 
 def test_article_to_post(session, tmpdir):
@@ -75,9 +83,10 @@ translation: False
 ---
 
 {content}"""
-
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
+
+    Path(article.slug + ".md").unlink()
 
 
 def test_article_to_post_with_different_types_of_article_data(session, tmpdir):
@@ -126,3 +135,104 @@ translation: False
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
+
+    Path(article.slug + ".md").unlink()
+
+
+def test_compile_posts_calls_article_to_post_for_each_article(session):
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
+        for i in range (5)
+    ]
+
+    for article in articles:
+        article.data = [
+            models.ArticleData(key="keywords", value=f"test_{i}")
+            for i in range(5)
+        ]
+    session.add_all(articles)
+    session.commit()
+
+    with patch("app.main.albatross.article_to_post") as mock_article_to_post:
+        mock_article_to_post.return_value = Path(".").touch
+        compile_posts(articles=articles, directory=None)
+
+    # clean up
+    for article in articles:
+        post_file = Path(f"{article.slug}.md")
+        if post_file.exists():
+            post_file.unlink()
+    shutil.rmtree(Path("output"))
+
+    assert mock_article_to_post.call_count == len(articles)
+    expected_calls = [
+        [(), {"article": articles[i], "base_dir": None}]
+        for i in range(len(articles))
+    ]
+    call_args_list = [list(cal) for cal in mock_article_to_post.call_args_list]
+    assert call_args_list == expected_calls
+
+
+def test_compile_posts_creates_temporary_directory(session):
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
+        for i in range (5)
+    ]
+
+    for article in articles:
+        article.data = [
+            models.ArticleData(key="keywords", value=f"test_{i}")
+            for i in range(5)
+        ]
+    session.add_all(articles)
+    session.commit()
+
+    with patch("app.main.albatross.tempfile.TemporaryDirectory") as mock_temp_dir:
+        compile_posts(articles=articles)
+
+    # clean up
+    for article in articles:
+        post_file = Path(f"{article.slug}.md")
+        if post_file.exists():
+            post_file.unlink()
+    shutil.rmtree(Path("output"))
+    assert mock_temp_dir.called_once_with(prefix="content", dir=None)
+
+
+def test_compile_posts_runs_pelican(session):
+    user = session.get(models.User, 1)
+    articles = [
+        models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
+        for i in range (5)
+    ]
+
+    for article in articles:
+        article.data = [
+            models.ArticleData(key="keywords", value=f"test_{i}")
+            for i in range(5)
+        ]
+    session.add_all(articles)
+    session.commit()
+
+    with patch("app.main.albatross.pelican") as mock_pelican, \
+         patch("app.main.albatross.article_to_post") as mock_article_to_post:
+        mock_pelican.Pelican.return_value.run = MagicMock()
+        compile_posts(articles=articles, directory=None)
+
+
+    # clean up
+    for article in articles:
+        post_file = Path(f"{article.slug}.md")
+        if post_file.exists():
+            post_file.unlink()
+
+    assert mock_pelican.read_settings.called
+    # assert mock_pelican.Pelican.called_once_with(settings=settings)
+    assert mock_pelican.Pelican.return_value.run.called
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main(["-s", __file__])
