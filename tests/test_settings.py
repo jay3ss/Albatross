@@ -14,6 +14,11 @@ def settings_file(tmp_path):
     yield settings_path
 
 
+@pytest.fixture
+def settings():
+    return Settings()
+
+
 def test_load_settings(settings):
     assert settings == read_settings()
 
