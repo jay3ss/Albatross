@@ -1,6 +1,6 @@
-import string
 from datetime import datetime as dt
 from random import choices
+import string
 
 from flask_login import UserMixin
 from sqlalchemy import event
