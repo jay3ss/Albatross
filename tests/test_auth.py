@@ -169,13 +169,13 @@ def test_register_case_insensitive_login(auth, client, session):
 
 
 def test_reset_password_while_not_authenticated(client):
-    response = client.get(url_for("auth.reset_password"))
+    response = client.get(url_for("auth.reset_password_request"))
     assert response.status_code == 200
 
 
 def test_reset_password_while_authenticated(auth, client):
     auth.login()
-    response = client.get(url_for("auth.reset_password"), follow_redirects=False)
+    response = client.get(url_for("auth.reset_password_request"), follow_redirects=False)
 
     assert response.status_code == 302
     assert response.headers.get("Location", None) == "main.index"
@@ -186,14 +186,14 @@ def test_reset_password_invalid_email(client):
     email = "a@"
 
     response = client.post(
-        url_for("auth.reset_password"),
+        url_for("auth.reset_password_request"),
         data=dict(username=username, email=email),
         follow_redirects=False
     )
 
-    reset_password_url = url_for("auth.reset_password")
+    reset_password_request_url = url_for("auth.reset_password_request")
     assert response.status_code == 200
-    assert response.request.base_url[:len(reset_password_url)] == reset_password_url
+    assert response.request.base_url[:len(reset_password_request_url)] == reset_password_request_url
 
 
 def test_reset_password_nonexistent_email(client):
@@ -201,21 +201,21 @@ def test_reset_password_nonexistent_email(client):
     email = "a@example.com"
 
     response = client.post(
-        url_for("auth.reset_password"),
+        url_for("auth.reset_password_request"),
         data=dict(username=username, email=email),
         follow_redirects=False
     )
 
-    reset_password_url = url_for("auth.reset_password", _external=False)
+    reset_password_request_url = url_for("auth.reset_password_request", _external=False)
     assert response.status_code == 302
-    assert response.request.base_url[-len(reset_password_url):] == reset_password_url
+    assert response.request.base_url[-len(reset_password_request_url):] == reset_password_request_url
 
 
 def test_reset_password_valid_and_existing_email(client, session):
     user = session.get(models.User, 1)
 
     response = client.post(
-        url_for("auth.reset_password"),
+        url_for("auth.reset_password_request"),
         data=dict(username=user.username, email=user.email),
         follow_redirects=False
     )
@@ -225,4 +225,4 @@ def test_reset_password_valid_and_existing_email(client, session):
 
 
 if __name__ == "__main__":
-    pytest.main(["-s", f"{__file__}::test_reset_password_invalid_email"])
+    pytest.main(["-s", __file__])
