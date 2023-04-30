@@ -46,6 +46,11 @@ def session(app):
 
 
 @pytest.fixture
+def user(session):
+    return session.get(models.User, 1)
+
+
+@pytest.fixture
 def auth(client):
     """Authentication fixture"""
     return AuthActions(client)
