@@ -39,3 +39,17 @@ class RegistrationForm(FlaskForm):
         """
         if models.User.is_email_taken(field.data.lower()):
             raise ValidationError('Email is already taken.')
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Submit")
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Enter new password", validators=[DataRequired()])
+    password2 = PasswordField(
+        "Re-enter password",
+        validators=[DataRequired(), EqualTo("password")]
+    )
+    submit = SubmitField("Submit")

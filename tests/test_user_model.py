@@ -1,3 +1,5 @@
+from time import sleep
+
 from app.helpers import users as uh
 from app.models import Article, User, load_user
 
@@ -125,3 +127,27 @@ def test_num_published():
 
     # Test num_published property
     assert user.num_published == 1  # Expect 1 published article
+
+
+def test_get_reset_password_token(session):
+    user = session.get(User, 1)
+
+    token = user.get_reset_password_token()
+    assert isinstance(token, str)
+
+    user_should_not_be_none = User.verify_reset_password_token(token)
+    assert user_should_not_be_none == user
+
+
+def test_verify_reset_password_token(session):
+    user = session.get(User, 1)
+
+    token = user.get_reset_password_token(expires_in=0.0001)
+    sleep(0.00011)
+    user_should_be_none = User.verify_reset_password_token(token)
+    assert user_should_be_none is None
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main(["-s", __file__])

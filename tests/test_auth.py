@@ -1,10 +1,11 @@
 import string
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from flask import url_for
 import pytest
 
 from app import models
+from app.auth import email
 
 
 def test_register(client):
@@ -221,8 +222,87 @@ def test_reset_password_valid_and_existing_email(client, session):
     )
 
     assert response.status_code == 302
-    assert response.headers.get("Location", None) == "auth.login"
+    login_url = url_for("auth.login", _external=False)
+    assert response.headers.get("Location", None)[:len(login_url)] == login_url
+
+
+def test_reset_password_valid_and_existing_email_not_in_debug(app, client, session):
+    app.config["DEBUG"] = False
+    user = session.get(models.User, 1)
+
+    response = client.post(
+        url_for("auth.reset_password_request"),
+        data=dict(username=user.username, email=user.email),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    login_url = url_for("auth.login", _external=False)
+    assert response.headers.get("Location", None)[:len(login_url)] == login_url
+
+
+def test_reset_password_authenticated(client, auth):
+    # Test that an authenticated user is redirected to the index page
+    auth.login()
+    response = client.get(
+        url_for("auth.reset_password", token="invalid_token"),
+        follow_redirects=False
+    )
+    assert response.status_code == 302
+    assert response.headers.get("Location", None) == url_for("main.index", _external=False)
+
+
+def test_reset_password_invalid_token(client):
+    # Test that an invalid token results in a redirect to the index page
+    response = client.get(
+        url_for("auth.reset_password", token="token"),
+        follow_redirects=False
+    )
+    assert response.status_code == 302
+    assert response.headers.get("Location", None) == url_for("main.index", _external=False)
+
+
+def test_reset_password_valid_token(client, user):
+    # Test that a valid token displays the reset password form
+    token = user.get_reset_password_token()
+    response = client.get(
+        url_for("auth.reset_password", token=token),
+        follow_redirects=False
+    )
+    assert response.status_code == 200
+
+
+def test_reset_password_submit_invalid_data(client, user):
+    # Test that submitting invalid data displays the reset password form with errors
+    password = ""
+    token = user.get_reset_password_token()
+    response = client.post(
+        url_for("auth.reset_password", token=token),
+        data=dict(password=password, password2=password),
+        follow_redirects=False
+    )
+    assert response.status_code == 200
+    assert "Password" in response.text
+
+
+def test_reset_password_submit_valid_data_while_in_debug(client, session, user):
+    # Test that submitting valid data changes the user's password and redirects to the login page
+    new_password = "new_password"
+    token = user.get_reset_password_token()
+
+    response = client.post(
+        url_for("auth.reset_password", token=token),
+        data=dict(password=new_password, password2=new_password),
+        follow_redirects=False
+    )
+    assert response.status_code == 302
+    login_url = url_for("auth.login", _external=False)
+    assert response.headers.get("Location", None)[:len(login_url)] == login_url
+
+    # Check that the user's password has been updated in the database
+    updated_user = session.get(models.User, 1)
+    assert updated_user.check_password(new_password)
 
 
 if __name__ == "__main__":
-    pytest.main(["-s", __file__])
+    pytest.main(["-s", f"{__file__}::test_reset_password_valid_and_existing_email_not_in_debug"])

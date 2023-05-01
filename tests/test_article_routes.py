@@ -86,9 +86,10 @@ def test_that_all_articles_are_displayed(app, auth, client, session):
     auth.login()
 
     response = client.get(url_for("articles.articles"))
+    format_str = "%B %d, %Y @ %-I:%M%p"
     for article in articles:
         assert article.title in response.text
-        assert datetime_format(article.created_at) in response.text
+        assert datetime_format(article.created_at, format=format_str) in response.text
 
 
 def test_get_single_article_while_not_authenticated(client, session):

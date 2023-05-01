@@ -1,7 +1,10 @@
 import string
 from datetime import datetime as dt
 from random import choices
+from time import time
 
+import jwt
+from flask import current_app
 from flask_login import UserMixin
 from sqlalchemy import event
 from sqlalchemy.orm import Mapped, mapped_column
@@ -31,6 +34,25 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            payload={"reset_password": self.id, "exp": time() + expires_in},
+            key=current_app.config["SECRET_KEY"],
+            algorithm="HS256"
+        )
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            user_id = jwt.decode(
+                jwt=token,
+                key=current_app.config["SECRET_KEY"],
+                algorithms=["HS256"]
+            )["reset_password"]
+        except:
+            return
+        return db.session.get(User, user_id)
 
     @property
     def num_drafts(self) -> int:
