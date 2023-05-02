@@ -139,12 +139,16 @@ translation: False
     Path(article.slug + ".md").unlink()
 
 
-def test_compile_posts_calls_article_to_post_for_each_article(session):
+def test_compile_posts_compiles_correctly(session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
         for i in range (5)
     ]
+
+    # make a couple articles not "draft" to ensure proper publishing
+    articles[0].is_draft = False
+    articles[3].is_draft = False
 
     for article in articles:
         article.data = [
@@ -154,24 +158,20 @@ def test_compile_posts_calls_article_to_post_for_each_article(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.article_to_post") as mock_article_to_post:
-        mock_article_to_post.return_value = Path(".").touch
-        compile_posts(articles=articles, directory=None)
+    compile_posts(articles=articles, directory=None)
+
+    # check that the proper articles were generated
+    # - articles marked as "draft" should be in the ./output/drafts directory
+    # - articles not marked as "draft" should be in the
+    output_dir = Path("./output")
+    for article in articles:
+        if article.is_draft:
+            assert (output_dir / "drafts" / f"{article.slug}.html").exists()
+        else:
+            assert (output_dir / f"{article.slug}.html").exists()
 
     # clean up
-    for article in articles:
-        post_file = Path(f"{article.slug}.md")
-        if post_file.exists():
-            post_file.unlink()
     shutil.rmtree(Path("output"))
-
-    assert mock_article_to_post.call_count == len(articles)
-    expected_calls = [
-        [(), {"article": article, "base_dir": None}]
-        for article in articles
-    ]
-    call_args_list = [list(cal) for cal in mock_article_to_post.call_args_list]
-    assert call_args_list == expected_calls
 
 
 def test_compile_posts_creates_temporary_directory(session):
