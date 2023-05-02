@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import tempfile
 
@@ -6,7 +7,7 @@ import pelican
 from app.models import Article
 
 
-def compile_posts(articles: list[Article], directory: Path | None = None) -> None:
+def compile_posts(articles: list[Article], directory: Path | None = None) -> Path:
     """
     Compile a list of Article objects into Pelican-ready Markdown files in a
     temporary directory.
@@ -19,7 +20,7 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Non
     settings = pelican.read_settings()
     with tempfile.TemporaryDirectory(prefix="content", dir=directory) as td:
         for article in articles:
-            article_to_post(article=article, base_dir=directory)
+            article_to_post(article=article, base_dir=td)
 
         settings["PATH"] = td
         pel = pelican.Pelican(settings=settings)
@@ -38,30 +39,31 @@ def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
     Returns:
         Path: path to the temporary article file
     """
-    # with tempfile.NamedTemporaryFile(dir=base_dir,
-    #                                  suffix=".md",
-    #                                  mode="w",
-    #                                  delete=False) as tf:
-    slug = metadata["slug"]
-    with open(f"{slug}.md", "w") as tf:
-        # a Markdown post for Pelican has the following format:
-        # ---
-        # metadata_key_1: metadata_value_1
-        # metadata_key_2: metadata_value_2
-        # ...
-        # metadata_key_n: metadata_value_n
-        # ---
-        # content
-        tf.write("---\n")
-        for key, value in metadata.items():
-            # metadata can be a list (set here) or a string, integer, ...
-            if isinstance(value, set):
-                tf.write(f"{key}: {', '.join(sorted([v for v in value]))}\n")
-            else:
-                tf.write(f"{key}: {value}\n")
-        tf.write("---\n")
-        tf.write("\n" + content)
-        file_path = Path(tf.name)
+    temp_fd, temp_path = tempfile.mkstemp(
+        suffix=".md",
+        prefix="albatross-",
+        dir=base_dir,
+    )
+    text = "---\n"
+    for key, value in metadata.items():
+        # metadata can be a list (set here) or a string, integer, ...
+        if isinstance(value, set):
+            text += f"{key}: {', '.join(sorted([v for v in value]))}\n"
+        else:
+            text += f"{key}: {value}\n"
+    text += "---\n\n" + content
+
+    with os.fdopen(temp_fd, "w+") as tf:
+        tf.write(text)
+    # a Markdown post for Pelican has the following format:
+    # ---
+    # metadata_key_1: metadata_value_1
+    # metadata_key_2: metadata_value_2
+    # ...
+    # metadata_key_n: metadata_value_n
+    # ---
+    # content
+    file_path = Path(temp_path)
 
     return file_path
 
