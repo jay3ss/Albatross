@@ -4,7 +4,7 @@ import shutil
 from unittest.mock import MagicMock, patch
 
 from app import models
-from app.main.albatross import article_to_post, compile_posts, create_post
+from app.main.albatross import article_to_post, compile_posts, create_post, _create_metadata
 
 
 def test_create_post(tmpdir):
@@ -223,6 +223,35 @@ def test_compile_posts_runs_pelican(session):
 
     assert mock_pelican.read_settings.called
     assert mock_pelican.Pelican.return_value.run.called
+
+
+def test_create_metadata_function(session, user):
+    article = models.Article(
+        title="Article Title",
+        content="Article content",
+        user=user,
+    )
+    article.data = [
+        models.ArticleData(key="keywords", value="value"),
+        models.ArticleData(key="keywords", value="another_value"),
+    ]
+    session.add(article)
+    session.commit()
+
+    actual_metadata = {
+        "keywords": set([article.data[0].value, article.data[1].value]),
+        "author": user.username,
+        "title": article.title,
+        "date": article.created_at,
+        "modified": article.updated_at,
+        "slug": article.slug,
+        "summary": article.summary if article.summary else "",
+        "status": "draft" if article.is_draft else "published",
+        "lang": "en",
+        "translation": False,
+    }
+    generated_metadata = _create_metadata(article)
+    assert generated_metadata == actual_metadata
 
 
 if __name__ == "__main__":
