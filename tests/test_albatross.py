@@ -24,7 +24,6 @@ def test_create_post(tmpdir):
     post_content += f"\n---\n\n{content}"
 
     assert post_file.read_text() == post_content
-    Path(metadata["slug"] + ".md").unlink()
 
 
 def test_create_post_metadata(tmpdir):
