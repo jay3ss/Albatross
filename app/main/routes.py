@@ -40,3 +40,17 @@ def update_profile(username):
     form.email.data = user.email
     form.about.data = user.about
     return render_template("main/update_profile.html", form=form, user=user)
+
+
+@bp.route("/<username>/compile")
+@login_required
+def compile_site(username):
+    # What this should do:
+    # 1. compile the user's articles (if any) to a static site into the "output"
+    #    directory
+    # 2. zip the "output" directory
+    # 3. notify the user that the compilation (and zipping) is complete
+    #   a. do it by email
+    #   b. flash the user
+    #   c. both? something else?
+    return ""

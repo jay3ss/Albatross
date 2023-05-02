@@ -243,3 +243,25 @@ def test_updating_username_to_existing_username(auth, client, session):
     )
 
     assert "Username is already taken" in response.text
+
+
+def test_attempting_to_compile_while_not_authenticated(client, user):
+    response = client.get(
+        url_for("main.compile_site", username=user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    login_url = url_for("auth.login", _external=False)
+    assert response.headers.get("Location", None)[:len(login_url)] == login_url
+
+
+def test_attempting_to_compile_while_authenticated(auth, client, user):
+    auth.login()
+
+    response = client.get(
+        url_for("main.compile_site", username=user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 200
