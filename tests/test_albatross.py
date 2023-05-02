@@ -222,7 +222,6 @@ def test_compile_posts_runs_pelican(session):
             post_file.unlink()
 
     assert mock_pelican.read_settings.called
-    # assert mock_pelican.Pelican.called_once_with(settings=settings)
     assert mock_pelican.Pelican.return_value.run.called
 
 
