@@ -47,8 +47,6 @@ def test_create_post_metadata(tmpdir):
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
 
-    Path(metadata["slug"] + ".md").unlink()
-
 
 def test_article_to_post(session, tmpdir):
     content = "This is the content"
@@ -84,8 +82,6 @@ translation: False
 {content}"""
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
-
-    Path(article.slug + ".md").unlink()
 
 
 def test_article_to_post_with_different_types_of_article_data(session, tmpdir):
@@ -134,8 +130,6 @@ translation: False
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
-
-    Path(article.slug + ".md").unlink()
 
 
 def test_compile_posts_compiles_correctly(session):
@@ -188,7 +182,8 @@ def test_compile_posts_creates_temporary_directory(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.tempfile.TemporaryDirectory") as mock_temp_dir:
+    with patch("app.main.albatross.tempfile.TemporaryDirectory") as mock_temp_dir, \
+        patch("app.main.albatross.article_to_post") as mock_article_to_post:
         compile_posts(articles=articles)
 
     # clean up
@@ -215,8 +210,7 @@ def test_compile_posts_runs_pelican(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.pelican") as mock_pelican, \
-         patch("app.main.albatross.article_to_post") as mock_article_to_post:
+    with patch("app.main.albatross.pelican") as mock_pelican:
         mock_pelican.Pelican.return_value.run = MagicMock()
         compile_posts(articles=articles, directory=None)
 
