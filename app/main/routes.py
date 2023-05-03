@@ -36,7 +36,7 @@ def update_profile(username):
         flash("Your profile has been updated!", "success")
         return redirect(url_for("main.profile", username=current_user.username))
 
-    user: models.User = db.first_or_404(
+    user = db.first_or_404(
         db.select(models.User).filter_by(username_lower=username.lower())
     )
     form.username.data = user.username
