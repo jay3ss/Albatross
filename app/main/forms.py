@@ -30,3 +30,7 @@ class EditUserForm(FlaskForm):
         user = models.User.query.filter_by(email=field.data).first()
         if user is not None and user.id != current_user.id:
             raise ValidationError('Email is already taken.')
+
+
+class CompileForm(FlaskForm):
+    submit = SubmitField("Compile")

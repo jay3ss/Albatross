@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "bootstrap5/form.html" import render_field %}
 
 {% block content %}
 <div class="container mt-5">
@@ -34,10 +35,11 @@
       <a href="{{ url_for('articles.articles') }}" class="btn btn-primary">
         View
       </a>
-      <a href="#" class="btn btn-success">
-        Compile
-      </a>
     </div>
+    <form action="{{ url_for('main.compile_site', username=user.username_lower) }}" method="post">
+      {{ form.hidden_tag() }}
+      {{ render_field(form.submit, class='btn btn-success') }}
+    </form>
   </div>
   {#
   <a href="{{ url_for('articles.create_article') }}" class="btn btn-primary">Create New Article</a>
