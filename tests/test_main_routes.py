@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from flask import url_for
-import pytest
 
 from app import models
 from app.helpers import users as uh
@@ -264,20 +263,20 @@ def test_attempting_to_compile_while_authenticated(auth, client, user):
         follow_redirects=False
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 
 def test_attempting_to_compile_for_non_existent_user(auth, client, user):
     auth.login()
 
-    response = client.get(
+    response = client.post(
         url_for("main.compile_site", username="user_does_not_exist"),
         follow_redirects=False
     )
 
     assert response.status_code == 302
-    profile_url = url_for("main.profile", username=user.username, _external=False)
-    assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
+    index_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location", None)[:len(index_url)] == index_url
 
 
 def test_attempting_to_compile_for_different_user(auth, client, session, user):
@@ -288,7 +287,7 @@ def test_attempting_to_compile_for_different_user(auth, client, session, user):
 
     auth.login()
 
-    response = client.get(
+    response = client.post(
         url_for("main.compile_site", username=new_user.username),
         follow_redirects=False
     )
@@ -301,9 +300,12 @@ def test_attempting_to_compile_for_different_user(auth, client, session, user):
 def test_attempting_to_compile_for_owning_user(auth, client, user):
     auth.login()
 
-    response = client.get(
-        url_for("main.compile_site", username=user.username),
-        follow_redirects=False
-    )
+    with patch("app.main.albatross.compile_posts") as mock_compile_posts:
+        response = client.post(
+            url_for("main.compile_site", username=user.username),
+            follow_redirects=False
+        )
 
-    assert response.status_code == 200
+    assert response.status_code == 302
+    profile_url = url_for("main.profile", username=user.username_lower, _external=False)
+    assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
