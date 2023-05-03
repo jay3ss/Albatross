@@ -296,3 +296,14 @@ def test_attempting_to_compile_for_different_user(auth, client, session, user):
     assert response.status_code == 302
     index_url = url_for("main.index", _external=False)
     assert response.headers.get("Location", None)[:len(index_url)] == index_url
+
+
+def test_attempting_to_compile_for_owning_user(auth, client, user):
+    auth.login()
+
+    response = client.get(
+        url_for("main.compile_site", username=user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 200
