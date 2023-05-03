@@ -278,3 +278,21 @@ def test_attempting_to_compile_for_non_existent_user(auth, client, user):
     assert response.status_code == 302
     profile_url = url_for("main.profile", username=user.username, _external=False)
     assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
+
+
+def test_attempting_to_compile_for_different_user(auth, client, session, user):
+    new_user = models.User(username="new_user", email="new_user@example.com")
+    new_user.set_password("password")
+    session.add(new_user)
+    session.commit()
+
+    auth.login()
+
+    response = client.get(
+        url_for("main.compile_site", username=new_user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    index_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location", None)[:len(index_url)] == index_url
