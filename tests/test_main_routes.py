@@ -265,3 +265,16 @@ def test_attempting_to_compile_while_authenticated(auth, client, user):
     )
 
     assert response.status_code == 200
+
+
+def test_attempting_to_compile_for_non_existent_user(auth, client, user):
+    auth.login()
+
+    response = client.get(
+        url_for("main.compile_site", username="user_does_not_exist"),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    profile_url = url_for("main.profile", username=user.username, _external=False)
+    assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
