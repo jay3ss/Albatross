@@ -7,6 +7,16 @@
     <div class="bs-component">
       <h1>{{ article.title }}</h1>
       <p>{{ article.content }}</p>
+      {% if article.data %}
+      <small class="text-muted">
+        Keywords:
+        {% for data in article.data %}
+          {% if data.key == "keyword" %}
+            {{ data.value }}
+          {% endif %}
+        {% endfor %}
+      </small>
+      {% endif %}
     </div>
   </article>
 </div>
