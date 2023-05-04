@@ -225,7 +225,7 @@ with open("/usr/share/dict/words", "r") as f:
     words = random.sample([line for line in f.read().split("\n")], k=25)
 
 keywords = [
-    models.ArticleData(key="keywords", value=word)
+    models.ArticleData(key="keyword", value=word)
     for word in words
 ]
 
