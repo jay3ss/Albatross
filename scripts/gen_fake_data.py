@@ -212,10 +212,17 @@ users = [
 ]
 # users = models.User.query.all()
 [user.set_password("password") for user in users]
+
+
+def is_draft(pct: float = 1 / 3) -> bool:
+    return random.random() < pct
+
+
 articles = [
     models.Article(
         title=generate_title(),
         content=random.choice(contents),
+        is_draft=is_draft(),
         user=random.choice(users),
     )
     for _ in range(5000)
