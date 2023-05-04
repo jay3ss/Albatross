@@ -20,6 +20,15 @@
               <a href="{{ url_for('articles.article', slug=article.slug) }}">
                 {{ article.title|truncate(40) }}
               </a>
+              {% if article.data %}
+              <br>
+              <small>
+                Keywords:
+                {% for data in article.data %}
+                  {% if data.key == "keyword" %}{{ data.value }}{% endif %}
+                {% endfor %}
+              {% endif %}
+              </small>
             </td>
             <td>{{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}</td>
             <td>{{ article.is_draft }}</td>
