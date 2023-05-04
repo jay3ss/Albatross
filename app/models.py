@@ -114,6 +114,7 @@ article_data_association_table = db.Table(
 
 
 class ArticleData(db.Model):
+    # TODO: make it so that they key-value tuple is unique
     __tablename__ = "articledata"
 
     id: Mapped[int] = mapped_column(primary_key=True)
