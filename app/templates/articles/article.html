@@ -6,6 +6,13 @@
   <article class="col">
     <div class="bs-component">
       <h1>{{ article.title }}</h1>
+      <small class="text-muted">
+        Created on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+        {% if article.updated_at %}
+        &
+        Updated on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+        {% endif %}
+      </small>
       <p>{{ article.content }}</p>
       {% if article.data %}
       <small class="text-muted">
@@ -17,6 +24,10 @@
         {% endfor %}
       </small>
       {% endif %}
+      <br>
+      <a href="{{ url_for('articles.edit_article', slug=article.slug) }}" class="btn btn-primary">
+        Edit
+      </a>
     </div>
   </article>
 </div>
