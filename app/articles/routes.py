@@ -60,6 +60,7 @@ def edit_article(slug):
     form.content.data = article.content
     form.title.data = article.title
     form.summary.data = article.summary
+    form.is_draft.data = article.is_draft
     # TODO: add more fields
     return render_template("articles/edit.html", form=form, article=article)
 
