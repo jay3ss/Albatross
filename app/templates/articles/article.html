@@ -6,13 +6,23 @@
   <article class="col">
     <div class="bs-component">
       <h1>{{ article.title }}</h1>
-      <small class="text-muted">
-        Created on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
-        {% if article.updated_at %}
-        &
-        Updated on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
-        {% endif %}
-      </small>
+      <ul class="list-unstyled text-muted small">
+        <li>
+            Created on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+            {% if article.updated_at %}
+            &
+            Updated on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+            {% endif %}
+        </li>
+        <li>
+            Status:
+            {% if article.is_draft %}
+              <span class="me-2 text-danger">Draft</span>
+            {% else %}
+              <span class="me-2 text-success">Published</span>
+            {% endif %}
+        </li>
+      </ul>
       <p>{{ article.content }}</p>
       {% if article.data %}
       <small class="text-muted">
