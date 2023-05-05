@@ -49,6 +49,7 @@ def test_username_uniqueness_case_insensitive(session):
     assert User.is_username_taken("bill")
     assert User.is_username_taken("BILl")
 
+
 def test_email_uniqueness(session):
     user = session.get(User, 1)
 
@@ -72,6 +73,7 @@ def test_generate_slug_before_insert(session):
     session.commit()
 
     assert user.username_lower == "johndoe"
+
 
 def test_generate_slug_before_update(session):
     user = User(username="JohnDoe", email="jd@example.com")
@@ -113,6 +115,7 @@ def test_num_drafts():
     # Test num_drafts property
     assert user.num_drafts == 2  # Expect 2 drafts
 
+
 def test_num_published():
     # Create a test User object
     user = User()
@@ -150,4 +153,5 @@ def test_verify_reset_password_token(session):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

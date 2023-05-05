@@ -38,7 +38,7 @@ class RegistrationForm(FlaskForm):
         Custom validator to check if the new email is already taken.
         """
         if models.User.is_email_taken(field.data.lower()):
-            raise ValidationError('Email is already taken.')
+            raise ValidationError("Email is already taken.")
 
 
 class ResetPasswordRequestForm(FlaskForm):
@@ -49,7 +49,6 @@ class ResetPasswordRequestForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     password = PasswordField("Enter new password", validators=[DataRequired()])
     password2 = PasswordField(
-        "Re-enter password",
-        validators=[DataRequired(), EqualTo("password")]
+        "Re-enter password", validators=[DataRequired(), EqualTo("password")]
     )
     submit = SubmitField("Submit")

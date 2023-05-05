@@ -53,7 +53,6 @@ def test_remove_article_data_from_article(session):
     # Retrieve the ArticleData object from the Article
     retrieved_article_data = article.filter_data_by_key(key="test_key")
 
-
     # Check that the ArticleData object was removed from the Article
     assert len(retrieved_article_data) == 0
 

@@ -18,6 +18,7 @@ def own_resource_required(redirect_route: str) -> Callable:
     Returns
         Callable: The decorated route function.
     """
+
     def decorator(route: Callable) -> Callable:
         """
         Inner decorator function
@@ -28,6 +29,7 @@ def own_resource_required(redirect_route: str) -> Callable:
         Returns:
             Callable: The decorated route function.
         """
+
         @wraps(route)
         def wrapped_route(*args, **kwargs) -> Response:
             """
@@ -41,6 +43,7 @@ def own_resource_required(redirect_route: str) -> Callable:
             if not current_user.username.lower() == username:
                 return redirect(url_for(redirect_route))
             return route(*args, **kwargs)
+
         return wrapped_route
 
     return decorator

@@ -133,12 +133,9 @@ def test_write_nested_settings(settings_file):
 def test_read_nested_settings(settings_file):
     # Given
     with open(settings_file, "w") as f:
-        json.dump({
-            "JINJA_ENVIRONMENT": {
-                "trim_blocks": False,
-                "lstrip_blocks": True
-            }
-        }, f)
+        json.dump(
+            {"JINJA_ENVIRONMENT": {"trim_blocks": False, "lstrip_blocks": True}}, f
+        )
 
     settings = Settings()
     settings.update(settings_file)

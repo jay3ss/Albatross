@@ -20,7 +20,7 @@ def app():
         username="test",
         email="test@example.com",
         password="password",
-        session=db.session
+        session=db.session,
     )
 
     yield app

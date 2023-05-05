@@ -27,4 +27,5 @@ def test_send_email(mock_send):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

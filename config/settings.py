@@ -5,7 +5,6 @@ from typing import Any
 
 
 class Settings:
-
     def __init__(self, user_file: Path | str | None = None) -> None:
         load_user_file = True
         if not user_file:
@@ -74,8 +73,7 @@ class Settings:
 
     @staticmethod
     def _get_pelican_settings(
-        path: Path | str | None = None,
-        override: dict | None = None
+        path: Path | str | None = None, override: dict | None = None
     ) -> dict:
         """
         Retrieves the app's settings (including user settings)

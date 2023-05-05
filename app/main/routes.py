@@ -17,8 +17,8 @@ def index():
 @bp.route("/u/<username>")
 @login_required
 def profile(username):
-    user = db.first_or_404(db.select(models.User).filter_by(
-        username_lower=username.lower())
+    user = db.first_or_404(
+        db.select(models.User).filter_by(username_lower=username.lower())
     )
     form = forms.CompileForm()
     return render_template("main/profile.html", user=user, form=form)

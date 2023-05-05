@@ -19,7 +19,9 @@ from flask_sqlalchemy.extension import SQLAlchemy
 from app import db, models
 
 
-def register(username: str, email: str, password: str, session: SQLAlchemy = db.session) -> bool:
+def register(
+    username: str, email: str, password: str, session: SQLAlchemy = db.session
+) -> bool:
     """
     Register a new user with the given username.
 

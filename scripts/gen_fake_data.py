@@ -231,10 +231,7 @@ articles = [
 with open("/usr/share/dict/words", "r") as f:
     words = random.sample([line for line in f.read().split("\n")], k=25)
 
-keywords = [
-    models.ArticleData(key="keyword", value=word)
-    for word in words
-]
+keywords = [models.ArticleData(key="keyword", value=word) for word in words]
 
 for article in articles:
     article.data = random.sample(keywords, k=5)

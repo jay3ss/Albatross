@@ -39,16 +39,14 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             payload={"reset_password": self.id, "exp": time() + expires_in},
             key=current_app.config["SECRET_KEY"],
-            algorithm="HS256"
+            algorithm="HS256",
         )
 
     @staticmethod
     def verify_reset_password_token(token):
         try:
             user_id = jwt.decode(
-                jwt=token,
-                key=current_app.config["SECRET_KEY"],
-                algorithms=["HS256"]
+                jwt=token, key=current_app.config["SECRET_KEY"], algorithms=["HS256"]
             )["reset_password"]
         except:
             return
@@ -130,7 +128,7 @@ class ArticleData(db.Model):
             "id": self.id,
             "key": self.key,
             "value": self.value,
-            "article_ids": [article.id for article in self.articles]
+            "article_ids": [article.id for article in self.articles],
         }
 
     def __repr__(self):
@@ -155,7 +153,9 @@ class Article(db.Model):
 
     # Define many-to-many relationship with ArticleData
     data: Mapped[list[ArticleData]] = db.relationship(
-        "ArticleData", secondary=article_data_association_table, back_populates="articles"
+        "ArticleData",
+        secondary=article_data_association_table,
+        back_populates="articles",
     )
 
     def filter_data_by_key(self, key: str) -> list["Article"]:
@@ -168,7 +168,7 @@ class Article(db.Model):
         Returns:
             ArticleData or None: The ArticleData object if found, else None.
         """
-        article_data = list(filter(lambda e: e.key==key, self.data))
+        article_data = list(filter(lambda e: e.key == key, self.data))
         return article_data
 
     @staticmethod

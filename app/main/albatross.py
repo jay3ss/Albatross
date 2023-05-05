@@ -107,15 +107,17 @@ def _create_metadata(article: Article) -> dict:
         else:
             metadata[data.key] = data.value
 
-    metadata.update({
-        "author": article.user.username,
-        "title": article.title,
-        "date": article.created_at,
-        "modified": article.updated_at,
-        "slug": article.slug,
-        "summary": article.summary if article.summary else "",
-        "status": "draft" if article.is_draft else "published",
-        "lang": "en",
-        "translation": False,
-    })
+    metadata.update(
+        {
+            "author": article.user.username,
+            "title": article.title,
+            "date": article.created_at,
+            "modified": article.updated_at,
+            "slug": article.slug,
+            "summary": article.summary if article.summary else "",
+            "status": "draft" if article.is_draft else "published",
+            "lang": "en",
+            "translation": False,
+        }
+    )
     return metadata

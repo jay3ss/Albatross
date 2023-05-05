@@ -14,7 +14,9 @@ from flask_mail import Message
 from app import mail, models
 
 
-def send_email(subject: str, sender: str, recipients: list[str], text_body: str, html_body: str) -> None:
+def send_email(
+    subject: str, sender: str, recipients: list[str], text_body: str, html_body: str
+) -> None:
     """
     Send an email. The following environment variables need to be set in order to
     send emails:

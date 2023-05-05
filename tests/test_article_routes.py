@@ -213,10 +213,7 @@ def test_deleting_article_that_does_not_belong_to_the_user(auth, client, session
     username = "bob"
     password = "password"
     uh.register(
-        username="bob",
-        email="bob@example.com",
-        password=password,
-        session=session
+        username="bob", email="bob@example.com", password=password, session=session
     )
     session.add(article)
     session.commit()
@@ -247,10 +244,7 @@ def test_pagination_less_than_articles_per_page(auth, client, session):
     username = "fake_user"
     password = "password"
     uh.register(
-        username=username,
-        email="e@example.com",
-        password=password,
-        session=session
+        username=username, email="e@example.com", password=password, session=session
     )
     user = session.get(models.User, 2)
     user.set_password(password)

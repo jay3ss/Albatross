@@ -1,7 +1,13 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import (EmailField, PasswordField, StringField, SubmitField,
-                     TextAreaField, ValidationError)
+from wtforms import (
+    EmailField,
+    PasswordField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+    ValidationError,
+)
 from wtforms.validators import Length, Email, EqualTo
 
 from app import models
@@ -21,7 +27,7 @@ class EditUserForm(FlaskForm):
         """
         user = models.User.query.filter_by(username=field.data).first()
         if user is not None and user.id != current_user.id:
-            raise ValidationError('Username is already taken.')
+            raise ValidationError("Username is already taken.")
 
     def validate_email(self, field):
         """
@@ -29,7 +35,7 @@ class EditUserForm(FlaskForm):
         """
         user = models.User.query.filter_by(email=field.data).first()
         if user is not None and user.id != current_user.id:
-            raise ValidationError('Email is already taken.')
+            raise ValidationError("Email is already taken.")
 
 
 class CompileForm(FlaskForm):

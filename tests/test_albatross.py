@@ -4,7 +4,12 @@ import shutil
 from unittest.mock import MagicMock, patch
 
 from app import models
-from app.main.albatross import article_to_post, compile_posts, create_post, _create_metadata
+from app.main.albatross import (
+    article_to_post,
+    compile_posts,
+    create_post,
+    _create_metadata,
+)
 
 
 def test_create_post(tmpdir):
@@ -55,11 +60,7 @@ def test_article_to_post(session, tmpdir):
     value = "test"
     user = session.get(models.User, 1)
     article_data = models.ArticleData(key=key, value=value)
-    article = models.Article(
-        title=title,
-        content=content,
-        user=user
-    )
+    article = models.Article(title=title, content=content, user=user)
     article.data.append(article_data)
     session.add(article)
     session.commit()
@@ -92,18 +93,14 @@ def test_article_to_post_with_different_types_of_article_data(session, tmpdir):
         {"keywords": "test"},
         {"keywords": "pytest"},
         {"tags": "til"},
-        {"category": "helpful"}
+        {"category": "helpful"},
     ]
     article_data = [
         models.ArticleData(key=key, value=value)
         for data in metadata
         for key, value in data.items()
     ]
-    article = models.Article(
-        title=title,
-        content=content,
-        user=user
-    )
+    article = models.Article(title=title, content=content, user=user)
     article.data = article_data
     article.is_draft = False
     session.add(article)
@@ -136,7 +133,7 @@ def test_compile_posts_compiles_correctly(session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
-        for i in range (5)
+        for i in range(5)
     ]
 
     # make a couple articles not "draft" to ensure proper publishing
@@ -145,8 +142,7 @@ def test_compile_posts_compiles_correctly(session):
 
     for article in articles:
         article.data = [
-            models.ArticleData(key="keywords", value=f"test_{i}")
-            for i in range(5)
+            models.ArticleData(key="keywords", value=f"test_{i}") for i in range(5)
         ]
     session.add_all(articles)
     session.commit()
@@ -171,19 +167,21 @@ def test_compile_posts_creates_temporary_directory(session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
-        for i in range (5)
+        for i in range(5)
     ]
 
     for article in articles:
         article.data = [
-            models.ArticleData(key="keywords", value=f"test_{i}")
-            for i in range(5)
+            models.ArticleData(key="keywords", value=f"test_{i}") for i in range(5)
         ]
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.tempfile.TemporaryDirectory") as mock_temp_dir, \
-        patch("app.main.albatross.article_to_post") as mock_article_to_post:
+    with patch(
+        "app.main.albatross.tempfile.TemporaryDirectory"
+    ) as mock_temp_dir, patch(
+        "app.main.albatross.article_to_post"
+    ) as mock_article_to_post:
         compile_posts(articles=articles)
 
     # clean up
@@ -199,13 +197,12 @@ def test_compile_posts_runs_pelican(session):
     user = session.get(models.User, 1)
     articles = [
         models.Article(title=f"Article {i}", content=f"Content {1}", user=user)
-        for i in range (5)
+        for i in range(5)
     ]
 
     for article in articles:
         article.data = [
-            models.ArticleData(key="keywords", value=f"test_{i}")
-            for i in range(5)
+            models.ArticleData(key="keywords", value=f"test_{i}") for i in range(5)
         ]
     session.add_all(articles)
     session.commit()
@@ -213,7 +210,6 @@ def test_compile_posts_runs_pelican(session):
     with patch("app.main.albatross.pelican") as mock_pelican:
         mock_pelican.Pelican.return_value.run = MagicMock()
         compile_posts(articles=articles, directory=None)
-
 
     # clean up
     for article in articles:
@@ -256,4 +252,5 @@ def test_create_metadata_function(session, user):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

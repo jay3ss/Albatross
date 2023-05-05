@@ -7,10 +7,7 @@ from app import models
 
 
 def test_getting_main_page_while_not_authenticated(client):
-    response = client.get(
-        url_for("main.index"),
-        follow_redirects=False
-    )
+    response = client.get(url_for("main.index"), follow_redirects=False)
     assert response.status_code == 200
 
 
@@ -18,30 +15,27 @@ def test_getting_main_page_while_authenticated(auth, client, session):
     auth.login()
     user = session.get(models.User, 1)
     response = client.get(
-        url_for("main.index", username=user.username),
-        follow_redirects=False
+        url_for("main.index", username=user.username), follow_redirects=False
     )
     assert response.status_code == 302
     profile_page = url_for("main.profile", username=user.username, _external=False)
-    assert response.location[:len(profile_page)] == profile_page
+    assert response.location[: len(profile_page)] == profile_page
 
 
 def test_getting_userpage_while_not_authenticated(client):
     response = client.get(
-        url_for("main.profile", username="not-a-real-user"),
-        follow_redirects=False
+        url_for("main.profile", username="not-a-real-user"), follow_redirects=False
     )
     assert response.status_code == 302
     login_page = url_for("auth.login", _external=False)
-    assert response.location[:len(login_page)] == login_page
+    assert response.location[: len(login_page)] == login_page
 
 
 def test_getting_userpage_while_authenticated(auth, client, session):
     auth.login()
     user = session.get(models.User, 1)
     response = client.get(
-        url_for("main.profile", username=user.username),
-        follow_redirects=False
+        url_for("main.profile", username=user.username), follow_redirects=False
     )
     assert response.status_code == 200
     assert user.username in response.text
@@ -75,7 +69,7 @@ def test_updating_user_update_everything(auth, client, session):
             password=password,
             password2=password,
         ),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
@@ -86,12 +80,11 @@ def test_updating_user_update_everything(auth, client, session):
     assert updated_user.about == about
     assert updated_user.check_password(password)
 
-
     # having the same username shouldn't trigger an error
     response = client.post(
         url_for("main.update_profile", username=username),
         data=dict(username="user"),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 200
@@ -101,11 +94,11 @@ def test_update_profile_while_not_authenticated(client, session):
     user = session.get(models.User, 1)
     response = client.get(
         url_for("main.profile", username=user.username, _external=False),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     login_url = url_for("auth.login", _external=False)
-    assert response.location[:len(login_url)] == login_url
+    assert response.location[: len(login_url)] == login_url
     assert response.status_code == 302
 
 
@@ -117,12 +110,11 @@ def test_update_profile_update_only_username(auth, client, session):
     data = dict(
         username=username,
         email=user.email,
-
     )
     response = client.post(
         url_for("main.update_profile", username=user.username),
         data=data,
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
@@ -138,11 +130,8 @@ def test_updating_user_email_only(auth, client, session):
     auth.login()
     response = client.post(
         url_for("main.update_profile", username=user.username),
-        data=dict(
-            username=user.username,
-            email=email
-        ),
-        follow_redirects=False
+        data=dict(username=user.username, email=email),
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
@@ -158,12 +147,8 @@ def test_updating_user_about_only(auth, client, session):
     auth.login()
     response = client.post(
         url_for("main.update_profile", username=user.username),
-        data=dict(
-            username=user.username,
-            email=user.email,
-            about=about
-        ),
-        follow_redirects=False
+        data=dict(username=user.username, email=user.email, about=about),
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
@@ -184,9 +169,9 @@ def test_updating_user_password_only(auth, client, session):
             username=user.username,
             email=user.email,
             password=password,
-            password2=password
+            password2=password,
         ),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
@@ -214,7 +199,7 @@ def test_updating_email_to_existing_email(auth, client, session):
             username=new_user.username,
             email=old_user.email,
         ),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert "Email is already taken" in response.text
@@ -238,7 +223,7 @@ def test_updating_username_to_existing_username(auth, client, session):
             username=old_user.username,
             email=new_user.email,
         ),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert "Username is already taken" in response.text
@@ -246,21 +231,19 @@ def test_updating_username_to_existing_username(auth, client, session):
 
 def test_attempting_to_compile_while_not_authenticated(client, user):
     response = client.get(
-        url_for("main.compile_site", username=user.username),
-        follow_redirects=False
+        url_for("main.compile_site", username=user.username), follow_redirects=False
     )
 
     assert response.status_code == 302
     login_url = url_for("auth.login", _external=False)
-    assert response.headers.get("Location", None)[:len(login_url)] == login_url
+    assert response.headers.get("Location", None)[: len(login_url)] == login_url
 
 
 def test_attempting_to_compile_while_authenticated(auth, client, user):
     auth.login()
 
     response = client.get(
-        url_for("main.compile_site", username=user.username),
-        follow_redirects=False
+        url_for("main.compile_site", username=user.username), follow_redirects=False
     )
 
     assert response.status_code == 302
@@ -271,12 +254,12 @@ def test_attempting_to_compile_for_non_existent_user(auth, client, user):
 
     response = client.post(
         url_for("main.compile_site", username="user_does_not_exist"),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
     index_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location", None)[:len(index_url)] == index_url
+    assert response.headers.get("Location", None)[: len(index_url)] == index_url
 
 
 def test_attempting_to_compile_for_different_user(auth, client, session, user):
@@ -288,13 +271,12 @@ def test_attempting_to_compile_for_different_user(auth, client, session, user):
     auth.login()
 
     response = client.post(
-        url_for("main.compile_site", username=new_user.username),
-        follow_redirects=False
+        url_for("main.compile_site", username=new_user.username), follow_redirects=False
     )
 
     assert response.status_code == 302
     index_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location", None)[:len(index_url)] == index_url
+    assert response.headers.get("Location", None)[: len(index_url)] == index_url
 
 
 def test_attempting_to_compile_for_owning_user(auth, client, user):
@@ -302,12 +284,11 @@ def test_attempting_to_compile_for_owning_user(auth, client, user):
 
     with patch("app.main.albatross.compile_posts") as mock_compile_posts:
         response = client.post(
-            url_for("main.compile_site", username=user.username),
-            follow_redirects=False
+            url_for("main.compile_site", username=user.username), follow_redirects=False
         )
 
     assert response.status_code == 302
     profile_url = url_for("main.profile", username=user.username_lower, _external=False)
-    assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
+    assert response.headers.get("Location", None)[: len(profile_url)] == profile_url
 
     shutil.rmtree("output")
