@@ -1,9 +1,9 @@
+import shutil
 from unittest.mock import patch
 
 from flask import url_for
 
 from app import models
-from app.helpers import users as uh
 
 
 def test_getting_main_page_while_not_authenticated(client):
@@ -309,3 +309,5 @@ def test_attempting_to_compile_for_owning_user(auth, client, user):
     assert response.status_code == 302
     profile_url = url_for("main.profile", username=user.username_lower, _external=False)
     assert response.headers.get("Location", None)[:len(profile_url)] == profile_url
+
+    shutil.rmtree("output")
