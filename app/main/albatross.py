@@ -18,6 +18,7 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Pat
         directory (Path | None, optional): The directory where the temporary
         directory will be created. Defaults to None.
     """
+    # TODO: this will need to be the user settings once properly implemented
     settings = pelican.read_settings()
     with tempfile.TemporaryDirectory(prefix="content", dir=directory) as td:
         for article in articles:
@@ -25,7 +26,6 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Pat
 
         settings["PATH"] = td
         settings["ARTICLE_PATHS"] = td
-        settings["DEBUG"] = True
         pel = pelican.Pelican(settings=settings)
         pel.run()
 
@@ -110,10 +110,13 @@ def _create_metadata(article: Article) -> dict:
         else:
             metadata[data.key] = data.value
 
+    # TODO: this will need to be the user settings once properly implemented
+    settings = pelican.read_settings()
     # TODO:
     # - make this date format the default setting and allow the user to update this
     # - set the modified date as the same above, but only if it's not `None`
-    date_format_str = "%Y/%m/%d %I:%M%p"
+    # date_format_str = "%Y/%m/%d %I:%M%p"
+    date_format_str = settings["DEFAULT_DATE_FORMAT"]
     metadata.update(
         {
             "author": article.user.username,
