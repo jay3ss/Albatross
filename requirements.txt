@@ -4,6 +4,7 @@ Flask
 flask-babel<3
 flask-login
 flask-mail
+flask-mdeditor
 flask-migrate
 flask-moment
 flask-sqlalchemy
