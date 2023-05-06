@@ -3,7 +3,10 @@ from pathlib import Path
 import shutil
 from unittest.mock import MagicMock, patch
 
+from pelican import read_settings
+
 from app import models
+from app.jinja.filters import datetime_format
 from app.main.albatross import (
     article_to_post,
     compile_posts,
@@ -67,12 +70,12 @@ def test_article_to_post(session, tmpdir):
 
     post_path = article_to_post(article, tmpdir)
 
+    date_format_str = read_settings()["DEFAULT_DATE_FORMAT"]
     post_content = f"""---
 {key}: {value}
 author: {article.user.username}
 title: {article.title}
-date: {article.created_at}
-modified: {article.updated_at}
+date: {datetime_format(article.created_at, date_format_str)}
 slug: {article.slug}
 summary: {article.summary if article.summary else ""}
 status: {"draft" if article.is_draft else "published"}
@@ -81,6 +84,22 @@ translation: False
 ---
 
 {content}"""
+
+#     post_content = f"""---
+# {key}: {value}
+# author: {article.user.username}
+# title: {article.title}
+# date: {article.created_at}
+# modified: {article.updated_at}
+# slug: {article.slug}
+# summary: {article.summary if article.summary else ""}
+# status: {"draft" if article.is_draft else "published"}
+# lang: en
+# translation: False
+# ---
+
+# {content}"""
+
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
 
@@ -108,14 +127,14 @@ def test_article_to_post_with_different_types_of_article_data(session, tmpdir):
 
     post_path = article_to_post(article, tmpdir)
 
+    date_format_str = read_settings()["DEFAULT_DATE_FORMAT"]
     post_content = f"""---
 keywords: pytest, test
 tags: til
 category: helpful
 author: {article.user.username}
 title: {article.title}
-date: {article.created_at}
-modified: {article.updated_at}
+date: {datetime_format(article.created_at, date_format_str)}
 slug: {article.slug}
 summary: {article.summary if article.summary else ""}
 status: {"draft" if article.is_draft else "published"}
@@ -124,6 +143,23 @@ translation: False
 ---
 
 {content}"""
+
+
+# post_content = f"""---
+# keywords: pytest, test
+# tags: til
+# category: helpful
+# author: {article.user.username}
+# title: {article.title}
+# date: {article.created_at}
+# modified: {article.updated_at}
+# slug: {article.slug}
+# summary: {article.summary if article.summary else ""}
+# status: {"draft" if article.is_draft else "published"}
+# lang: en
+# translation: False
+# ---
+
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
@@ -233,12 +269,13 @@ def test_create_metadata_function(session, user):
     session.add(article)
     session.commit()
 
+    date_format_str = read_settings()["DEFAULT_DATE_FORMAT"]
     actual_metadata = {
         "keywords": set([article.data[0].value, article.data[1].value]),
         "author": user.username,
         "title": article.title,
-        "date": article.created_at,
-        "modified": article.updated_at,
+        "date": datetime_format(article.created_at, date_format_str),
+        # "modified": article.updated_at,
         "slug": article.slug,
         "summary": article.summary if article.summary else "",
         "status": "draft" if article.is_draft else "published",
@@ -252,4 +289,4 @@ def test_create_metadata_function(session, user):
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(["-s", __file__])
+    pytest.main(["-s", f"{__file__}::test_article_to_post"])
