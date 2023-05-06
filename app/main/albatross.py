@@ -4,6 +4,7 @@ import tempfile
 
 import pelican
 
+from app.jinja.filters import datetime_format
 from app.models import Article
 
 
@@ -23,6 +24,8 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Pat
             article_to_post(article=article, base_dir=td)
 
         settings["PATH"] = td
+        settings["ARTICLE_PATHS"] = td
+        settings["DEBUG"] = True
         pel = pelican.Pelican(settings=settings)
         pel.run()
 
@@ -107,12 +110,16 @@ def _create_metadata(article: Article) -> dict:
         else:
             metadata[data.key] = data.value
 
+    # TODO:
+    # - make this date format the default setting and allow the user to update this
+    # - set the modified date as the same above, but only if it's not `None`
+    date_format_str = "%Y/%m/%d %I:%M%p"
     metadata.update(
         {
             "author": article.user.username,
             "title": article.title,
-            "date": article.created_at,
-            "modified": article.updated_at,
+            "date": datetime_format(article.created_at, date_format_str),
+            # "modified": datetime_format(article.updated_at, date_format_str),
             "slug": article.slug,
             "summary": article.summary if article.summary else "",
             "status": "draft" if article.is_draft else "published",
