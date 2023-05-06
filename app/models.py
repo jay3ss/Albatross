@@ -4,6 +4,7 @@ from random import choices
 from time import time
 
 import jwt
+import markdown
 from flask import current_app
 from flask_login import UserMixin
 from sqlalchemy import event
@@ -183,6 +184,10 @@ class Article(db.Model):
             str: The generated slug.
         """
         return generate_slug(title)
+
+    @property
+    def content_html(self) -> str:
+        return markdown.markdown(self.content)
 
     def __repr__(self) -> str:
         if not self.user:

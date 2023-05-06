@@ -23,7 +23,7 @@
             {% endif %}
         </li>
       </ul>
-      <p>{{ article.content }}</p>
+      <p>{{ article.content_html|safe }}</p>
       {% if article.data %}
       <small class="text-muted">
         Keywords:
