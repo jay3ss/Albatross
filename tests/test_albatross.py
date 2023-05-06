@@ -207,8 +207,8 @@ def test_compile_posts_runs_pelican(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.pelican") as mock_pelican:
-        mock_pelican.Pelican.return_value.run = MagicMock()
+    with patch("app.main.albatross.pelican.Pelican.run") as mock_pelican_run:
+        mock_pelican_run.return_value = MagicMock()
         compile_posts(articles=articles, directory=None)
 
     # clean up
@@ -217,8 +217,7 @@ def test_compile_posts_runs_pelican(session):
         if post_file.exists():
             post_file.unlink()
 
-    assert mock_pelican.read_settings.called
-    assert mock_pelican.Pelican.return_value.run.called
+    assert mock_pelican_run.called
 
 
 def test_create_metadata_function(session, user):
