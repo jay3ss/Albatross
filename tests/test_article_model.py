@@ -199,3 +199,15 @@ def test_article_string_representation_without_author(session):
 
     assert title in str(article)
     assert not "user" in str(article)
+
+
+def test_article_content_html():
+    content = "- list\n- items"
+    article = Article(title="Title", content=content)
+
+    html = article.content_html
+
+    assert "<ul>" in html
+    assert "</ul>" in html
+    assert "<li>" in html
+    assert "</li>" in html
