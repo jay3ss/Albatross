@@ -37,6 +37,8 @@ class Config:
     BOOTSTRAP_BOOTSWATCH_THEME = "litera"
     ARTICLES_PER_PAGE = env_var("ARTICLES_PER_PAGE", 25)
     ADMINS = env_var("ADMINS", ["albatross@example.com"])
+    # TODO: more MDEditor settings (e.g., "MDEDITOR_FILE_UPLOADER")
+    MDEDITOR_LANGUAGE = env_var("MDEDITOR_LANGUAGE", "en")
 
 
 class TestConfig(Config):
