@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):
     username_lower = db.Column(db.String(128), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), index=True, unique=True)
     joined_on = db.Column(db.DateTime, default=dt.utcnow)
-    updated_at = db.Column(db.DateTime, default=dt.utcnow, onupdate=dt.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=dt.utcnow)
     articles = db.relationship(
         "Article", back_populates="user", cascade="all, delete-orphan"
     )
@@ -241,12 +241,6 @@ def lower_username_before_insert(mapper, connection, target):
 @event.listens_for(User, "before_update")
 def lower_username_before_update(mapper, connection, target):
     target.username_lower = target.username.lower()
-
-
-# Define an event listener to set the updated datetime
-@event.listens_for(User, "before_update")
-def update_user_update_time_before_insert(mapper, connection, target):
-    target.updated_at = dt.utcnow()
 
 
 @login.user_loader
