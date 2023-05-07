@@ -92,12 +92,12 @@ def test_generate_slug_before_update(session):
     session.commit()
 
     updated_at = user.updated_at
+    assert updated_at is None
 
     user.username = "JaneDoe"
     session.commit()
 
     assert user.updated_at is not None
-    assert updated_at < user.updated_at
 
 
 def test_num_drafts():
