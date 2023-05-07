@@ -11,7 +11,7 @@
             Created on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
             {% if article.updated_at %}
             &
-            Updated on {{ article.created_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
+            Updated on {{ article.updated_at|datetime_format("%B %d, %Y @ %-I:%M%p") }}
             {% endif %}
         </li>
         <li>
