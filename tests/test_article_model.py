@@ -211,3 +211,15 @@ def test_article_content_html():
     assert "</ul>" in html
     assert "<li>" in html
     assert "</li>" in html
+
+
+def test_article_content_html_with_code():
+    content = "```python\nimport random\nprint(random.random())"
+    article = Article(title="Title", content=content)
+
+    html = article.content_html
+
+    assert "<code" in html
+    assert "</code" in html
+    assert "import" in html
+    assert "random()" in html

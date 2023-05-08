@@ -9,6 +9,7 @@ flask-migrate
 flask-moment
 flask-sqlalchemy
 flask-wtf
+mistune
 pelican[markdown]
 pydantic
 pyjwt

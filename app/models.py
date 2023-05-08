@@ -4,7 +4,7 @@ from random import choices
 from time import time
 
 import jwt
-import markdown
+import mistune
 from flask import current_app
 from flask_login import UserMixin
 from sqlalchemy import event
@@ -187,7 +187,7 @@ class Article(db.Model):
 
     @property
     def content_html(self) -> str:
-        return markdown.markdown(self.content)
+        return mistune.html(self.content)
 
     def __repr__(self) -> str:
         if not self.user:
