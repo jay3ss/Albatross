@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block head %}
+  {{ super() }}
+  {% include "_highlight.html" %}
+{% endblock %}
+
 {% block content %}
 
 <div class="row">

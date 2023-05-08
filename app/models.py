@@ -12,7 +12,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, login
-from app.helpers.articles import generate_slug
+from app.helpers.articles import HighlightRenderer, generate_slug
 
 
 class User(UserMixin, db.Model):
@@ -187,7 +187,9 @@ class Article(db.Model):
 
     @property
     def content_html(self) -> str:
-        return mistune.html(self.content)
+        md = mistune.create_markdown(renderer=HighlightRenderer())
+        return md(self.content)
+        # return mistune.html(self.content)
 
     def __repr__(self) -> str:
         if not self.user:

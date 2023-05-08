@@ -12,6 +12,7 @@ flask-wtf
 mistune
 pelican[markdown]
 pydantic
+Pygments
 pyjwt
 python-dotenv
 python-slugify
