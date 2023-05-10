@@ -125,5 +125,12 @@ def test_read_nested_settings(settings_file):
     assert settings["JINJA_ENVIRONMENT"]["lstrip_blocks"] == True
 
 
+def test_settings_object_is_singleton():
+    settings1 = Settings()
+    settings2 = Settings()
+
+    assert settings1 is settings2
+
+
 if __name__ == "__main__":
     pytest.main(["-s", __file__])
