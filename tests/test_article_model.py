@@ -240,11 +240,7 @@ def test_article_content_html_with_code():
 
 
 @pytest.mark.parametrize(
-    ("content", "results"),
-    (
-        abbr, def_list, footnote,
-        table, task_list
-    )
+    ("content", "results"), (abbr, def_list, footnote, table, task_list)
 )
 def test_article_content_html_plugins(content, results):
     article = Article(title="Title", content=content)

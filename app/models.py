@@ -201,10 +201,7 @@ class Article(db.Model):
             "table",
             "task_lists",
         ]
-        md = mistune.create_markdown(
-            renderer=HighlightRenderer(),
-            plugins=plugins
-        )
+        md = mistune.create_markdown(renderer=HighlightRenderer(), plugins=plugins)
         return md(self.content)
 
     def __repr__(self) -> str:

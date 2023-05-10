@@ -85,20 +85,20 @@ translation: False
 
 {content}"""
 
-#     post_content = f"""---
-# {key}: {value}
-# author: {article.user.username}
-# title: {article.title}
-# date: {article.created_at}
-# modified: {article.updated_at}
-# slug: {article.slug}
-# summary: {article.summary if article.summary else ""}
-# status: {"draft" if article.is_draft else "published"}
-# lang: en
-# translation: False
-# ---
+    #     post_content = f"""---
+    # {key}: {value}
+    # author: {article.user.username}
+    # title: {article.title}
+    # date: {article.created_at}
+    # modified: {article.updated_at}
+    # slug: {article.slug}
+    # summary: {article.summary if article.summary else ""}
+    # status: {"draft" if article.is_draft else "published"}
+    # lang: en
+    # translation: False
+    # ---
 
-# {content}"""
+    # {content}"""
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()
@@ -144,22 +144,20 @@ translation: False
 
 {content}"""
 
-
-# post_content = f"""---
-# keywords: pytest, test
-# tags: til
-# category: helpful
-# author: {article.user.username}
-# title: {article.title}
-# date: {article.created_at}
-# modified: {article.updated_at}
-# slug: {article.slug}
-# summary: {article.summary if article.summary else ""}
-# status: {"draft" if article.is_draft else "published"}
-# lang: en
-# translation: False
-# ---
-
+    # post_content = f"""---
+    # keywords: pytest, test
+    # tags: til
+    # category: helpful
+    # author: {article.user.username}
+    # title: {article.title}
+    # date: {article.created_at}
+    # modified: {article.updated_at}
+    # slug: {article.slug}
+    # summary: {article.summary if article.summary else ""}
+    # status: {"draft" if article.is_draft else "published"}
+    # lang: en
+    # translation: False
+    # ---
 
     assert post_path.name[-3:] == ".md"
     assert post_content == post_path.read_text()

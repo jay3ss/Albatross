@@ -11,7 +11,7 @@ is maintained by the W3C.
 *[W3C]: World Wide Web Consortium""",
     """<p>The <abbr title="Hyper Text Markup Language">HTML</abbr> specification
 is maintained by the <abbr title="World Wide Web Consortium">W3C</abbr>.</p>
-"""
+""",
 )
 
 def_list = (
@@ -28,7 +28,7 @@ Second term
 <dt>Second term</dt>
 <dd>Third definition</dd>
 </dl>
-"""
+""",
 )
 
 footnote = (
@@ -39,21 +39,22 @@ footnote = (
 <li id="fn-1"><p>footnote explain<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
 </ol>
 </section>
-"""
+""",
 )
 
 insert = (
-    "^^insert me^^ ^^insert\^\^me^^", "<ins>insert me</ins> <ins>insert^^me</ins>"
+    "^^insert me^^ ^^insert\^\^me^^",
+    "<ins>insert me</ins> <ins>insert^^me</ins>",
 )
 
 mark = (
     "==mark me== ==mark with\=\=equal==",
-    "<mark>mark me</mark> <mark>mark with==equal</mark>"
+    "<mark>mark me</mark> <mark>mark with==equal</mark>",
 )
 
 math = (
     "$$\n\operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}}\n$$",
-    "<div class=\"math\">$$\n\operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}}\n$$</div>"
+    '<div class="math">$$\n\operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}}\n$$</div>',
 )
 
 spoiler = (
@@ -61,12 +62,12 @@ spoiler = (
     """>! here is the spoiler content
 >!
 >! it will be hidden""",
-"<div class=\"spoiler\"n<p>here is the spoiler content</p>\n<p>it will be hidden</p>\n</div>"
+    '<div class="spoiler"n<p>here is the spoiler content</p>\n<p>it will be hidden</p>\n</div>',
 )
 
 subscript = (
     "Hello~subscript~\n\nCH~3~CH~2~OH",
-    "<p>Hello<sub>subscript</sub></p>\n<p>CH<sub>3</sub>CH<sub>2</sub>OH</p>"
+    "<p>Hello<sub>subscript</sub></p>\n<p>CH<sub>3</sub>CH<sub>2</sub>OH</p>",
 )
 
 superscript = "Hello^superscript^", "<p>Hello<sup>superscript</sup></p>"
@@ -94,7 +95,7 @@ Content Cell  | Content Cell""",
 </tr>
 </tbody>
 </table>
-"""
+""",
 )
 
 task_list = (
@@ -104,5 +105,5 @@ task_list = (
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>item 1</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>item 2</li>
 </ul>
-"""
+""",
 )

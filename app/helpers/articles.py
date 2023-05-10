@@ -23,12 +23,12 @@ def generate_slug(text: str) -> str:
     return url
 
 
-
 class HighlightRenderer(mistune.HTMLRenderer):
     """
     Custom renderer for syntax highlighting. Adapted from:
     https://mistune.lepture.com/en/v2.0.4/guide.html#customize-renderer
     """
+
     def block_code(self, code, lang=None):
         if lang:
             lexer = get_lexer_by_name(lang, stripall=True)
