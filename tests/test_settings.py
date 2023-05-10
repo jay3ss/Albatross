@@ -44,14 +44,6 @@ def test_creating_settings_file(settings_file):
     assert pelican_settings == written_settings
 
     Path(pelican_settings_json).unlink()
-    Path(settings_file).unlink()
-    # settings = Settings(settings_file)
-    # assert settings["SITENAME"] == "My Pelican Site"
-    # settings.update({"SITENAME": "New Site Name"})
-    # settings.write(settings_file)
-    # with open(settings_file) as f:
-    #     saved_settings = json.load(f)
-    # assert saved_settings["SITENAME"] == "New Site Name"
 
 
 def test_get_pelican_settings():
