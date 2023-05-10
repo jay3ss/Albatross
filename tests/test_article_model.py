@@ -2,6 +2,10 @@ import pytest
 
 from app.models import Article
 
+from tests.md_test_data import abbr, def_list, footnote, insert, mark
+from tests.md_test_data import math as md_math
+from tests.md_test_data import spoiler, subscript, superscript, table, task_list
+
 
 # Test generate_slug method
 def test_generate_slug():
@@ -233,3 +237,21 @@ def test_article_content_html_with_code():
     assert "</pre" in html
     assert "import" in html
     assert "random" in html
+
+
+@pytest.mark.parametrize(
+    ("content", "results"),
+    (
+        abbr, def_list, footnote,
+        table, task_list
+    )
+)
+def test_article_content_html_plugins(content, results):
+    article = Article(title="Title", content=content)
+    html = article.content_html
+
+    assert html == results
+
+
+if __name__ == "__main__":
+    pytest.main(["-s", f"{__file__}::test_article_content_html_plugins"])
