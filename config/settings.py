@@ -99,7 +99,7 @@ class Settings:
         self._settings[index] = value
 
 
-def _write_dict_to_file(fname, contents: dict) -> Path:
+def _write_dict_to_file(fname: Path | str | None, contents: dict) -> Path:
     """
     Writes the contents to a file with the given name
 
