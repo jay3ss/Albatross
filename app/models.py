@@ -187,9 +187,11 @@ class Article(db.Model):
 
     @property
     def content_html(self) -> str:
-        md = mistune.create_markdown(renderer=HighlightRenderer())
+        md = mistune.create_markdown(
+            renderer=HighlightRenderer(),
+            plugins=["strikethrough"]
+        )
         return md(self.content)
-        # return mistune.html(self.content)
 
     def __repr__(self) -> str:
         if not self.user:
