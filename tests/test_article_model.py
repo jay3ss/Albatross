@@ -254,4 +254,4 @@ def test_article_content_html_plugins(content, results):
 
 
 if __name__ == "__main__":
-    pytest.main(["-s", f"{__file__}::test_article_content_html_plugins"])
+    pytest.main(["-s", __file__])
