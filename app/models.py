@@ -187,9 +187,23 @@ class Article(db.Model):
 
     @property
     def content_html(self) -> str:
+        plugins = [
+            "abbr",
+            "def_list",
+            "footnotes",
+            # "insert",
+            # "mark",
+            # "math",
+            # "spoiler",
+            "strikethrough",
+            # "subscript",
+            # "superscript",
+            "table",
+            "task_lists",
+        ]
         md = mistune.create_markdown(
             renderer=HighlightRenderer(),
-            plugins=["strikethrough"]
+            plugins=plugins
         )
         return md(self.content)
 
