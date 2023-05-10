@@ -18,6 +18,16 @@ class Settings:
             with open(self._user_file, "r") as f:
                 self._settings.update(json.load(f))
 
+    def __new__(cls, *args, **kwargs) -> "Settings":
+        """Only create a new instance if one hasn't already been created
+
+        Returns:
+            Settings: singleton Settings object
+        """
+        if not hasattr(cls, "instance"):
+            cls.instance = super(Settings, cls).__new__(cls, *args, **kwargs)
+        return cls.instance
+
     def update(self, new_settings: dict | Path | str) -> "Settings":
         """
         Updates the settings with contents of the new settings
