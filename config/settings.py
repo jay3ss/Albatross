@@ -52,7 +52,6 @@ class Settings:
         Returns:
             Path: path to the file
         """
-
         return _write_dict_to_file(fname=fname, contents=self._settings)
 
     @staticmethod
