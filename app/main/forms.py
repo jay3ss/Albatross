@@ -2,13 +2,14 @@ from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import (
     EmailField,
+    FileField,
     PasswordField,
     StringField,
     SubmitField,
     TextAreaField,
     ValidationError,
 )
-from wtforms.validators import Length, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from app import models
 
@@ -40,3 +41,8 @@ class EditUserForm(FlaskForm):
 
 class CompileForm(FlaskForm):
     submit = SubmitField("Compile")
+
+
+class UserSettingsFileForm(FlaskForm):
+    file_name = FileField("Choose a file", validators=[DataRequired()])
+    submit = SubmitField("Submit")

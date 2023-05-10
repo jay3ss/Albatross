@@ -29,6 +29,7 @@ class User(UserMixin, db.Model):
     )
     about = db.Column(db.String(280), nullable=True)
     password_hash = db.Column(db.String(128))
+    settings = db.relationship("UserSettings", uselist=False, backref="user")
 
     def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
@@ -208,6 +209,12 @@ class Article(db.Model):
         if not self.user:
             return f"<Article(title='{self.title}')>"
         return f"<Article(title='{self.title}', user='{self.user.username}')>"
+
+
+class UserSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
+    settings = db.Column(db.LargeBinary, nullable=True)
 
 
 # Define an event listener to generate slug before insert
