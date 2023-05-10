@@ -7,18 +7,6 @@ import pytest
 from config.settings import Settings
 
 
-@pytest.fixture(scope="function")
-def settings_file(tmp_path):
-    settings_path = tmp_path / "user_settings.json"
-
-    yield settings_path
-
-
-@pytest.fixture
-def settings():
-    return Settings()
-
-
 def test_load_settings(settings):
     assert settings == read_settings()
 

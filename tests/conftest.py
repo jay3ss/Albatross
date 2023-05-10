@@ -4,6 +4,7 @@ from app import create_app, db, models
 from app.helpers import users as uh
 from .helpers import AuthActions
 from config import TestConfig
+from config.settings import Settings
 
 
 @pytest.fixture
@@ -143,3 +144,15 @@ class DummyField:
 
 class DummyForm(dict):
     pass
+
+
+@pytest.fixture(scope="function")
+def settings_file(tmp_path):
+    settings_path = tmp_path / "user_settings.json"
+
+    yield settings_path
+
+
+@pytest.fixture
+def settings():
+    return Settings()
