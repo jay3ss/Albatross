@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from app import db
 from app.articles import bp, forms
+from app.decorators import own_article_required
 from app.models import Article
 
 
@@ -25,6 +26,7 @@ def articles():
 
 @bp.route("/<slug>")
 @login_required
+@own_article_required("main.index")
 def article(slug):
     article = db.first_or_404(db.select(Article).filter_by(slug=slug))
     return render_template("articles/article.html", article=article)
@@ -46,6 +48,7 @@ def create_article():
 
 @bp.route("/<slug>/edit", methods=["get", "post"])
 @login_required
+@own_article_required("main.index")
 def edit_article(slug):
     article = db.first_or_404(db.select(Article).filter_by(slug=slug))
     form = forms.EditArticleForm()
