@@ -4,6 +4,7 @@ from unittest.mock import patch
 from flask import url_for
 
 from app import models
+from app.main.albatross import _output_path
 
 
 def test_getting_main_page_while_not_authenticated(client):
@@ -279,7 +280,7 @@ def test_attempting_to_compile_for_different_user(auth, client, session, user):
     assert response.headers.get("Location", None)[: len(index_url)] == index_url
 
 
-def test_attempting_to_compile_for_owning_user(auth, client, user):
+def test_attempting_to_compile_for_owning_user(article, auth, client, user):
     auth.login()
 
     with patch("app.main.albatross.compile_posts") as mock_compile_posts:
@@ -291,4 +292,38 @@ def test_attempting_to_compile_for_owning_user(auth, client, user):
     profile_url = url_for("main.profile", username=user.username_lower, _external=False)
     assert response.headers.get("Location", None)[: len(profile_url)] == profile_url
 
-    shutil.rmtree("output")
+    shutil.rmtree(_output_path(article))
+
+
+def test_cant_access_another_users_profile(auth, client, session):
+    auth.login()
+
+    new_user = models.User(username="new_user", email="new_user@example.com")
+    session.add(new_user)
+    session.commit()
+
+    response = client.get(
+        url_for("main.profile", username=new_user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    main_page_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+
+
+def test_cant_change_another_users_profile(auth, client, session):
+    auth.login()
+
+    new_user = models.User(username="new_user", email="new_user@example.com")
+    session.add(new_user)
+    session.commit()
+
+    response = client.get(
+        url_for("main.update_profile", username=new_user.username),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    main_page_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url

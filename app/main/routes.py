@@ -16,6 +16,7 @@ def index():
 
 @bp.route("/u/<username>")
 @login_required
+@own_resource_required(redirect_route="main.index")
 def profile(username):
     user = db.first_or_404(
         db.select(models.User).filter_by(username_lower=username.lower())
@@ -26,6 +27,7 @@ def profile(username):
 
 @bp.route("/u/<username>/update", methods=["get", "post"])
 @login_required
+@own_resource_required(redirect_route="main.index")
 def update_profile(username):
     form = forms.EditUserForm()
     if form.validate_on_submit():

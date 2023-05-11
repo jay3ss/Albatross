@@ -347,3 +347,46 @@ def test_pagination_pagination_links(app, auth, client, session):
     response = client.get(url_for("articles.articles", page=4))
     assert "Article 10" not in response.text
     assert "Article 14" not in response.text
+
+
+def test_cant_view_another_users_article(article, auth, client, session):
+    new_user = models.User(username="new_user", email="new_user@example.com")
+    password = "password"
+    new_user.set_password(password)
+    session.add(new_user)
+    session.commit()
+
+    auth.login(username=new_user.username, password=password)
+
+    response = client.get(
+        url_for("articles.article", slug=article.slug),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    main_page_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+
+
+def test_cant_edit_another_users_article(article, auth, client, session):
+    new_user = models.User(username="new_user", email="new_user@example.com")
+    password = "password"
+    new_user.set_password(password)
+    session.add(new_user)
+    session.commit()
+
+    auth.login(username=new_user.username, password=password)
+
+    response = client.get(
+        url_for("articles.edit_article", slug=article.slug),
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    main_page_url = url_for("main.index", _external=False)
+    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main(["-s", __file__])

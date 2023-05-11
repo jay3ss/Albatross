@@ -12,6 +12,7 @@ from app.main.albatross import (
     compile_posts,
     create_post,
     _create_metadata,
+    _output_path
 )
 
 
@@ -186,7 +187,7 @@ def test_compile_posts_compiles_correctly(session):
     # check that the proper articles were generated
     # - articles marked as "draft" should be in the ./output/drafts directory
     # - articles not marked as "draft" should be in the
-    output_dir = Path("./output")
+    output_dir = Path(_output_path(articles[0]))
     for article in articles:
         if article.is_draft:
             assert (output_dir / "drafts" / f"{article.slug}.html").exists()
@@ -194,7 +195,7 @@ def test_compile_posts_compiles_correctly(session):
             assert (output_dir / f"{article.slug}.html").exists()
 
     # clean up
-    shutil.rmtree(Path("output"))
+    shutil.rmtree(output_dir)
 
 
 def test_compile_posts_creates_temporary_directory(session):
@@ -223,7 +224,7 @@ def test_compile_posts_creates_temporary_directory(session):
         post_file = Path(f"{article.slug}.md")
         if post_file.exists():
             post_file.unlink()
-    shutil.rmtree(Path("output"))
+    shutil.rmtree(Path(_output_path(articles[0])))
     assert mock_temp_dir.called_once_with(prefix="content", dir=None)
 
 
@@ -284,7 +285,16 @@ def test_create_metadata_function(session, user):
     assert generated_metadata == actual_metadata
 
 
+def test_output_path_function(article):
+    output_path = _output_path(article)
+    username = article.user.username_lower
+    assert output_path == f"{username}-output"
+
+    output_path = _output_path(article, "this", "should", "be", "part", "of", "the", "path")
+    assert output_path == f"{username}-this-should-be-part-of-the-path-output"
+
+
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(["-s", f"{__file__}::test_article_to_post"])
+    pytest.main(["-s", __file__])
