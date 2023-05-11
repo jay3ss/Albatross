@@ -26,6 +26,8 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Pat
 
         settings["PATH"] = td
         settings["ARTICLE_PATHS"] = td
+        output_path = _output_path(articles[0])
+        settings["OUTPUT_PATH"] = output_path
         pel = pelican.Pelican(settings=settings)
         pel.run()
 
@@ -131,3 +133,18 @@ def _create_metadata(article: Article) -> dict:
         }
     )
     return metadata
+
+
+def _output_path(article: Article, *args) -> str:
+    """Returns the output path for Pelican
+
+    Args:
+        article (Article): the article to get the username from
+
+    Returns:
+        str: the output path
+    """
+    parts = [article.user.username_lower]
+    parts.extend(args)
+    parts.extend(["output"])
+    return "-".join(parts)
