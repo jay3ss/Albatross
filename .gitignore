@@ -133,3 +133,6 @@ dmypy.json
 
 # VSCode settings
 .vscode/
+
+# Don't keep track of uploaded files
+uploads/
