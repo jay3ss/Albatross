@@ -1,5 +1,7 @@
 import json
+
 from pathlib import Path
+
 from pelican import read_settings
 from typing import Any
 
@@ -63,6 +65,12 @@ class Settings:
             Path: path to the file
         """
         return _write_dict_to_file(fname=fname, contents=self._settings)
+
+    def __str__(self) -> str:
+        return str(self._settings)
+
+    def __call__(self) -> dict:
+        return self._settings
 
     @staticmethod
     def create_settings_file(fname: Path | str | None = None) -> Path:
