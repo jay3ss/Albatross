@@ -4,6 +4,6 @@ from wtforms import FileField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class UserSettingsFileForm(FlaskForm):
+class UserSettingsFileUploadForm(FlaskForm):
     file_name = FileField("Choose a file", validators=[DataRequired()])
     submit = SubmitField("Submit")
