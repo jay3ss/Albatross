@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  {% include "_highlight.html" %}
+{% endblock %}
+
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col col-md-8 offset-md-2">
+            <h1>Settings</h1>
+
+            <p>
+                Albatross uses file-based settings via a
+                <a href="//developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON">
+                    <abbr title="JavaScript Object Notation">JSON</abbr>
+                </a> file. Here, you can view your current settings, export your settings, and
+                upload your own settings file to override the default settings. Albatross uses
+                the Python static site generator <a href="//getpelican.com">Pelican</a> behind
+                the scenes to generate a static site from your articles. Visit the
+                <a href="//docs.getpelican.com/en/latest/settings.html">Pelican settings page</a>
+                to see what settings are available to you.
+            </p>
+
+            <br>
+
+            <h2>Export Settings</h2>
+
+            <p>
+                Export the settings file here, make any changes you want and then upload them
+                below.
+            </p>
+
+            <form action="{{ url_for('settings.export') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-success">Export</button>
+            </form>
+
+            <br>
+
+            <h2>Upload Settings</h2>
+            <p>
+                Upload your settings here.
+            </p>
+
+            {{ render_form(upload_form) }}
+
+            <br>
+
+            <h2>View Settings</h2>
+
+            <p>{{ settings|highlight_syntax(lang="json")|safe }}</p>
+        </div>
+    </div>
+{% endblock %}
