@@ -1,5 +1,6 @@
 import os
-from typing import Any
+from pathlib import Path
+from typing import Any, Callable
 
 from dotenv import load_dotenv
 
@@ -9,7 +10,7 @@ load_dotenv()
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-def env_var(key: str, default: Any) -> Any:
+def env_var(key: str, default: Any, type: Callable = None) -> Any:
     """
     Retrieve the value of an environment variable with a default value if not
     set.
@@ -18,11 +19,14 @@ def env_var(key: str, default: Any) -> Any:
         key (str): The name of the environment variable to retrieve.
         default (Any): The default value to return if the environment variable
         is not set.
+        type (Callable): If given, converts the value to the type. Default None.
 
     Returns:
         Any: The value of the environment variable if set, otherwise the default
         value.
     """
+    if type:
+        return type(os.environ.get(key, default=default))
     return os.environ.get(key, default=default)
 
 
@@ -42,6 +46,8 @@ class Config:
     MDEDITOR_FILE_UPLOADER = env_var(
         "MDEDITOR_FILE_UPLOADER", os.path.join(base_dir, "uploads")
     )
+    MAX_CONTENT_LENGTH = env_var("MAX_CONTENT_LENGTH", 16 * 1_000 * 1_000, type=int)
+    UPLOAD_FOLDER = env_var("UPLOAD_FOLDER", Path(base_dir).parent/"uploads")
 
 
 class TestConfig(Config):
