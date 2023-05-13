@@ -60,6 +60,10 @@ def create_app(config_class: Config = Config) -> Flask:
 
     app.register_blueprint(main_bp)
 
+    from app.settings import bp as settings_bp
+
+    app.register_blueprint(settings_bp)
+
     # register the custom filters
     register_jinja_mapping(app)
 
