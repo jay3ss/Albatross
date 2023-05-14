@@ -4,7 +4,6 @@ from app import create_app, db, models
 from app.helpers import users as uh
 from .helpers import AuthActions
 from config import TestConfig
-from config.settings import Settings
 
 
 @pytest.fixture
@@ -155,4 +154,4 @@ def settings_file(tmp_path):
 
 @pytest.fixture
 def settings():
-    return Settings()
+    return models.UserSettings()
