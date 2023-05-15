@@ -153,5 +153,9 @@ def settings_file(tmp_path):
 
 
 @pytest.fixture
-def settings():
-    return models.UserSettings()
+def settings(session, user):
+    settings = models.UserSettings(user=user)
+    session.add(settings)
+    session.commit()
+
+    return settings
