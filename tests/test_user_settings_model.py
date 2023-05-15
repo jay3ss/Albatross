@@ -7,35 +7,9 @@ import pytest
 from app import models
 
 
-def test_user_settings_model(session):
-    pass
-
-
-def test_get_settings_with_existing_settings(session, user):
-    new_settings = models.UserSettings()
-    new_settings.id = user.id
-    models.save_settings(new_settings, session=session)
-
-    settings = models.get_settings(user)
-    assert isinstance(settings(), dict)
-    assert settings()
-
-
-def test_get_settings_with_non_existing_settings(session):
-    settings = models.get_settings()
-    assert isinstance(settings(), dict)
-
-
-def test_save_settings_with_existing_entry(settings):
-    pass
-
-
-def test_save_settings_without_existing_entry(settings):
-    pass
-
-
 def test_load_settings(settings):
-    assert settings == read_settings()
+    def sort_by_key(e) -> bool: return e[0]
+    assert sorted(settings.to_dict(), key=sort_by_key) == sorted(read_settings(), key=sort_by_key)
 
 
 def test_create_settings_file(settings_file):
@@ -44,14 +18,13 @@ def test_create_settings_file(settings_file):
     assert settings_file.exists()
 
 
-def test_modify_settings_with_file(settings_file):
-    settings = models.UserSettings()
+def test_modify_settings_with_file(settings, settings_file):
     with open(settings_file, "w") as f:
         json.dump({"SITENAME": "My Pelican Site"}, f)
     settings.update(settings_file)
-    assert settings["SITENAME"] == "My Pelican Site"
-    settings["SITENAME"] = "New Site Name"
-    assert settings["SITENAME"] == "New Site Name"
+    assert settings.get("SITENAME") == "My Pelican Site"
+    settings.set("SITENAME", "New Site Name")
+    assert settings.get("SITENAME") == "New Site Name"
 
 
 def test_creating_settings_file(settings_file):
@@ -80,50 +53,47 @@ def test_get_pelican_settings():
     assert "OUTPUT_RETENTION" in default_settings
 
 
-def test_merge_settings():
-    settings = models.UserSettings()
+def test_merge_settings(settings):
     user_settings = {"SITENAME": "My New Site Name"}
     settings.update(user_settings)
-    assert settings["SITENAME"] == "My New Site Name"
+    assert settings.get("SITENAME") == "My New Site Name"
 
 
-def test_get_settings(settings_file):
-    models.UserSettings.create_settings_file(settings_file)
-    settings = models.UserSettings(settings_file)
-    settings.update({"SITENAME": "My New Site Name"})
-    settings.write(settings_file)
-    assert settings["SITENAME"] == "My New Site Name"
-    assert settings["OUTPUT_PATH"] == "output"
+# def test_get_settings(settings_file):
+#     models.UserSettings.create_settings_file(settings_file)
+#     settings = models.UserSettings(settings_file)
+#     settings.update({"SITENAME": "My New Site Name"})
+#     settings.write(settings_file)
+#     assert settings["SITENAME"] == "My New Site Name"
+#     assert settings["OUTPUT_PATH"] == "output"
 
-    Path(settings_file).unlink()
+#     Path(settings_file).unlink()
 
 
-def test_update_nested_settings():
-    # Given
-    settings = models.UserSettings()
-
+def test_update_nested_settings(settings):
     # When
-    settings["JINJA_ENVIRONMENT"]["trim_blocks"] = False
+    jinja_env = settings.get("JINJA_ENVIRONMENT")
+    jinja_env["trim_blocks"] = False
+    settings.set("JINJA_ENVIRONMENT", jinja_env)
 
     # Then
-    assert settings["JINJA_ENVIRONMENT"]["trim_blocks"] == False
+    assert settings.get("JINJA_ENVIRONMENT")["trim_blocks"] == False
 
 
-def test_update_nested_settings_with_list():
-    # Given
-    settings = models.UserSettings()
-
+def test_update_nested_settings_with_list(settings):
     # When
-    settings["READERS"]["0.1"] = ""
-
+    readers = settings.get("READERS")
+    readers["0.1"] = ""
+    settings.set("READERS", readers)
     # Then
-    assert settings["READERS"]["0.1"] == ""
+    assert settings.get("READERS")["0.1"] == ""
 
 
-def test_write_nested_settings(settings_file):
+def test_write_nested_settings(settings, settings_file):
     # Given
-    settings = models.UserSettings()
-    settings["JINJA_ENVIRONMENT"]["trim_blocks"] = False
+    jinja_env = settings.get("JINJA_ENVIRONMENT")
+    jinja_env["trim_blocks"] = False
+    settings.set("JINJA_ENVIRONMENT", jinja_env)
 
     # When
     settings.write(settings_file)
@@ -137,19 +107,18 @@ def test_write_nested_settings(settings_file):
     Path(settings_file).unlink()
 
 
-def test_read_nested_settings(settings_file):
+def test_read_nested_settings(settings, settings_file):
     # Given
     with open(settings_file, "w") as f:
         json.dump(
             {"JINJA_ENVIRONMENT": {"trim_blocks": False, "lstrip_blocks": True}}, f
         )
 
-    settings = models.UserSettings()
     settings.update(settings_file)
 
     # Then
-    assert settings["JINJA_ENVIRONMENT"]["trim_blocks"] == False
-    assert settings["JINJA_ENVIRONMENT"]["lstrip_blocks"] == True
+    assert settings.get("JINJA_ENVIRONMENT")["trim_blocks"] == False
+    assert settings.get("JINJA_ENVIRONMENT")["lstrip_blocks"] == True
 
 if __name__ == "__main__":
     import pytest

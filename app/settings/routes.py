@@ -1,19 +1,17 @@
 from pathlib import Path
 
-from flask import current_app, flash, json, redirect, render_template, send_file, url_for, send_from_directory
+from flask import current_app, flash, json, render_template, send_file
 from flask_login import current_user, login_required
 
+from app import models
 from app.settings import bp, forms
-from config.settings import Settings
-
-
-user_settings = Settings()
 
 
 @bp.route("/settings")
 @login_required
 def settings():
     upload_form = forms.UserSettingsFileUploadForm()
+    user_settings = models.UserSettings.query.filter_by(user=current_user).first()
     return render_template(
         "settings/settings.html",
         settings=json.dumps(user_settings(), indent=2),

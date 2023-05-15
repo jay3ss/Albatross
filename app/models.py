@@ -17,8 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, login
 from app.helpers.articles import HighlightRenderer, generate_slug
-from app.helpers.settings import _write_dict_to_file
-from config.settings import Settings
+from app.helpers.settings import _default_settings_string, _write_dict_to_file
 
 
 class User(UserMixin, db.Model):
@@ -220,12 +219,12 @@ class Article(db.Model):
 class UserSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
-    settings = db.Column(db.LargeBinary, nullable=True)
+    settings = db.Column(db.LargeBinary, default=_default_settings_string, nullable=True)
 
     def to_dict(self) -> dict:
         return json.loads(self.settings)
 
-    def update(self, new_settings: dict | Path | str) -> "Settings":
+    def update(self, new_settings: dict | Path | str) -> "UserSettings":
         """
         Updates the settings with contents of the new settings
 
@@ -238,12 +237,13 @@ class UserSettings(db.Model):
             Settings: the updated Settings instance.
         """
         if isinstance(new_settings, dict):
-            self._settings.update(new_settings)
+            settings_dict = self.to_dict()
+            settings_dict.update(new_settings)
+            encoded_settings = json.dumps(settings_dict)
+            self.settings = encoded_settings
         else:
             with open(new_settings, "r") as f:
-                file_contents = json.loads(f.read())
-
-            self._settings.update(file_contents)
+                self.settings = f.read().encode("utf-8")
 
         return self
 
@@ -254,7 +254,6 @@ class UserSettings(db.Model):
         Args:
             settings (UserSettings): the UserSettings object
         """
-        self.id = settings.id
         self.update(settings.to_dict())
 
     def write(self, fname: Path | str = "user_settings.json") -> Path:
@@ -269,13 +268,7 @@ class UserSettings(db.Model):
         Returns:
             Path: path to the file
         """
-        return _write_dict_to_file(fname=fname, contents=self._settings)
-
-    def __str__(self) -> str:
-        return str(self._settings)
-
-    def __call__(self) -> dict:
-        return self._settings
+        return _write_dict_to_file(fname=fname, contents=self.to_dict())
 
     @staticmethod
     def create_settings_file(fname: Path | str | None = None) -> Path:
@@ -311,14 +304,36 @@ class UserSettings(db.Model):
         """
         return read_settings(path=path, override=override)
 
+    def __call__(self) -> dict:
+        return self.to_dict()
+
     def __eq__(self, other_settings: dict) -> bool:
-        return self._settings == other_settings
+        return self.to_dict() == other_settings
 
-    def __getitem__(self, index) -> Any:
-        return self._settings[index]
+    def get(self, key, default: Any = None) -> Any:
+        """
+        Gets a top-level key-value pair from the settings
 
-    def __setitem__(self, index, value) -> None:
-        self._settings[index] = value
+        Args:
+            key (_type_): The top-level key to get
+            default (Any, optional): Default value if key doesn't exist.
+            Defaults to None.
+
+        Returns:
+            Any: The value at the key, or default if the key doesn't exist
+        """
+        return self.to_dict().get(key, default)
+
+    def set(self, key, value) -> None:
+        settings_dict = self.to_dict()
+        settings_dict[key] = value
+        self.settings = json.dumps(settings_dict).encode("utf-8")
+
+    def __str__(self) -> str:
+        return str(json.loads(self.settings))
+
+
+
 
 
 # Define an event listener to generate slug before insert

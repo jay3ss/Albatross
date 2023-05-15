@@ -1,6 +1,18 @@
 import json
 from pathlib import Path
 
+from pelican import read_settings
+
+
+def _default_settings_string() -> str:
+    """
+    Gives default Pelican settings as a string
+
+    Returns:
+        str: The string of the default Pelican settings
+    """
+    return json.dumps(read_settings()).encode("utf-8")
+
 
 def _write_dict_to_file(fname: Path | str | None, contents: dict) -> Path:
     """
