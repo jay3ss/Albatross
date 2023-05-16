@@ -1,5 +1,5 @@
 import json
-from pathlib import Path
+from pathlib import Path, PurePath
 
 from pelican import read_settings
 
@@ -29,7 +29,7 @@ def _write_dict_to_file(fname: Path | str | None, contents: dict) -> Path:
     Returns:
         Path: Path to the file
     """
-    if not isinstance(fname, Path):
+    if not isinstance(fname, PurePath):
         fname = Path(fname)
 
     with open(fname, "w") as f:
