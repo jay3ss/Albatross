@@ -3,7 +3,7 @@ from pathlib import Path
 from flask import current_app, url_for
 
 
-def test_can_access_settings_while_authenticated(auth, client):
+def test_can_access_settings_while_authenticated(auth, client, settings):
     auth.login()
 
     response = client.get(url_for("settings.settings"))
@@ -33,7 +33,7 @@ def test_writing_settings_to_file_while_not_authenticated(client):
     assert response.headers.get("Location", None)[:len(login_url)] == login_url
 
 
-def test_writing_settings_to_file(auth, client, user):
+def test_writing_settings_to_file(auth, client, settings, user):
     auth.login()
 
     response = client.post(

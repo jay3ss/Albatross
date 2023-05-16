@@ -5,6 +5,7 @@ from pelican import read_settings
 import pytest
 
 from app import models
+from app.settings import current_settings
 
 
 def test_load_settings(settings):
@@ -89,7 +90,25 @@ def test_update_nested_settings_with_list(settings):
     assert settings.get("READERS")["0.1"] == ""
 
 
-def test_write_nested_settings(settings, settings_file):
+def test_write_nested_settings_with_file_name(settings, settings_file):
+    # Given
+    jinja_env = settings.get("JINJA_ENVIRONMENT")
+    jinja_env["trim_blocks"] = False
+    settings.set("JINJA_ENVIRONMENT", jinja_env)
+
+    # When
+    settings.write(str(settings_file))
+
+    # Then
+    with open(settings_file) as f:
+        user_settings = json.load(f)
+
+    assert user_settings["JINJA_ENVIRONMENT"]["trim_blocks"] == False
+
+    Path(settings_file).unlink()
+
+
+def test_write_nested_settings_with_path(settings, settings_file):
     # Given
     jinja_env = settings.get("JINJA_ENVIRONMENT")
     jinja_env["trim_blocks"] = False
@@ -119,6 +138,18 @@ def test_read_nested_settings(settings, settings_file):
     # Then
     assert settings.get("JINJA_ENVIRONMENT")["trim_blocks"] == False
     assert settings.get("JINJA_ENVIRONMENT")["lstrip_blocks"] == True
+
+
+def test_current_settings(app, auth, settings):
+    auth.login()
+    with app.app_context():
+        current_settings == settings
+
+
+def test_current_settings_not_authenticated(app):
+    with app.app_context():
+        assert current_settings == None
+
 
 if __name__ == "__main__":
     import pytest

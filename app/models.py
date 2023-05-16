@@ -247,15 +247,6 @@ class UserSettings(db.Model):
 
         return self
 
-    def merge(self, settings) -> None:
-        """
-        Merge a UserSettings object with this object.
-
-        Args:
-            settings (UserSettings): the UserSettings object
-        """
-        self.update(settings.to_dict())
-
     def write(self, fname: Path | str = "user_settings.json") -> Path:
         """
         Writes the settings to the given file
@@ -304,9 +295,6 @@ class UserSettings(db.Model):
         """
         return read_settings(path=path, override=override)
 
-    def __call__(self) -> dict:
-        return self.to_dict()
-
     def __eq__(self, other_settings: dict) -> bool:
         return self.to_dict() == other_settings
 
@@ -330,7 +318,7 @@ class UserSettings(db.Model):
         self.settings = json.dumps(settings_dict).encode("utf-8")
 
     def __str__(self) -> str:
-        return str(json.loads(self.settings))
+        return json.dumps(self.to_dict(), indent=4)
 
 
 
@@ -387,40 +375,3 @@ def lower_username_before_update(mapper, connection, target):
 @login.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
-
-
-# def get_settings(user: User = None) -> Settings:
-#     """Loads the user's settings. If not user is passed then the default settings
-#     are returned.
-
-#     Args:
-#         user (User, optional): the user. Default is None
-
-#     Returns:
-#         Settings: the user's settings
-#     """
-#     user_settings = Settings()
-#     model_settings = UserSettings.query.filter_by(user=user).first()
-#     if model_settings:
-#         settings = model_settings.to_dict()
-#         settings.update(user_settings)
-
-#     return user_settings
-
-
-# def save_settings(settings: Settings, session: Session = db.session) -> None:
-#     """Saves the Settings object.
-
-#     Args:
-#         settings (Settings): The Settings object to save.
-#         session (Session, optional): The database session. Defaults to db.session.
-#     """
-#     encoded_settings = json.dumps(settings()).encode("utf-8")
-#     # with session.begin():
-#     db_settings = session.get(UserSettings, settings.id)
-#     if not db_settings:
-#         db_settings = UserSettings(settings=encoded_settings, user_id=settings.id)
-#     else:
-#         db_settings.settings = encoded_settings
-#     session.add(db_settings)
-#     session.commit()
