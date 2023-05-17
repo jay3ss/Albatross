@@ -31,6 +31,7 @@ serve:
 coverage:
 	coverage run -m pytest
 	coverage report
+	coverage html
 
 .PHONY: help
 help:
