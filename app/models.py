@@ -239,7 +239,7 @@ class UserSettings(db.Model):
         if isinstance(new_settings, dict):
             settings_dict = self.to_dict()
             settings_dict.update(new_settings)
-            encoded_settings = json.dumps(settings_dict)
+            encoded_settings = json.dumps(settings_dict).encode("utf-8")
             self.settings = encoded_settings
         else:
             with open(new_settings, "r") as f:

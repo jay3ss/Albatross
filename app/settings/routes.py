@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from flask import current_app, flash, json, render_template, send_file
+from flask import current_app, flash, json, redirect, render_template, send_file, url_for
 from flask_login import current_user, login_required
 
+from app import db
 from app.settings import bp, current_settings, forms
 
 
@@ -20,7 +21,16 @@ def settings():
 @bp.route("/settings/upload", methods=["post"])
 @login_required
 def upload_settings():
-    return ""
+    upload_form = forms.UserSettingsFileUploadForm()
+    if upload_form.validate_on_submit():
+        filename = upload_form.file.data.filename
+        with open(filename) as f:
+            new_settings = json.load(f)
+
+        current_settings.update(new_settings)
+        db.session.commit()
+        flash("File uploaded and applied successfully.", "success")
+    return redirect(url_for("settings.settings"))
 
 
 @bp.route("/settings/export", methods=["post"])
