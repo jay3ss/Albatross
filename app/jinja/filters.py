@@ -41,9 +41,7 @@ def highlight_syntax(code: str, lang: str = "python", style: str = "monokai") ->
     https://gist.github.com/deepns/22d366709a96f9e6fceba8abc8bdb156
     """
     return highlight(
-        code=code,
-        lexer=get_lexer_by_name(lang),
-        formatter=html.HtmlFormatter()
+        code=code, lexer=get_lexer_by_name(lang), formatter=html.HtmlFormatter()
     )
 
 

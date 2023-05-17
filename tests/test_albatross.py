@@ -12,7 +12,7 @@ from app.main.albatross import (
     compile_posts,
     create_post,
     _create_metadata,
-    _output_path
+    _output_path,
 )
 
 
@@ -290,7 +290,9 @@ def test_output_path_function(article):
     username = article.user.username_lower
     assert output_path == f"{username}-output"
 
-    output_path = _output_path(article, "this", "should", "be", "part", "of", "the", "path")
+    output_path = _output_path(
+        article, "this", "should", "be", "part", "of", "the", "path"
+    )
     assert output_path == f"{username}-this-should-be-part-of-the-path-output"
 
 

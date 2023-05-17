@@ -47,7 +47,7 @@ class Config:
         "MDEDITOR_FILE_UPLOADER", os.path.join(base_dir, "uploads")
     )
     MAX_CONTENT_LENGTH = env_var("MAX_CONTENT_LENGTH", 16 * 1_000 * 1_000, type=int)
-    UPLOAD_FOLDER = env_var("UPLOAD_FOLDER", Path(base_dir).parent/"uploads")
+    UPLOAD_FOLDER = env_var("UPLOAD_FOLDER", Path(base_dir).parent / "uploads")
     UPLOAD_EXTENSIONS = [".json"]
 
 

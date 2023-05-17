@@ -1,6 +1,14 @@
 from pathlib import Path
 
-from flask import current_app, flash, json, redirect, render_template, send_file, url_for
+from flask import (
+    current_app,
+    flash,
+    json,
+    redirect,
+    render_template,
+    send_file,
+    url_for,
+)
 from flask_login import current_user, login_required
 
 from app import db
@@ -14,7 +22,7 @@ def settings():
     return render_template(
         "settings/settings.html",
         settings=str(current_settings),
-        upload_form=upload_form
+        upload_form=upload_form,
     )
 
 
@@ -38,7 +46,7 @@ def upload_settings():
 def export():
     file_name = f"{current_user.username_lower}-settings.json"
     upload_path = Path(current_app.config["UPLOAD_FOLDER"]).resolve()
-    settings_file_path = current_settings.write(upload_path/file_name)
+    settings_file_path = current_settings.write(upload_path / file_name)
     flash(f"Settings file successfully written to {file_name}.", "success")
     response = send_file(settings_file_path, as_attachment=True)
     return response

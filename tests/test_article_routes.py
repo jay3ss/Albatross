@@ -359,13 +359,12 @@ def test_cant_view_another_users_article(article, auth, client, session):
     auth.login(username=new_user.username, password=password)
 
     response = client.get(
-        url_for("articles.article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.article", slug=article.slug), follow_redirects=False
     )
 
     assert response.status_code == 302
     main_page_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+    assert response.headers.get("Location")[: len(main_page_url)] == main_page_url
 
 
 def test_cant_edit_another_users_article(article, auth, client, session):
@@ -378,15 +377,15 @@ def test_cant_edit_another_users_article(article, auth, client, session):
     auth.login(username=new_user.username, password=password)
 
     response = client.get(
-        url_for("articles.edit_article", slug=article.slug),
-        follow_redirects=False
+        url_for("articles.edit_article", slug=article.slug), follow_redirects=False
     )
 
     assert response.status_code == 302
     main_page_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+    assert response.headers.get("Location")[: len(main_page_url)] == main_page_url
 
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

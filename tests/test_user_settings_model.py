@@ -9,8 +9,12 @@ from app.settings import current_settings
 
 
 def test_load_settings(settings):
-    def sort_by_key(e) -> bool: return e[0]
-    assert sorted(settings.to_dict(), key=sort_by_key) == sorted(read_settings(), key=sort_by_key)
+    def sort_by_key(e) -> bool:
+        return e[0]
+
+    assert sorted(settings.to_dict(), key=sort_by_key) == sorted(
+        read_settings(), key=sort_by_key
+    )
 
 
 def test_create_settings_file(settings_file):
@@ -153,4 +157,5 @@ def test_current_settings_not_authenticated(app):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

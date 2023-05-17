@@ -23,9 +23,7 @@ def test_validating_empty_settings_file(app, settings_file):
         json.dump("", f)
 
     with app.app_context():
-        form = forms.UserSettingsFileUploadForm(
-            file=""
-        )
+        form = forms.UserSettingsFileUploadForm(file="")
         assert not form.validate()
 
 
@@ -46,12 +44,11 @@ def test_validating_settings_file_with_incorrect_extension(app, tmp_path):
         json.dump({"SITENAME": "A Site"}, f)
 
     with app.app_context():
-        form = forms.UserSettingsFileUploadForm(
-            file=FileStorage(settings_file)
-        )
+        form = forms.UserSettingsFileUploadForm(file=FileStorage(settings_file))
         assert not form.validate()
 
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main(["-s", __file__])

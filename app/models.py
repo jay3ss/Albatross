@@ -219,7 +219,9 @@ class Article(db.Model):
 class UserSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True)
-    settings = db.Column(db.LargeBinary, default=_default_settings_string, nullable=True)
+    settings = db.Column(
+        db.LargeBinary, default=_default_settings_string, nullable=True
+    )
 
     def to_dict(self) -> dict:
         return json.loads(self.settings)
@@ -319,9 +321,6 @@ class UserSettings(db.Model):
 
     def __str__(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
-
-
-
 
 
 # Define an event listener to generate slug before insert

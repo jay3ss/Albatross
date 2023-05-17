@@ -215,6 +215,7 @@ users = [
 for user in users:
     settings = models.UserSettings(user=user)
 
+
 def is_draft(pct: float = 1 / 3) -> bool:
     return random.random() < pct
 

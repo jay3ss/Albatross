@@ -303,13 +303,12 @@ def test_cant_access_another_users_profile(auth, client, session):
     session.commit()
 
     response = client.get(
-        url_for("main.profile", username=new_user.username),
-        follow_redirects=False
+        url_for("main.profile", username=new_user.username), follow_redirects=False
     )
 
     assert response.status_code == 302
     main_page_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+    assert response.headers.get("Location")[: len(main_page_url)] == main_page_url
 
 
 def test_cant_change_another_users_profile(auth, client, session):
@@ -321,9 +320,9 @@ def test_cant_change_another_users_profile(auth, client, session):
 
     response = client.get(
         url_for("main.update_profile", username=new_user.username),
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 302
     main_page_url = url_for("main.index", _external=False)
-    assert response.headers.get("Location")[:len(main_page_url)] == main_page_url
+    assert response.headers.get("Location")[: len(main_page_url)] == main_page_url

@@ -27,7 +27,9 @@ class UserSettingsFileUploadForm(FlaskForm):
         except (json.JSONDecodeError, TypeError) as e:
             exc_type, exc_value, exc_tb = sys.exc_info()
             tbe = tb.TracebackException(
-                exc_type, exc_value, exc_tb,
+                exc_type,
+                exc_value,
+                exc_tb,
             )
             print("".join(tbe.format()), flush=True)
             raise ValidationError("Not a proper JSON file.")
