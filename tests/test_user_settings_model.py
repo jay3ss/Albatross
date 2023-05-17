@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from pelican import read_settings
 import pytest
+from pelican import read_settings
 
 from app import models
 from app.settings import current_settings
