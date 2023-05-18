@@ -1,7 +1,5 @@
 import json
 import os
-import sys
-import traceback as tb
 
 from flask import current_app
 from flask_wtf import FlaskForm
@@ -25,11 +23,4 @@ class UserSettingsFileUploadForm(FlaskForm):
             file.stream.seek(0)
             json.loads(file.stream.read().decode("utf-8"))
         except (json.JSONDecodeError, TypeError) as e:
-            exc_type, exc_value, exc_tb = sys.exc_info()
-            tbe = tb.TracebackException(
-                exc_type,
-                exc_value,
-                exc_tb,
-            )
-            print("".join(tbe.format()), flush=True)
             raise ValidationError("Not a proper JSON file.")
