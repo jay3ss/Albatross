@@ -320,7 +320,7 @@ class UserSettings(db.Model):
         self.settings = json.dumps(settings_dict).encode("utf-8")
 
     def __str__(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return json.dumps(self.to_dict(), sort_keys=True, indent=4)
 
 
 # Define an event listener to generate slug before insert
