@@ -9,7 +9,9 @@ from app.jinja.filters import datetime_format
 from app.models import Article
 
 
-def compile_posts(articles: list[Article], directory: Path = None, cleanup: bool = True) -> Path:
+def compile_posts(
+    articles: list[Article], directory: Path = None, cleanup: bool = True
+) -> Path:
     """
     Compile a list of Article objects into Pelican-ready Markdown files and
     compiles the site into an archive. Returns the output as an archive
@@ -37,7 +39,6 @@ def compile_posts(articles: list[Article], directory: Path = None, cleanup: bool
         settings["OUTPUT_PATH"] = output_path
         pel = pelican.Pelican(settings=settings)
         pel.run()
-
 
     zip_path = shutil.make_archive(output_path, "zip", output_path)
     if cleanup:

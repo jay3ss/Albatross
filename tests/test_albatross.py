@@ -188,11 +188,12 @@ def test_compile_posts_compiles_correctly(session):
     # to get the actual directory, remove the suffix from the filename and we have
     # the path to the output directory
     output_dir = Path(
-        "/".join([
-            part if not suffix in part else part.replace(suffix, "")
-            for part in output_dir._cparts
-
-        ])
+        "/".join(
+            [
+                part if not suffix in part else part.replace(suffix, "")
+                for part in output_dir._cparts
+            ]
+        )
     )
     # check that the proper articles were generated
     # - articles marked as "draft" should be in the ./output/drafts directory
@@ -253,9 +254,9 @@ def test_compile_posts_runs_pelican(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.pelican.Pelican.run") as mock_pelican_run, \
-        patch("shutil.make_archive") as mock_make_archive, \
-        patch("shutil.rmtree") as mock_rmtree:
+    with patch("app.main.albatross.pelican.Pelican.run") as mock_pelican_run, patch(
+        "shutil.make_archive"
+    ) as mock_make_archive, patch("shutil.rmtree") as mock_rmtree:
         mock_pelican_run.return_value = MagicMock()
         mock_make_archive.return_value = MagicMock()
         compile_posts(articles=articles, directory=None)
