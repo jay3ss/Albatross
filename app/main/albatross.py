@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import shutil
 import tempfile
 
 import pelican
@@ -8,15 +9,21 @@ from app.jinja.filters import datetime_format
 from app.models import Article
 
 
-def compile_posts(articles: list[Article], directory: Path | None = None) -> Path:
+def compile_posts(articles: list[Article], directory: Path = None, cleanup: bool = True) -> Path:
     """
-    Compile a list of Article objects into Pelican-ready Markdown files in a
-    temporary directory.
+    Compile a list of Article objects into Pelican-ready Markdown files and
+    compiles the site into an archive. Returns the output as an archive
+    (`{username}-output.zip`).
 
     Args:
         articles (list[Article]): A list of Article objects to be compiled.
-        directory (Path | None, optional): The directory where the temporary
-        directory will be created. Defaults to None.
+        directory (Path, optional): The directory where the temporary directory
+        will be created. Defaults to None.
+        cleanup (bool, optional): Clean up output directory. NOTE: This does NOT
+        remove the archived output. Defaults to True.
+
+    Returns:
+        The path to the archive of the compiled site.
     """
     # TODO: this will need to be the user settings once properly implemented
     settings = pelican.read_settings()
@@ -30,6 +37,12 @@ def compile_posts(articles: list[Article], directory: Path | None = None) -> Pat
         settings["OUTPUT_PATH"] = output_path
         pel = pelican.Pelican(settings=settings)
         pel.run()
+
+
+    zip_path = shutil.make_archive(output_path, "zip", output_path)
+    if cleanup:
+        shutil.rmtree(output_path)
+    return zip_path
 
 
 def create_post(content: str, metadata: dict, base_dir: Path) -> Path:
@@ -135,16 +148,19 @@ def _create_metadata(article: Article) -> dict:
     return metadata
 
 
-def _output_path(article: Article, *args) -> str:
+def _output_path(article: Article, *args) -> Path:
     """Returns the output path for Pelican
 
     Args:
         article (Article): the article to get the username from
 
     Returns:
-        str: the output path
+        Path: the output path
     """
     parts = [article.user.username_lower]
     parts.extend(args)
     parts.extend(["output"])
-    return "-".join(parts)
+    # return Path("-".join(parts))
+
+    temp_path = tempfile.mkdtemp(suffix="-".join(parts))
+    return temp_path

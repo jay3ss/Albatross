@@ -1,4 +1,4 @@
-import shutil
+from pathlib import Path
 from unittest.mock import patch
 
 from flask import url_for
@@ -288,11 +288,7 @@ def test_attempting_to_compile_for_owning_user(article, auth, client, user):
             url_for("main.compile_site", username=user.username), follow_redirects=False
         )
 
-    assert response.status_code == 302
-    profile_url = url_for("main.profile", username=user.username_lower, _external=False)
-    assert response.headers.get("Location", None)[: len(profile_url)] == profile_url
-
-    shutil.rmtree(_output_path(article))
+    assert response.status_code == 200
 
 
 def test_cant_access_another_users_profile(auth, client, session):

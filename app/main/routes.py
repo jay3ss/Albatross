@@ -1,4 +1,6 @@
-from flask import flash, redirect, render_template, url_for
+import atexit
+
+from flask import flash, redirect, render_template, send_file, url_for
 from flask_login import current_user, login_required
 
 from app.main.albatross import compile_posts
@@ -63,5 +65,6 @@ def compile_site(username):
         #   c. both? something else?
         user = models.User.query.filter_by(username_lower=username.lower()).first()
         output_path = compile_posts(articles=user.articles)
-        return redirect(url_for("main.profile", username=username.lower()))
+        response = send_file(output_path, as_attachment=True)
+        return response
     return redirect(url_for("main.profile", username=username.lower()))

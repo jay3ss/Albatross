@@ -182,12 +182,22 @@ def test_compile_posts_compiles_correctly(session):
     session.add_all(articles)
     session.commit()
 
-    compile_posts(articles=articles, directory=None)
+    output_dir = Path(compile_posts(articles=articles, directory=None, cleanup=False))
+    suffix = output_dir.suffix
+    # compile posts returns the path to the archived version of the compiled site.
+    # to get the actual directory, remove the suffix from the filename and we have
+    # the path to the output directory
+    output_dir = Path(
+        "/".join([
+            part if not suffix in part else part.replace(suffix, "")
+            for part in output_dir._cparts
 
+        ])
+    )
     # check that the proper articles were generated
     # - articles marked as "draft" should be in the ./output/drafts directory
     # - articles not marked as "draft" should be in the
-    output_dir = Path(_output_path(articles[0]))
+    # output_dir = Path(_output_path(articles[0]))
     for article in articles:
         if article.is_draft:
             assert (output_dir / "drafts" / f"{article.slug}.html").exists()
@@ -217,14 +227,15 @@ def test_compile_posts_creates_temporary_directory(session):
     ) as mock_temp_dir, patch(
         "app.main.albatross.article_to_post"
     ) as mock_article_to_post:
-        compile_posts(articles=articles)
+        output_file = compile_posts(articles=articles)
 
     # clean up
     for article in articles:
         post_file = Path(f"{article.slug}.md")
         if post_file.exists():
             post_file.unlink()
-    shutil.rmtree(Path(_output_path(articles[0])))
+
+    Path(output_file).unlink()
     assert mock_temp_dir.called_once_with(prefix="content", dir=None)
 
 
@@ -242,8 +253,11 @@ def test_compile_posts_runs_pelican(session):
     session.add_all(articles)
     session.commit()
 
-    with patch("app.main.albatross.pelican.Pelican.run") as mock_pelican_run:
+    with patch("app.main.albatross.pelican.Pelican.run") as mock_pelican_run, \
+        patch("shutil.make_archive") as mock_make_archive, \
+        patch("shutil.rmtree") as mock_rmtree:
         mock_pelican_run.return_value = MagicMock()
+        mock_make_archive.return_value = MagicMock()
         compile_posts(articles=articles, directory=None)
 
     # clean up
@@ -288,12 +302,12 @@ def test_create_metadata_function(session, user):
 def test_output_path_function(article):
     output_path = _output_path(article)
     username = article.user.username_lower
-    assert output_path == f"{username}-output"
+    assert f"{username}-output" in output_path
 
     output_path = _output_path(
         article, "this", "should", "be", "part", "of", "the", "path"
     )
-    assert output_path == f"{username}-this-should-be-part-of-the-path-output"
+    assert f"{username}-this-should-be-part-of-the-path-output" in output_path
 
 
 if __name__ == "__main__":
